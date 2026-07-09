@@ -88,7 +88,7 @@
   th,td{padding:7px 6px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--panel)}
   th{color:var(--muted);font-weight:600;position:sticky;top:0;z-index:2}
   th.vt{vertical-align:bottom;padding:8px 3px}
-  th.vt span{display:inline-block;writing-mode:vertical-rl;-webkit-writing-mode:vertical-rl;text-orientation:mixed;-webkit-text-orientation:mixed;white-space:nowrap;line-height:1.1}
+  th.vt span{display:inline-block;writing-mode:vertical-rl;-webkit-writing-mode:vertical-rl;text-orientation:mixed;-webkit-text-orientation:mixed;white-space:nowrap;line-height:1.1;transform:rotate(180deg)}
   th.d,td.d{position:sticky;left:0;text-align:left;min-width:52px}
   th.d{z-index:3}
   td.d{z-index:1;font-weight:600}
@@ -601,7 +601,7 @@ function buildTable(){
   if(recs.length===0){ t.innerHTML=""; empty.classList.remove("hidden"); return; }
   empty.classList.add("hidden");
 
-  var head="<tr><th class='d'>Дата</th><th>дн</th>";
+  var head="<tr><th class='d'>Дата</th><th class='vt'><span>День недели</span></th>";
   PARAMS.forEach(function(p){ head+="<th class='vt'><span>"+colLabel(p)+"</span></th>"; });
   head+="<th class='vt'><span>Событие</span></th></tr>";
 
