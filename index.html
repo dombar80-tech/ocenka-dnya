@@ -87,7 +87,8 @@
   table{border-collapse:separate;border-spacing:0;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
   th,td{padding:7px 6px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--panel)}
   th{color:var(--muted);font-weight:600;position:sticky;top:0;z-index:2}
-  th.vt{writing-mode:vertical-rl;text-orientation:mixed;height:120px;vertical-align:bottom;padding:8px 2px}
+  th.vt{vertical-align:bottom;padding:8px 3px}
+  th.vt span{display:inline-block;writing-mode:vertical-rl;-webkit-writing-mode:vertical-rl;text-orientation:mixed;-webkit-text-orientation:mixed;white-space:nowrap;line-height:1.1}
   th.d,td.d{position:sticky;left:0;text-align:left;min-width:52px}
   th.d{z-index:3}
   td.d{z-index:1;font-weight:600}
@@ -601,8 +602,8 @@ function buildTable(){
   empty.classList.add("hidden");
 
   var head="<tr><th class='d'>Дата</th><th>дн</th>";
-  PARAMS.forEach(function(p){ head+="<th class='vt'>"+colLabel(p)+"</th>"; });
-  head+="<th class='vt'>Событие</th></tr>";
+  PARAMS.forEach(function(p){ head+="<th class='vt'><span>"+colLabel(p)+"</span></th>"; });
+  head+="<th class='vt'><span>Событие</span></th></tr>";
 
   var body="";
   recs.forEach(function(r){
