@@ -13,7 +13,7 @@
   :root{
     --bg:#1a1a2e; --panel:#20213a; --panel2:#26284a;
     --line:#33355e; --text:#eef0ff; --muted:#9aa0c8;
-    --accent:#7c83ff; --neg:#ff5c5c; --zero:#8b90b5; --pos:#4ade80;
+    --accent:#7c83ff; --neg:#ff5c5c; --zero:#8b90b5; --pos:#4ade80; --amber:#ffcf6b;
     --safe-t:env(safe-area-inset-top); --safe-b:env(safe-area-inset-bottom);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -22,8 +22,14 @@
     background:var(--bg); color:var(--text);
     font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
     -webkit-text-size-adjust:100%;
+    display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;
   }
-  .app{max-width:640px;margin:0 auto;padding:calc(12px + var(--safe-t)) 14px calc(84px + var(--safe-b));}
+  .app{max-width:640px;margin:0 auto;padding:calc(12px + var(--safe-t)) 14px calc(84px + var(--safe-b));
+    flex:1;display:flex;flex-direction:column;min-height:0;width:100%}
+  /* только вкладка «Инструменты» растягивается на всю высоту (для длинных экранов Аптечки/Антисаботажа);
+     остальные 3 вкладки остаются как раньше, не участвуют в этой раскладке */
+  .app > #tab-tools:not(.hidden){flex:1;min-height:0}
+  #tab-tools > section:not(.hidden){display:flex;flex-direction:column;flex:1;min-height:0}
   h1{font-size:22px;margin:2px 0 2px}
   .sub{color:var(--muted);font-size:14px;margin-bottom:14px}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}
@@ -136,6 +142,138 @@
   .rules ul{margin:0;padding-left:20px}
   .rules li{margin-bottom:12px}
   .rules b{color:#fff}
+  .warn{background:#2c2718;border:1px solid #6b5a2c;color:var(--amber);border-radius:12px;padding:11px 12px;font-size:13px;margin-bottom:14px}
+
+  /* diagnostic tiles */
+  .tiles{display:flex;flex-direction:column;gap:12px;margin-bottom:18px}
+  .tile{display:block;width:100%;text-align:left;border-radius:16px;padding:16px 18px;border:none;position:relative}
+  .tile .ic{font-size:26px;margin-right:8px}
+  .tile .t{font-size:17px;font-weight:800;display:inline}
+  .tile .d{color:rgba(255,255,255,.82);font-size:13.5px;margin-top:6px}
+  .tile.red{background:linear-gradient(135deg,#5c1c1c,#3a1010)}
+  .tile.yellow{background:linear-gradient(135deg,#5c4a1c,#3a2e10)}
+  .tile.green{background:linear-gradient(135deg,#1c5c33,#103a20)}
+  .tile.blue{background:linear-gradient(135deg,#332c6b,#201a45)}
+
+  .center-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px 18px;text-align:center}
+  .center-card .big{font-size:20px;font-weight:700;margin-bottom:10px}
+  .center-card p{color:var(--muted);font-size:14.5px;line-height:1.55}
+
+  /* trigger chips */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+  .trig{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:16px 10px;text-align:center;font-size:14.5px;font-weight:600}
+  .trig:active{background:#31335c}
+  .trig.any{grid-column:1 / -1;background:var(--panel);border-style:dashed}
+
+
+  .card .txt{font-size:16px;font-weight:700}
+  .card .anchor{color:var(--muted);font-size:13px;margin-top:3px;font-style:italic}
+  .badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+  .badge{font-size:11px;font-weight:700;border-radius:6px;padding:2px 7px;border:1px solid var(--line);color:#c7cbf0;background:#2a2c52}
+  .apply-btn{display:block;width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:10px;font-size:14px;font-weight:700;margin-top:10px}
+  .apply-btn:active{background:#666dea}
+  .more-toggle{background:none;border:none;color:var(--accent);font-size:13.5px;font-weight:600;padding:8px 0;text-align:left;width:100%}
+
+
+  /* rate screen */
+  .rate-opts{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+  .rate-opts button{border:1px solid var(--line);background:var(--panel2);border-radius:12px;padding:15px;font-size:15.5px;font-weight:700;text-align:left}
+  .rate-opts button.r1{color:#ff9a9a}
+  .rate-opts button.r2{color:var(--amber)}
+  .rate-opts button.r3{color:var(--pos)}
+  .rate-opts button:active{background:#31335c}
+
+
+  /* list / manage */
+  .filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+  .chip{border:1px solid var(--line);background:var(--panel2);color:var(--muted);border-radius:999px;padding:6px 11px;font-size:12px;font-weight:600}
+  .chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .seg-tabs{display:flex;gap:6px;margin-bottom:12px}
+  .seg-tabs button{flex:1;border:1px solid var(--line);background:var(--panel2);color:var(--muted);border-radius:10px;padding:9px;font-size:13px;font-weight:700}
+  .seg-tabs button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .rowbtns{display:flex;gap:8px;margin-top:10px}
+  .rowbtns button{flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px;font-size:13px;font-weight:600}
+  .rowbtns .del{color:#ff9a9a}
+  .add{display:block;width:100%;background:var(--panel2);border:1px dashed #3d3f6b;color:var(--text);border-radius:12px;padding:13px;font-size:15px;font-weight:600;margin:4px 0 22px}
+  .link-row{text-align:center;margin:6px 0 18px}
+  .link-row button{background:none;border:none;color:var(--accent);font-size:14.5px;font-weight:600}
+  .info-btn{display:block;width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:12px;
+    color:var(--text);padding:13px;font-size:15px;font-weight:700;margin:4px 0 18px}
+  .info-btn:active{background:#31335c}
+
+
+  /* info screen */
+  .info-h{font-size:15px;font-weight:800;color:var(--text);margin:20px 0 10px}
+  .info-block{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
+  .row-icons{font-size:26px;letter-spacing:8px;margin:6px 0 10px}
+  .info-p{color:var(--muted);font-size:13.5px;line-height:1.5}
+
+
+  /* article reader */
+  .article-body{font-size:15px;line-height:1.65;padding-bottom:10px}
+  .article-body h2{font-size:16.5px;margin:22px 0 8px;color:var(--text)}
+  .article-body h2:first-child{margin-top:4px}
+  .article-body p{color:#d6d9f5;margin:0 0 12px}
+  .article-body ul{margin:0 0 12px;padding-left:20px;color:#d6d9f5}
+  .article-body li{margin-bottom:6px}
+  .article-body .q{background:var(--panel);border-left:3px solid var(--accent);border-radius:8px;
+    padding:10px 12px;margin:0 0 12px;font-size:14px;font-style:italic;color:var(--muted)}
+  .cls-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .cls-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 8px;text-align:center}
+  .cls-card .ic{font-size:20px}
+  .cls-card .nm{font-size:12.5px;font-weight:800;margin:4px 0 6px}
+  .cls-card .hint{color:var(--muted);font-size:10.5px;line-height:1.4}
+  .step-flow{display:flex;flex-direction:column;align-items:center;gap:2px}
+  .step{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 16px;font-size:14px;font-weight:700;width:100%;text-align:center}
+  .arrow{color:var(--muted);font-size:14px;line-height:1}
+  .cmp-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .cmp-col{border-radius:14px;padding:12px 10px}
+  .cmp-col.bad{background:#3a1c1c;border:1px solid #6b2c2c}
+  .cmp-col.good{background:#16321f;border:1px solid #2c6b45}
+  .cmp-t{font-size:13px;font-weight:800;margin-bottom:8px;text-align:center}
+  .cmp-i{font-size:12px;padding:5px 0;border-top:1px solid rgba(255,255,255,.08)}
+  .cmp-i:first-of-type{border-top:none}
+
+  .bh{background:#2a1622;border:1px solid #5a2c3c;border-radius:12px;padding:11px 12px;margin-bottom:9px}
+  .bh b{color:#ffb3c7}
+  .bh .d{color:var(--muted);font-size:13px;margin-top:2px}
+  .bh .x{float:right;color:#ff9a9a;font-weight:800;border:none;background:none;font-size:16px;margin-left:8px}
+
+  /* anti-sabotage */
+  .anti-row{display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--panel);
+    border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px;text-align:left}
+  .anti-row .l{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700}
+  .anti-row .l .ic{font-size:19px}
+  .anti-row .r{display:flex;align-items:center;gap:8px}
+  .anti-row .cnt{color:var(--muted);font-size:13px}
+  .anti-row .chev{color:var(--muted)}
+  .anti-row:active{background:#262a4a}
+  .tpl-textarea{flex:1;min-height:140px;line-height:1.55;font-size:15px}
+  #prog-list,#trophy-list{flex:1}
+  .anti-empty-fill{flex:1}
+  .save-hint{color:var(--muted);font-size:12.5px;margin-top:8px}
+  .trophy-count{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;margin-bottom:16px}
+  .trophy-count .n{font-size:32px;font-weight:800;color:var(--pos)}
+  .trophy-count .l{color:var(--muted);font-size:13px;margin-top:2px}
+  .add-inline{display:block;width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:12px;font-size:14.5px;font-weight:700;margin-top:10px}
+  .add-inline:active{background:#666dea}
+
+
+  /* modal */
+  .ov{position:fixed;inset:0;background:rgba(6,7,18,.72);backdrop-filter:blur(4px);display:flex;align-items:flex-end;justify-content:center;z-index:50}
+  .ov.hidden{display:none}
+  .sheet{background:var(--panel);border:1px solid var(--line);border-radius:20px 20px 0 0;width:100%;max-width:640px;padding:18px 16px calc(20px + var(--safe-b));max-height:90vh;overflow:auto}
+  .sheet h3{margin:0 0 12px;font-size:19px}
+  label{display:block;font-size:13px;color:var(--muted);margin:10px 0 5px}
+  input[type=text],textarea{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--text);font:15px inherit;padding:11px}
+  textarea{min-height:44px;resize:vertical}
+  .seg{display:flex;flex-wrap:wrap;gap:6px}
+  .seg button{border:1px solid var(--line);background:var(--panel2);color:var(--muted);border-radius:10px;padding:9px 11px;font-size:13px;font-weight:600}
+  .seg button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .acts{display:flex;gap:10px;margin-top:16px}
+  .acts button{flex:1;border:none;border-radius:12px;padding:14px;font-size:16px;font-weight:700}
+  .primary{background:var(--accent);color:#fff}
+  .ghost{background:var(--panel2);border:1px solid var(--line)!important;color:var(--text)}
 </style>
 </head>
 <body>
@@ -200,6 +338,257 @@
     </div>
   </section>
 
+  <!-- ===================== TAB: TOOLS (v2.0: Аптечка + Антисаботаж) ===================== -->
+<section id="tab-tools" class="hidden">
+  <section id="v-home">
+    <h1>🧭 Инструменты</h1>
+    <div class="sub">По методике автогуманизма Михаила Муравьёва.</div>
+    <div class="tiles">
+      <button class="tile blue" id="t-open-apt">
+        <span class="ic">🧰</span><span class="t">Аптечка</span>
+        <div class="d">Экспресс-допинги от усталости, тревоги, апатии — по триггеру.</div>
+      </button>
+      <button class="tile blue" id="t-open-anti">
+        <span class="ic">🛡️</span><span class="t">Антисаботаж</span>
+        <div class="d">Протокол против внутреннего сопротивления переменам.</div>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===================== VIEW: APTECZKA DIAGNOSTIC (🔴🟡🟢) ===================== -->
+  <section id="v-apt" class="hidden">
+    <button class="back" data-back="home">← Инструменты</button>
+    <h1>🧰 Аптечка</h1>
+    <div class="sub">Как ты сейчас? Выбери, что ближе.</div>
+
+    <div class="tiles">
+      <button class="tile red" id="t-exhaust">
+        <span class="ic">🔴</span><span class="t">Истощение</span>
+        <div class="d">Нет сил даже на приятное. Сначала поешь и поспи.</div>
+      </button>
+      <button class="tile yellow" id="t-situational">
+        <span class="ic">🟡</span><span class="t">Ситуативный сбой</span>
+        <div class="d">Что-то выбило из колеи — конфликт, новость, усталость.</div>
+      </button>
+      <button class="tile green" id="t-burnout">
+        <span class="ic">🟢</span><span class="t">Выгорание</span>
+        <div class="d">Силы есть, но нет смысла и мотивации.</div>
+      </button>
+    </div>
+
+    <button class="info-btn" id="open-info">ℹ️ Как это работает</button>
+    <div class="link-row"><button id="open-full-list">🧰 Открыть аптечку целиком (список, редактирование)</button></div>
+  </section>
+
+  <!-- ===================== VIEW: INFO («Как это работает») ===================== -->
+  <section id="v-info" class="hidden">
+    <button class="back" data-back="apt">← Аптечка</button>
+    <h1>ℹ️ Как это работает</h1>
+
+    <div class="info-block">
+      <div class="info-h">Энергия упала — обычная реакция</div>
+      <div class="row-icons">📱 📰 🎬 🎮 ☕ 🍺</div>
+      <div class="info-p">Соцсети, новости, сериалы, игры, кофе литрами, алкоголь — обычно тянемся к этому.
+        Итог: энергии становится ещё меньше.</div>
+    </div>
+
+    <div class="info-block">
+      <div class="info-h">Решение — своя «Аптечка»</div>
+      <div class="info-p">Список коротких действий, которые снимают стресс, уменьшают тревогу,
+        возвращают внимание, повышают тонус — без подготовки и усилия воли. Просто «взял и сделал».</div>
+    </div>
+
+    <div class="info-h">Три класса по времени</div>
+    <div class="cls-cards" id="info-cls"></div>
+
+    <div class="info-h">Как пользоваться</div>
+    <div class="step-flow">
+      <div class="step">📉 Энергия упала</div>
+      <div class="arrow">↓</div>
+      <div class="step">📖 Открыть Аптечку</div>
+      <div class="arrow">↓</div>
+      <div class="step">👉 Выбрать подходящий допинг</div>
+      <div class="arrow">↓</div>
+      <div class="step">✅ Сделать действие</div>
+      <div class="arrow">↓</div>
+      <div class="step">🚀 Вернуться к задаче с ресурсом</div>
+    </div>
+
+    <div class="info-h">Почему это работает</div>
+    <div class="cmp-cols">
+      <div class="cmp-col bad">
+        <div class="cmp-t">Пересилить себя</div>
+        <div class="cmp-i">😩 Усталость, стресс</div>
+        <div class="cmp-i">💪 Волевое усилие</div>
+        <div class="cmp-i">🔋 Ещё больше истощение</div>
+        <div class="cmp-i">🔁 Замкнутый круг</div>
+      </div>
+      <div class="cmp-col good">
+        <div class="cmp-t">Действие из Аптечки</div>
+        <div class="cmp-i">✋ Сенсорное действие</div>
+        <div class="cmp-i">📉 Снижение стресса</div>
+        <div class="cmp-i">🔋 Ресурс возвращается</div>
+        <div class="cmp-i">✅ Можно действовать</div>
+      </div>
+    </div>
+
+    <div class="warn" style="margin-top:16px">
+      💚 Аптечка — это скорая помощь, а не замена отдыха. Используй её, чтобы быстро вернуть
+      себе ресурс и продолжить двигаться к цели.
+    </div>
+    <div class="sub" style="text-align:center">© Михаил Муравьёв (autohumanism.com). CC BY 4.0</div>
+  </section>
+
+  <!-- ===================== VIEW: ANTI-SABOTAGE LANDING ===================== -->
+  <section id="v-anti" class="hidden">
+    <button class="back" data-back="home">← Инструменты</button>
+    <h1>🛡️ Антисаботаж</h1>
+    <div class="sub">Личный протокол против сопротивления. Читай, когда накатывает апатия и желание бросить.</div>
+
+    <div id="anti-rows"></div>
+
+    <div class="link-row"><button id="anti-to-apt">🧰 Нужен допинг перед чтением? → Аптечка</button></div>
+
+    <div class="warn">
+      Если через 3–4 недели ты всё ещё открываешь этот протокол почти каждый день — это уже не обычное
+      сопротивление, а возможно истощение, выгорание или тревожность. Стоит поставить программу на паузу
+      и, если причина непонятна, обратиться к специалисту. <span style="opacity:.7">(Михаил Муравьёв, autohumanism.com)</span>
+    </div>
+    <div class="link-row"><button id="anti-to-article">📖 Читать статью Муравьёва целиком</button></div>
+    <div class="sub" style="text-align:center">© Михаил Муравьёв (autohumanism.com). CC BY 4.0</div>
+  </section>
+
+  <!-- ===================== VIEW: ANTI-SABOTAGE FULL ARTICLE ===================== -->
+  <section id="v-anti-article" class="hidden">
+    <button class="back" data-back="anti">← Антисаботаж</button>
+    <h1>📖 Отключение контура сопротивления</h1>
+    <div class="sub">Вставь сюда свой текст или редактируй пересказ ниже.</div>
+    <textarea class="tpl-textarea" id="article-textarea"></textarea>
+    <div class="save-hint" id="article-save-hint">Сохраняется автоматически.</div>
+    <div class="acts" style="margin-top:14px">
+      <button class="ghost" id="article-reset">Сбросить к сводке</button>
+      <button class="primary" id="article-done">Готово</button>
+    </div>
+    <div class="warn" style="margin-top:14px">
+      © Михаил Муравьёв (autohumanism.com). Материал распространяется по лицензии
+      <a href="https://creativecommons.org/licenses/by/4.0/" style="color:var(--accent)">CC BY 4.0</a> —
+      оригинал статьи «Отключение контура сопротивления»: autohumanism.com/ru/logia51.
+    </div>
+  </section>
+
+  <!-- ===================== VIEW: ANTI-SABOTAGE TEMPLATE EDITOR (reused for 4 static sections) ===================== -->
+  <section id="v-anti-tpl" class="hidden">
+    <button class="back" data-back="anti">← Антисаботаж</button>
+    <h1 id="tpl-title">—</h1>
+    <div class="sub">Отредактируй под себя или оставь как есть.</div>
+    <textarea class="tpl-textarea" id="tpl-textarea"></textarea>
+    <div class="save-hint" id="tpl-save-hint">Сохраняется автоматически.</div>
+    <div class="acts" style="margin-top:14px">
+      <button class="ghost" id="tpl-reset">Сбросить к шаблону</button>
+      <button class="primary" id="tpl-done">Готово</button>
+    </div>
+  </section>
+
+  <!-- ===================== VIEW: ANTI-SABOTAGE PROGRESS LOG ===================== -->
+  <section id="v-anti-progress" class="hidden">
+    <button class="back" data-back="anti">← Антисаботаж</button>
+    <h1>📈 Мой прогресс</h1>
+    <div class="sub">Конкретно и измеримо: «сказал начальнику "я подумаю" вместо "да"», а не «стал увереннее».</div>
+
+    <input type="text" id="prog-input" placeholder="Что ты сделал иначе, лучше, чем раньше?">
+    <button class="add-inline" id="prog-add">＋ Записать</button>
+
+    <div id="prog-list" style="margin-top:16px"></div>
+  </section>
+
+  <!-- ===================== VIEW: ANTI-SABOTAGE TROPHY WALL ===================== -->
+  <section id="v-anti-trophy" class="hidden">
+    <button class="back" data-back="anti">← Антисаботаж</button>
+    <h1>🗿 Трофейная стена</h1>
+    <div class="sub">Каждый преодолённый приступ саботажа — сюда.</div>
+
+    <div class="trophy-count"><div class="n" id="trophy-n">0</div><div class="l">побед над саботажем</div></div>
+
+    <label>Тип атаки</label>
+    <div class="seg" id="trophy-type-chips"></div>
+    <input type="text" id="trophy-type-custom" placeholder="или впиши свой вариант" style="margin-top:8px">
+    <label>Что помогло</label>
+    <input type="text" id="trophy-helped" placeholder="напр. допинг из Аптечки / Антивирусный протокол">
+    <label>Итог</label>
+    <input type="text" id="trophy-outcome" placeholder="напр. сел и сделал задачу">
+    <button class="add-inline" id="trophy-add">＋ Записать победу</button>
+
+    <div id="trophy-list" style="margin-top:16px"></div>
+  </section>
+
+  <!-- ===================== VIEW: EXHAUSTION (🔴) ===================== -->
+  <section id="v-exhaust" class="hidden">
+    <button class="back" data-back="apt">← Назад</button>
+    <div class="center-card">
+      <div class="big">🔴 Сначала — базовые вещи</div>
+      <p>Поешь что-то вкусное, выпей чаю, ляг.<br>Аптечка подождёт — сейчас телу нужен не приём, а отдых.</p>
+    </div>
+  </section>
+
+  <!-- ===================== VIEW: BURNOUT stub (🟢) ===================== -->
+  <section id="v-burnout" class="hidden">
+    <button class="back" data-back="apt">← Назад</button>
+    <div class="center-card">
+      <div class="big">🟢 Скоро здесь появится инструмент</div>
+      <p>Работа с ценностями и мотивацией при выгорании — в разработке.</p>
+    </div>
+  </section>
+
+  <!-- ===================== VIEW: TRIGGER PICK (🟡) ===================== -->
+  <section id="v-trigger" class="hidden">
+    <button class="back" data-back="apt">← Назад</button>
+    <h2>🟡 Что выбило из колеи?</h2>
+    <div class="sub">Выбери, что ближе всего сейчас.</div>
+    <div class="grid2" id="trigger-grid"></div>
+    <div id="usage-note"></div>
+  </section>
+
+  <!-- ===================== VIEW: SUGGEST (3-4 техники) ===================== -->
+  <section id="v-suggest" class="hidden">
+    <button class="back" data-back="trigger">← Другой триггер</button>
+    <h2 id="sg-title">Попробуй сейчас</h2>
+    <div class="sub">Моментальные — быстрее всего.</div>
+    <div id="sg-list"></div>
+    <button class="more-toggle" id="sg-more-toggle">Показать тактические / дневные ↓</button>
+    <div id="sg-more" class="hidden"></div>
+  </section>
+
+  <!-- ===================== VIEW: RATE («Полегчало?») ===================== -->
+  <section id="v-rate" class="hidden">
+    <h2>Как ощущение?</h2>
+    <div class="sub" id="rate-sub"></div>
+    <div class="rate-opts">
+      <button class="r1" data-r="1">😕 Не помогло</button>
+      <button class="r2" data-r="2">🙂 Немного полегчало</button>
+      <button class="r3" data-r="3">😊 Отлично, полегчало</button>
+    </div>
+    <div id="rate-guardrail"></div>
+  </section>
+
+  <!-- ===================== VIEW: FULL LIST (управление) ===================== -->
+  <section id="v-list" class="hidden">
+    <button class="back" data-back="apt">← К диагностике</button>
+    <h1>🧰 Аптечка — список</h1>
+    <div class="sub">Все техники. Можно фильтровать, редактировать, удалять.</div>
+
+    <div class="seg-tabs" id="cls-tabs"></div>
+    <div class="filters" id="trig-filter"></div>
+
+    <div id="list"></div>
+    <button class="add" id="add-btn">＋ Добавить свой допинг</button>
+
+    <h2>🕳️ Чёрные дыры</h2>
+    <div class="sub" style="margin-top:-4px">Прикидываются отдыхом, а высасывают энергию.</div>
+    <div id="bh-list"></div>
+    <button class="add" id="bh-add" style="margin-bottom:0">＋ Добавить свою</button>
+  </section>
+  </section>
+
 </div>
 
 <!-- ===================== TAB BAR ===================== -->
@@ -207,6 +596,7 @@
   <button id="nav-today" class="active"><span class="ic">📝</span>Сегодня</button>
   <button id="nav-history"><span class="ic">📋</span>История</button>
   <button id="nav-charts"><span class="ic">📈</span>Графики</button>
+  <button id="nav-tools"><span class="ic">🧭</span>Инструменты</button>
 </nav>
 
 <!-- ===================== ACTION MENU (☰) ===================== -->
@@ -218,6 +608,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
+    <div class="menu-title" style="margin-top:10px">Energy Live · версия 2.0 · Аптечка + Антисаботаж</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
@@ -255,6 +646,25 @@
       </ul>
     </div>
     <div class="modal-actions"><button id="rules-close" class="btn primary">Понятно</button></div>
+  </div>
+</div>
+
+<!-- ===================== APTECZKA ADD/EDIT MODAL ===================== -->
+<div class="ov hidden" id="edit-ov">
+  <div class="sheet">
+    <h3 id="edit-title">Новый допинг</h3>
+    <label>Название</label>
+    <input type="text" id="f-text" placeholder="напр. почесать коту пузико">
+    <label>Ощущение (одно слово, необязательно)</label>
+    <input type="text" id="f-note" placeholder="напр. умильно">
+    <label>Класс времени</label>
+    <div class="seg" id="seg-cls"></div>
+    <label>Триггеры (можно несколько)</label>
+    <div class="seg" id="seg-trig"></div>
+    <div class="acts">
+      <button class="ghost" id="edit-cancel">Отмена</button>
+      <button class="primary" id="edit-save">Сохранить</button>
+    </div>
   </div>
 </div>
 
@@ -707,20 +1117,26 @@ var tabToday=document.getElementById("tab-today"),
 var navToday=document.getElementById("nav-today"),
     navHist=document.getElementById("nav-history"),
     navCharts=document.getElementById("nav-charts");
+var tabTools=document.getElementById("tab-tools"), navTools=document.getElementById("nav-tools");
+var toolsInited=false;
 function show(which){
   tabToday.classList.toggle("hidden", which!=="today");
   tabHist.classList.toggle("hidden", which!=="history");
   tabCharts.classList.toggle("hidden", which!=="charts");
+  tabTools.classList.toggle("hidden", which!=="tools");
   navToday.classList.toggle("active", which==="today");
   navHist.classList.toggle("active", which==="history");
   navCharts.classList.toggle("active", which==="charts");
+  navTools.classList.toggle("active", which==="tools");
   window.scrollTo(0,0);
   if(which==="history"){ refreshHistory(); }
   if(which==="charts"){ drawChart(); }
+  if(which==="tools" && !toolsInited){ toolsInited=true; showTool("home"); }
 }
 navToday.addEventListener("click", function(){ show("today"); });
 navHist.addEventListener("click", function(){ show("history"); });
 navCharts.addEventListener("click", function(){ show("charts"); });
+navTools.addEventListener("click", function(){ show("tools"); });
 window.addEventListener("resize", function(){ if(!tabCharts.classList.contains("hidden")) drawChart(); });
 
 /* ---------- action menu (☰) ---------- */
@@ -735,6 +1151,429 @@ document.getElementById("show-rules").addEventListener("click", function(){ clos
 document.getElementById("rules-close").addEventListener("click", function(){ rulesModal.classList.add("hidden"); });
 rulesModal.addEventListener("click", function(e){ if(e.target===rulesModal) rulesModal.classList.add("hidden"); });
 
+/* ===================== TOOLS TAB: Аптечка + Антисаботаж (v2.0) ===================== */
+var TRIGGERS=["После конфликта","Утром нет сил","Застрял на задаче","Тревога","Вечерняя усталость","Апатия"];
+var CLS=["Моментальный","Тактический","Дневной"];
+var CLS_HINT={ "Моментальный":"1–2 мин · держит 15–60 мин", "Тактический":"3–10 мин · держит 2–4 ч", "Дневной":"15–60 мин · держит вечер" };
+var IKEY="apt2_items", BHKEY="apt2_bh", SEEDKEY="apt2_seeded", OPENKEY="apt2_opens", RESKEY="apt2_results";
+
+var SEED=[
+  {text:"Замедленное дыхание — выдох 6–8 счётов, вдох 4 счёта", note:"", cls:"Моментальный", trig:["Тревога"]},
+  {text:"Холодная вода на лицо — дайв-рефлекс", note:"", cls:"Моментальный", trig:["Тревога","После конфликта"]},
+  {text:"Мышечный сброс — напрячь всё тело 5 сек, расслабить", note:"", cls:"Моментальный", trig:["Застрял на задаче"]},
+  {text:"Тряска конечностями 30–60 сек", note:"сбрасывает возбуждение", cls:"Моментальный", trig:["После конфликта"]},
+  {text:"Обратный счёт — 5 предметов, 4 звука, 3 ощущения, 2 запаха, 1 цвет", note:"", cls:"Моментальный", trig:["Тревога"]},
+  {text:"Яркий вкус — имбирь, мята, кофе", note:"", cls:"Моментальный", trig:["Апатия","Застрял на задаче"]},
+  {text:"Упражнение Розенберга — пальцы за голову, повернуть голову вправо, 30–60 сек", note:"", cls:"Моментальный", trig:["После конфликта"]},
+  {text:"STOP — Stop, отойди, наблюдай, действуй осознанно", note:"", cls:"Моментальный", trig:["После конфликта"]},
+  {text:"Отжаться 10 раз", note:"", cls:"Моментальный", trig:["Утром нет сил","Апатия"]},
+  {text:"Потеребить уши", note:"", cls:"Моментальный", trig:["Застрял на задаче"]},
+  {text:"Босиком на холодном полу", note:"", cls:"Моментальный", trig:["Утром нет сил"]},
+  {text:"TIPP — холод + нагрузка + дыхание + расслабление", note:"", cls:"Тактический", trig:["Тревога"]},
+  {text:"Мычание или пение — активирует блуждающий нерв", note:"", cls:"Тактический", trig:["Вечерняя усталость"]},
+  {text:"Медленная прогулка", note:"", cls:"Тактический", trig:["После конфликта","Апатия"]},
+  {text:"TRE по Берсели — упражнения, вызывающие дрожь тела", note:"", cls:"Дневной", trig:["Вечерняя усталость"]},
+  {text:"Прогрессивная мышечная релаксация", note:"", cls:"Дневной", trig:["Вечерняя усталость"]}
+];
+var BH_SEED=[
+  {name:"Соцсети", d:"бесконечное потребление без насыщения, снижают самооценку"},
+  {name:"Новостная лента", d:"серийные микрострессы, рост кортизола"},
+  {name:"Компьютерные игры", d:"лёгкая виртуальная награда, мозг хуже работает с реальными задачами"},
+  {name:"Мессенджеры", d:"дробят фокус"},
+  {name:"Короткие видео", d:"разгоняют дофамин, мозг перестаёт реагировать на обычные дела"},
+  {name:"Форумы и комментарии", d:"бесцельные споры, выброс адреналина"},
+  {name:"Алкоголь", d:"иллюзия расслабления, но хуже сон и возврат тревоги"}
+];
+
+/* ---------- anti-sabotage: data ---------- */
+var ANTI_TKEY="anti_texts", ANTI_SEEDKEY="anti_seeded", PROGKEY="anti_progress", TROPHYKEY="anti_trophy";
+var ANTI_DEFAULTS={
+  perm:"Я имею полное право прекратить эту практику в любой момент, если пойму, что она мне объективно вредит или не соответствует моим целям. Это был мой самостоятельный осмысленный выбор — начать её в своих интересах. Поэтому я никому ничего не должен доказывать или оправдываться, испытывать стыд или вину за отказ, даже перед самим собой, если больше не вижу своей выгоды в продолжении.",
+  tech:"Я сегодня не меняю свою жизнь, не становлюсь другим человеком, не кидаюсь на амбразуру, не ставлю всё на кон. Я просто делаю рутинную техническую работу — ставлю оценки, записываю факты, выполняю упражнения. Ничего сложного, выдающегося или пугающего. Для этого не нужно быть супергероем — нужно просто взять и сделать элементарное действие.",
+  antivirus:"В данный момент мной пытается управлять чужеродный, вредоносный программный код, воздействуя на мой центр страха с помощью химических команд. Я сейчас определю характер атаки и нейтрализую попытку взлома.\n\n— Чувство вины или неловкости: ошибки в сборке ОС из раннего детства («ты должен», «нельзя», «как не стыдно?», «чем ты лучше?»).\n— Боязнь ошибиться: устаревший дрессировочный код учителей и тренеров.\n— Страх насмешки: живучие зомби-процессы из подросткового возраста.\n— Боязнь неудачи: пиратские фреймворки из ранней взрослой жизни.\n— Желание бросить: вирусы и трояны, откачивающие ресурс — соцсети, новости, развлекательный контент.\n— Тревога перед будущим: глючные самопальные скрипты прогнозирования, которые не могут просчитать разнообразные перспективы.",
+  projects:"Я уже много раз реализовывал большие проекты и справлялся с сопротивлением внутренних саботажников. Это никогда не было легко, я часто сомневался в себе, хотел бросить, но в итоге добивался своего. Сейчас чужеродные скрипты опять пытаются забить помехами каналы управления, но реально они не могут мне помешать.\n\nМои примеры (допиши свои):\n— \n— \n— ",
+  jurisdiction:"Меня сейчас запугивает древнее стадо гоминид через внедрённые интерфейсы. Но я не жалкая обезьянка в саванне — я дееспособный хозяин на своей территории, суверенная власть в своей собственной жизни.\n\n«У тебя нет времени!» → «Я инвестирую время в самый ценный актив — в себя».\n«У тебя не хватит сил!» → «Я делаю каждый день столько, на сколько меня хватит».\n«Ты не сможешь научиться!» → «Это просто навык, который можно освоить».\n«Ты наделаешь ошибок!» → «Ошибки — нужная часть обучения».\n«У тебя не получится!» → «Любой прогресс уже результат».\n«У тебя нет такого права!» → «Я действую в своих интересах на своей территории».\n«Что скажут другие?!» → «Я делаю это для себя».",
+  article:"ОТКЛЮЧЕНИЕ КОНТУРА СОПРОТИВЛЕНИЯ (пересказ)\n\nНачиная серьёзную работу над собой, каждый рано или поздно сталкивается с внутренним сопротивлением — оно проявляется 2–4 месяца, иногда дольше. Мозг, нервная система и тело регулярно пытаются саботировать процесс. Это не «слабость» и не «отсутствие мотивации», а нормальный биологический механизм защиты, который включается у всех без исключения.\n\nМЕХАНИКА САБОТАЖА\nВ психотерапии это называют «страхом выздоровления». Человек боится не провала — провалов в жизни было много, к ним привыкли. Боятся именно успеха, потому что удачный апгрейд психики радикально меняет старую, привычную личность, и это пугает мозг сильнее неудачи. За этим страхом обычно стоит один (или сразу несколько) из пяти механизмов:\n— страх потерять «вторичную выгоду» текущего состояния (право не брать ответственность, оправдание неудач);\n— страх новой идентичности (старые «баги» давно стали частью личности);\n— страх изменения отношений (окружение привыкло к текущей роли человека);\n— страх нового образа жизни (привычный распорядок придётся перестраивать заново);\n— страх рецидива («распробую и тут же потеряю — будет ещё тяжелее»).\n\nСознательное решение измениться лимбическая система считывает почти как угрозу жизни, хотя реальной опасности нет — это устаревшие «legacy-скрипты» бомбят миндалину ложными тревогами, лишь бы не дать произойти «рефакторингу». К этому подключаются и досознательные каналы: тело (спазмы, сонливость, головная боль), эмоции (тревога, апатия, раздражение) и поведение (прокрастинация, рассеянность).\n\nПоэтому дальше — не про силу воли и давление на себя (это только усиливает сопротивление лимбической системы), а про дипломатические манёвры, которые дают нейросети «сдаться без боя». Все они собираются в один документ «Антисаботаж».\n\nАВАРИЙНЫЙ ВЫХОД\nЧасто человек боится самого начала, потому что бессознательно решает: «если начну — обязан продолжать годами, иначе я слабак». Это давление долгосрочной обязанности, а любое живое существо сопротивляется насилию. Решение — заранее дать себе письменное разрешение бросить в любой момент без вины и объяснений. Когда право сдаться зафиксировано, миндалина успокаивается.\n\nФОКУС НА ТЕХНИЧЕСКОЙ СТОРОНЕ\nАмбициозные цели отлично мотивируют в ресурсном состоянии, но в момент упадка те же цели начинают пугать масштабом. Решение — сузить фокус до рутинных технических операций: поставить оценку, записать факт, сделать упражнение. Мозг спокойно относится к простому списку шагов, даже когда паникует из-за «большого проекта» в целом.\n\nИЗОЛЯЦИЯ САБОТАЖНИКОВ\nТревога, стыд, желание бросить — это не сам человек, а чужеродный код, имплантированный за всю жизнь родителями, учителями, медиа и социумом. Приём — деперсонализировать страх: увидеть в нём не «я боюсь», а «во мне сработал устаревший скрипт», и отнестись к атаке как к гигиенической задаче, а не катастрофе.\n\nИСТОРИЧЕСКИЕ ДОКАЗАТЕЛЬСТВА\nТекущий проект — не первая сложная задача в жизни. Но в состоянии упадка кортизол блокирует гиппокамп, и вспомнить прошлые победы становится трудно. Список успешных проектов нужно зафиксировать заранее — в ресурсном состоянии, — чтобы в трудный момент просто прочитать готовое доказательство своей состоятельности.\n\nПЕРЕОПРЕДЕЛЕНИЕ РОЛИ\nУ голосов вроде «не по чину», «что скажут другие» есть общий источник — древний закон стаи, запрещающий низкоранговой особи претендовать на большее. Но решение выходить из этой игры уже принято. Приём — заранее переписать типичные обесценивающие фразы стаи в декларации суверенного хозяина своей жизни.\n\nПРОТОКОЛ УСПЕХОВ\nДаже маленькие достижения стоит записывать в отдельный лог — конкретно и измеримо («сказал начальнику „я подумаю“ вместо привычного „да“»), а не абстрактно. Каждая запись — и дофаминовое подкрепление, и доказательство на будущее.\n\nХРОНОЛОГИЯ АТАК\nКаждый раз, когда приступ саботажа успешно преодолён, стоит коротко зафиксировать: дата, тип атаки, что помогло, какой вывод. Это «трофейная стена» — журнал побед, который меняет идентичность с «того, кто боится» на «того, кто уже не раз справлялся».\n\nИТОГОВАЯ СТРУКТУРА\nДокумент «Антисаботаж» состоит из 7 разделов. Первые пять заполняются сразу: официальное разрешение, технические работы, антивирусный протокол, мои успешные проекты, смена юрисдикции. Последние два — живые журналы: мой прогресс и трофейная стена.\n\nРАБОТА С ДОКУМЕНТОМ\nПротокол нужен первые 3–4 месяца, иногда полгода. Перед тем как открыть «Антисаботаж», полезно сначала воспользоваться допингом из «Аптечки». Каждый блок стоит перечитывать вдумчиво, но не зависать над документом дольше 15 минут. После прочтения не нужно сразу бросаться выполнять задачи — дайте 30–40 минут, а затем доведите несколько дел до конца.\n\nЕсли какой-то раздел не помогает — его можно удалить. А если протокол приходится открывать почти каждый день на протяжении 3–4 недель — это уже не обычное сопротивление, а вероятный признак истощения или тревожного состояния. В этом случае стоит поставить программу на паузу и, при неясной причине, обратиться к специалисту.\n\nВ первые месяцы задачи апгрейда часто выглядят пугающе большими, потому что оцениваются ресурсами сегодняшнего дня. Но по мере роста энергии и сил те же задачи начинают выглядеть куда менее значительными — будущие «счета» будут соразмерны будущим возможностям."
+};
+var ANTI_META={
+  perm:{icon:"📜",title:"Официальное разрешение"},
+  tech:{icon:"⚙️",title:"Технические работы"},
+  antivirus:{icon:"🧬",title:"Антивирусный протокол"},
+  projects:{icon:"🏆",title:"Мои успешные проекты"},
+  jurisdiction:{icon:"👑",title:"Смена юрисдикции"}
+};
+var ANTI_ROWS=["perm","tech","antivirus","projects","jurisdiction"];
+var TROPHY_TYPES=["Вина/стыд","Боязнь ошибки","Страх осуждения","Желание бросить","Тревога о будущем","Обесценивание смысла"];
+
+function todayISO(){ var d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function load(k,def){ try{var v=localStorage.getItem(k); return v?JSON.parse(v):def;}catch(e){return def;} }
+function save(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
+function esc(s){ return String(s||"").replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+
+var items=load(IKEY,null), blackholes=load(BHKEY,null);
+if(!localStorage.getItem(SEEDKEY)){
+  if(!items){ items=SEED.map(function(s,i){ return {id:i+1, text:s.text, note:s.note, cls:s.cls, trig:s.trig.slice()}; }); save(IKEY,items); }
+  if(!blackholes){ blackholes=BH_SEED.slice(); save(BHKEY,blackholes); }
+  localStorage.setItem(SEEDKEY,"1");
+}
+if(!items) items=[];
+if(!blackholes) blackholes=[];
+
+var antiTexts=load(ANTI_TKEY,null);
+if(!localStorage.getItem(ANTI_SEEDKEY)){
+  if(!antiTexts){ antiTexts={}; Object.keys(ANTI_DEFAULTS).forEach(function(k){ antiTexts[k]=ANTI_DEFAULTS[k]; }); save(ANTI_TKEY,antiTexts); }
+  localStorage.setItem(ANTI_SEEDKEY,"1");
+}
+if(!antiTexts) antiTexts={};
+Object.keys(ANTI_DEFAULTS).forEach(function(k){ if(antiTexts[k]===undefined) antiTexts[k]=ANTI_DEFAULTS[k]; });
+var antiProgress=load(PROGKEY,[]);
+var antiTrophy=load(TROPHYKEY,[]);
+function ruPlural(n,one,few,many){ var m=Math.abs(n)%100, n1=m%10; if(m>10&&m<20) return many; if(n1>1&&n1<5) return few; if(n1===1) return one; return many; }
+
+/* ---------- usage / guardrails ---------- */
+var opens=load(OPENKEY,{date:"",count:0});
+if(opens.date!==todayISO()){ opens={date:todayISO(),count:0}; save(OPENKEY,opens); }
+var results=load(RESKEY,[]);   // [{ts, rating}]
+
+function registerOpen(){
+  opens.count++; save(OPENKEY,opens);
+}
+function registerResult(rating){
+  results.push({ts:Date.now(), rating:rating});
+  results=results.slice(-20);
+  save(RESKEY,results);
+}
+function last3AllBad(){
+  if(results.length<3) return false;
+  var last3=results.slice(-3);
+  return last3.every(function(r){ return r.rating===1; });
+}
+
+/* ---------- navigation ---------- */
+
+var VIEWS=["home","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article"];
+var currentTrigger="";
+var currentSuggest=null;
+function showTool(v){
+  VIEWS.forEach(function(id){ document.getElementById("v-"+id).classList.toggle("hidden", id!==v); });
+  if(v==="anti") renderAntiLanding();
+  if(v==="anti-progress") renderProgressList();
+  if(v==="anti-trophy"){ buildTrophyChips(); renderTrophyList(); }
+  window.scrollTo(0,0);
+}
+document.getElementById("t-open-apt").onclick=function(){ showTool("apt"); };
+document.getElementById("t-open-anti").onclick=function(){ showTool("anti"); };
+document.getElementById("t-exhaust").onclick=function(){ showTool("exhaust"); };
+document.getElementById("t-burnout").onclick=function(){ showTool("burnout"); };
+document.getElementById("t-situational").onclick=function(){ registerOpen(); renderUsageNote(); renderTriggerGrid(); showTool("trigger"); };
+document.getElementById("open-full-list").onclick=function(){ renderClsTabs(); renderTrigFilter(); renderList(); renderBH(); showTool("list"); };
+var CLS_ICON={"Моментальный":"⚡","Тактический":"🎯","Дневной":"🌙"};
+document.getElementById("open-info").onclick=function(){
+  document.getElementById("info-cls").innerHTML=CLS.map(function(c){
+    return "<div class='cls-card'><div class='ic'>"+CLS_ICON[c]+"</div><div class='nm'>"+c+"</div><div class='hint'>"+CLS_HINT[c].replace(" · ","<br>")+"</div></div>";
+  }).join("");
+  showTool("info");
+};
+[].forEach.call(document.querySelectorAll("#tab-tools [data-back]"),function(b){
+  b.onclick=function(){ showTool(b.getAttribute("data-back")); };
+});
+
+function renderUsageNote(){
+  var el=document.getElementById("usage-note");
+  if(opens.count>=3){
+    el.innerHTML="<div class='note'>Если вы замечаете, что хватаетесь за аптечку каждый час — это плохой знак. В этом случае стимуляторы не решают проблему, а маскируют её. <span style='opacity:.7'>(Михаил Муравьёв, autohumanism.com)</span></div>";
+  } else { el.innerHTML=""; }
+}
+
+/* ---------- trigger picker ---------- */
+function renderTriggerGrid(){
+  var box=document.getElementById("trigger-grid");
+  box.innerHTML="<button class='trig any' data-t=''>🎲 Не знаю — предложи что угодно</button>"+
+    TRIGGERS.map(function(t){ return "<button class='trig' data-t='"+esc(t)+"'>"+t+"</button>"; }).join("");
+  [].forEach.call(box.children,function(b){ b.onclick=function(){ currentTrigger=b.getAttribute("data-t"); openSuggest(); }; });
+}
+
+/* ---------- suggest ---------- */
+function openSuggest(){
+  var title=currentTrigger? ("Триггер: "+currentTrigger) : "Что-нибудь на выбор";
+  document.getElementById("sg-title").textContent="Попробуй сейчас";
+  document.querySelector("#v-suggest .sub").textContent=title+" — моментальные техники, быстрее всего.";
+
+  var moment=items.filter(function(it){ return it.cls==="Моментальный" && (!currentTrigger || it.trig.indexOf(currentTrigger)>=0); });
+  if(moment.length===0) moment=items.filter(function(it){ return it.cls==="Моментальный"; });
+  moment=shuffleTop(moment,4);
+
+  var box=document.getElementById("sg-list");
+  box.innerHTML = moment.length? moment.map(cardHtml).join("") : "<div class='empty'>Нет подходящих техник — открой список и добавь свои.</div>";
+  bindApply(box);
+
+  var other=items.filter(function(it){ return it.cls!=="Моментальный" && (!currentTrigger || it.trig.indexOf(currentTrigger)>=0); });
+  var moreBox=document.getElementById("sg-more");
+  moreBox.innerHTML = other.length? other.map(cardHtml).join("") : "<div class='empty'>Ничего тактического/дневного под этот триггер.</div>";
+  bindApply(moreBox);
+  moreBox.classList.add("hidden");
+  document.getElementById("sg-more-toggle").textContent="Показать тактические / дневные ↓";
+
+  showTool("suggest");
+}
+function shuffleTop(arr,n){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.sin(i*999+a.length)*10000)%(i+1); if(j<0)j+=(i+1); var t=a[i];a[i]=a[j];a[j]=t; }
+  return a.slice(0,n);
+}
+function cardHtml(it){
+  return "<div class='card'>"+
+    "<div class='txt'>"+esc(it.text)+"</div>"+
+    (it.note?"<div class='anchor'>"+esc(it.note)+"</div>":"")+
+    "<div class='badges'><span class='badge'>"+it.cls+"</span>"+it.trig.map(function(t){return "<span class='badge'>"+t+"</span>";}).join("")+"</div>"+
+    "<button class='apply-btn' data-id='"+it.id+"'>Применил →</button>"+
+    "</div>";
+}
+function bindApply(box){
+  [].forEach.call(box.querySelectorAll(".apply-btn"),function(b){
+    b.onclick=function(){
+      currentSuggest=items.filter(function(x){return x.id==b.getAttribute("data-id");})[0];
+      document.getElementById("rate-sub").textContent="«"+currentSuggest.text+"»";
+      document.getElementById("rate-guardrail").innerHTML="";
+      showTool("rate");
+    };
+  });
+}
+document.getElementById("sg-more-toggle").onclick=function(){
+  var mb=document.getElementById("sg-more");
+  var hide=mb.classList.toggle("hidden");
+  this.textContent = hide? "Показать тактические / дневные ↓" : "Скрыть ↑";
+};
+
+/* ---------- rate ---------- */
+[].forEach.call(document.querySelectorAll(".rate-opts button"),function(b){
+  b.onclick=function(){
+    var r=+b.getAttribute("data-r");
+    registerResult(r);
+    var gr=document.getElementById("rate-guardrail");
+    if(r===1 && last3AllBad()){
+      gr.innerHTML="<div class='note'>Если негативное состояние не проходит после 2–3 «доз» — это сигнал, что вам нужна серьёзная зарядка ресурса в виде полноценного отдыха, сна, общения с семьёй, а не очередная порция допинга. <span style='opacity:.7'>(Михаил Муравьёв, autohumanism.com)</span><div style='margin-top:10px'><button class='back' data-back='apt' style='padding:0'>← К диагностике</button></div></div>";
+      [].forEach.call(gr.querySelectorAll("[data-back]"),function(bb){ bb.onclick=function(){ showTool("apt"); }; });
+    } else {
+      gr.innerHTML="<div class='sub' style='margin-top:6px'>Записано.</div><div class='link-row'><button id='rate-done'>← К диагностике</button></div>";
+      document.getElementById("rate-done").onclick=function(){ showTool("apt"); };
+    }
+  };
+});
+
+/* ---------- full list (manage) ---------- */
+var activeCls="Моментальный", activeTrigFilter="";
+function renderClsTabs(){
+  var box=document.getElementById("cls-tabs");
+  box.innerHTML=CLS.map(function(c){ return "<button class='"+(c===activeCls?"on":"")+"' data-c='"+c+"'>"+c+"</button>"; }).join("");
+  [].forEach.call(box.children,function(b){ b.onclick=function(){ activeCls=b.getAttribute("data-c"); renderClsTabs(); renderList(); }; });
+}
+function renderTrigFilter(){
+  var box=document.getElementById("trig-filter");
+  box.innerHTML="<button class='chip"+(activeTrigFilter===""?" on":"")+"' data-t=''>Все триггеры</button>"+
+    TRIGGERS.map(function(t){ return "<button class='chip"+(activeTrigFilter===t?" on":"")+"' data-t='"+esc(t)+"'>"+t+"</button>"; }).join("");
+  [].forEach.call(box.children,function(b){ b.onclick=function(){ activeTrigFilter=b.getAttribute("data-t"); renderTrigFilter(); renderList(); }; });
+}
+function renderList(){
+  var box=document.getElementById("list");
+  var vis=items.filter(function(it){ return it.cls===activeCls && (!activeTrigFilter||it.trig.indexOf(activeTrigFilter)>=0); });
+  if(vis.length===0){ box.innerHTML="<div class='empty'>Пусто. Добавь свой допинг или смени фильтр.</div>"; return; }
+  box.innerHTML=vis.map(function(it){
+    return "<div class='card'>"+
+      "<div class='txt'>"+esc(it.text)+"</div>"+
+      (it.note?"<div class='anchor'>"+esc(it.note)+"</div>":"")+
+      "<div class='badges'>"+it.trig.map(function(t){return "<span class='badge'>"+t+"</span>";}).join("")+"</div>"+
+      "<div class='rowbtns'><button data-e='"+it.id+"'>✎ Править</button>"+
+        "<button class='del' data-d='"+it.id+"'>🗑 Удалить</button></div>"+
+      "</div>";
+  }).join("");
+  [].forEach.call(box.querySelectorAll("[data-e]"),function(b){ b.onclick=function(){ openEdit(+b.getAttribute("data-e")); }; });
+  [].forEach.call(box.querySelectorAll("[data-d]"),function(b){ b.onclick=function(){
+    if(confirm("Удалить этот пункт?")){ items=items.filter(function(x){return x.id!=b.getAttribute("data-d");}); save(IKEY,items); renderList(); }
+  }; });
+}
+function renderBH(){
+  var box=document.getElementById("bh-list");
+  box.innerHTML=blackholes.map(function(b,i){
+    return "<div class='bh'><button class='x' data-x='"+i+"'>×</button><b>"+esc(b.name)+"</b><div class='d'>"+esc(b.d||"")+"</div></div>";
+  }).join("");
+  [].forEach.call(box.querySelectorAll("[data-x]"),function(btn){ btn.onclick=function(){
+    blackholes.splice(+btn.getAttribute("data-x"),1); save(BHKEY,blackholes); renderBH();
+  }; });
+}
+
+/* ---------- add / edit modal ---------- */
+var editId=null, selCls="Моментальный", selTrig=[];
+function buildClsSeg(el){
+  el.innerHTML=CLS.map(function(x){ return "<button class='"+(x===selCls?"on":"")+"' data-v='"+x+"'>"+x+" · "+CLS_HINT[x]+"</button>"; }).join("");
+  [].forEach.call(el.children,function(b){ b.onclick=function(){ selCls=b.getAttribute("data-v"); buildClsSeg(el); }; });
+}
+function buildTrigSeg(el){
+  el.innerHTML=TRIGGERS.map(function(x){ return "<button class='"+(selTrig.indexOf(x)>=0?"on":"")+"' data-v='"+x+"'>"+x+"</button>"; }).join("");
+  [].forEach.call(el.children,function(b){ b.onclick=function(){
+    var v=b.getAttribute("data-v"); var i=selTrig.indexOf(v);
+    if(i>=0) selTrig.splice(i,1); else selTrig.push(v);
+    buildTrigSeg(el);
+  }; });
+}
+function openEdit(id){
+  editId=id||null;
+  var it=id?items.filter(function(x){return x.id==id;})[0]:null;
+  document.getElementById("edit-title").textContent=id?"Править допинг":"Новый допинг";
+  document.getElementById("f-text").value=it?it.text:"";
+  document.getElementById("f-note").value=it?it.note:"";
+  selCls=it?it.cls:activeCls; selTrig=it?it.trig.slice():[];
+  buildClsSeg(document.getElementById("seg-cls"));
+  buildTrigSeg(document.getElementById("seg-trig"));
+  document.getElementById("edit-ov").classList.remove("hidden");
+}
+document.getElementById("add-btn").onclick=function(){ openEdit(null); };
+document.getElementById("edit-cancel").onclick=function(){ document.getElementById("edit-ov").classList.add("hidden"); };
+document.getElementById("edit-save").onclick=function(){
+  var t=document.getElementById("f-text").value.trim();
+  if(!t){ alert("Впиши название."); return; }
+  var n=document.getElementById("f-note").value.trim();
+  if(editId){ items.forEach(function(x){ if(x.id==editId){ x.text=t;x.note=n;x.cls=selCls;x.trig=selTrig.slice(); } }); }
+  else { var nid=items.reduce(function(m,x){return Math.max(m,x.id||0);},0)+1; items.unshift({id:nid, text:t, note:n, cls:selCls, trig:selTrig.slice()}); }
+  save(IKEY,items); document.getElementById("edit-ov").classList.add("hidden"); renderList();
+};
+document.getElementById("bh-add").onclick=function(){
+  var name=prompt("Название «чёрной дыры»?"); if(!name) return;
+  var d=prompt("Чем вредит? (можно пусто)")||"";
+  blackholes.push({name:name.trim(), d:d.trim()}); save(BHKEY,blackholes); renderBH();
+};
+
+/* ---------- anti-sabotage: landing ---------- */
+function renderAntiLanding(){
+  var box=document.getElementById("anti-rows");
+  var html=ANTI_ROWS.map(function(k){
+    var m=ANTI_META[k];
+    return "<button class='anti-row' data-tpl='"+k+"'><span class='l'><span class='ic'>"+m.icon+"</span>"+m.title+"</span><span class='r'><span class='chev'>›</span></span></button>";
+  }).join("");
+  html+="<button class='anti-row' id='row-progress'><span class='l'><span class='ic'>📈</span>Мой прогресс</span>"+
+    "<span class='r'><span class='cnt'>"+antiProgress.length+" "+ruPlural(antiProgress.length,"запись","записи","записей")+"</span><span class='chev'>›</span></span></button>";
+  html+="<button class='anti-row' id='row-trophy'><span class='l'><span class='ic'>🗿</span>Трофейная стена</span>"+
+    "<span class='r'><span class='cnt'>"+antiTrophy.length+" "+ruPlural(antiTrophy.length,"победа","победы","побед")+"</span><span class='chev'>›</span></span></button>";
+  box.innerHTML=html;
+  [].forEach.call(box.querySelectorAll("[data-tpl]"),function(b){ b.onclick=function(){ openTpl(b.getAttribute("data-tpl")); }; });
+  document.getElementById("row-progress").onclick=function(){ showTool("anti-progress"); };
+  document.getElementById("row-trophy").onclick=function(){ showTool("anti-trophy"); };
+}
+document.getElementById("anti-to-apt").onclick=function(){ showTool("apt"); };
+document.getElementById("anti-to-article").onclick=function(){
+  document.getElementById("article-textarea").value=antiTexts.article;
+  document.getElementById("article-save-hint").textContent="Сохраняется автоматически.";
+  showTool("anti-article");
+};
+document.getElementById("article-textarea").addEventListener("input", function(){
+  antiTexts.article=this.value;
+  save(ANTI_TKEY, antiTexts);
+  document.getElementById("article-save-hint").textContent="Сохранено.";
+});
+document.getElementById("article-reset").onclick=function(){
+  if(!confirm("Вернуть сводку вместо своего текста? Правки будут потеряны.")) return;
+  antiTexts.article=ANTI_DEFAULTS.article;
+  save(ANTI_TKEY, antiTexts);
+  document.getElementById("article-textarea").value=antiTexts.article;
+  document.getElementById("article-save-hint").textContent="Сброшено к сводке.";
+};
+document.getElementById("article-done").onclick=function(){ showTool("anti"); };
+
+/* ---------- anti-sabotage: template editor ---------- */
+var currentTplKey=null;
+function openTpl(key){
+  currentTplKey=key;
+  var m=ANTI_META[key];
+  document.getElementById("tpl-title").textContent=m.icon+" "+m.title;
+  document.getElementById("tpl-textarea").value=antiTexts[key];
+  document.getElementById("tpl-save-hint").textContent="Сохраняется автоматически.";
+  showTool("anti-tpl");
+}
+document.getElementById("tpl-textarea").addEventListener("input", function(){
+  if(!currentTplKey) return;
+  antiTexts[currentTplKey]=this.value;
+  save(ANTI_TKEY, antiTexts);
+  document.getElementById("tpl-save-hint").textContent="Сохранено.";
+});
+document.getElementById("tpl-reset").onclick=function(){
+  if(!currentTplKey) return;
+  if(!confirm("Вернуть исходный текст шаблона? Твои правки будут потеряны.")) return;
+  antiTexts[currentTplKey]=ANTI_DEFAULTS[currentTplKey];
+  save(ANTI_TKEY, antiTexts);
+  document.getElementById("tpl-textarea").value=antiTexts[currentTplKey];
+  document.getElementById("tpl-save-hint").textContent="Сброшено к шаблону.";
+};
+document.getElementById("tpl-done").onclick=function(){ showTool("anti"); };
+
+/* ---------- anti-sabotage: progress log ---------- */
+function renderProgressList(){
+  var box=document.getElementById("prog-list");
+  if(antiProgress.length===0){ box.innerHTML="<div class='empty'>Пока пусто. Запиши первый маленький, конкретный успех.</div>"; return; }
+  var sorted=antiProgress.slice().sort(function(a,b){ return b.id-a.id; });
+  box.innerHTML=sorted.map(function(p){
+    return "<div class='card'><div class='txt' style='font-size:14.5px'>"+esc(p.text)+"</div>"+
+      "<div class='anchor' style='font-style:normal'>"+p.date+"</div>"+
+      "<div class='rowbtns'><button class='del' data-pd='"+p.id+"'>🗑 Удалить</button></div></div>";
+  }).join("");
+  [].forEach.call(box.querySelectorAll("[data-pd]"),function(b){ b.onclick=function(){
+    antiProgress=antiProgress.filter(function(x){return x.id!=b.getAttribute("data-pd");}); save(PROGKEY,antiProgress); renderProgressList();
+  }; });
+}
+document.getElementById("prog-add").onclick=function(){
+  var t=document.getElementById("prog-input").value.trim();
+  if(!t){ alert("Опиши, что конкретно ты сделал."); return; }
+  var nid=antiProgress.reduce(function(m,x){return Math.max(m,x.id||0);},0)+1;
+  antiProgress.unshift({id:nid, date:todayISO(), text:t});
+  save(PROGKEY,antiProgress);
+  document.getElementById("prog-input").value="";
+  renderProgressList();
+};
+
+/* ---------- anti-sabotage: trophy wall ---------- */
+var selTrophyType="";
+function buildTrophyChips(){
+  var box=document.getElementById("trophy-type-chips");
+  box.innerHTML=TROPHY_TYPES.map(function(t){ return "<button class='"+(selTrophyType===t?"on":"")+"' data-tt='"+esc(t)+"'>"+t+"</button>"; }).join("");
+  [].forEach.call(box.children,function(b){ b.onclick=function(){
+    var v=b.getAttribute("data-tt");
+    selTrophyType=(selTrophyType===v)?"":v;
+    document.getElementById("trophy-type-custom").value="";
+    buildTrophyChips();
+  }; });
+}
+function renderTrophyList(){
+  document.getElementById("trophy-n").textContent=antiTrophy.length;
+  var box=document.getElementById("trophy-list");
+  if(antiTrophy.length===0){ box.innerHTML="<div class='empty'>Пока пусто. Первая победа впереди.</div>"; return; }
+  var sorted=antiTrophy.slice().sort(function(a,b){ return b.ts-a.ts; });
+  box.innerHTML=sorted.map(function(t){
+    var d=new Date(t.ts);
+    var dstr=String(d.getDate()).padStart(2,"0")+"."+String(d.getMonth()+1).padStart(2,"0")+" "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");
+    return "<div class='card'>"+
+      "<div class='badges'><span class='badge'>"+esc(t.type)+"</span><span class='anchor' style='font-style:normal;margin-left:auto'>"+dstr+"</span></div>"+
+      (t.helped?"<div class='txt' style='font-size:14.5px;margin-top:8px'>Помогло: "+esc(t.helped)+"</div>":"")+
+      (t.outcome?"<div class='anchor' style='font-style:normal;margin-top:3px'>Итог: "+esc(t.outcome)+"</div>":"")+
+      "<div class='rowbtns'><button class='del' data-td='"+t.id+"'>🗑 Удалить</button></div>"+
+      "</div>";
+  }).join("");
+  [].forEach.call(box.querySelectorAll("[data-td]"),function(b){ b.onclick=function(){
+    antiTrophy=antiTrophy.filter(function(x){return x.id!=b.getAttribute("data-td");}); save(TROPHYKEY,antiTrophy); renderTrophyList();
+  }; });
+}
+document.getElementById("trophy-add").onclick=function(){
+  var custom=document.getElementById("trophy-type-custom").value.trim();
+  var type=custom||selTrophyType;
+  if(!type){ alert("Выбери тип атаки или впиши свой."); return; }
+  var helped=document.getElementById("trophy-helped").value.trim();
+  var outcome=document.getElementById("trophy-outcome").value.trim();
+  var nid=antiTrophy.reduce(function(m,x){return Math.max(m,x.id||0);},0)+1;
+  antiTrophy.unshift({id:nid, ts:Date.now(), type:type, helped:helped, outcome:outcome});
+  save(TROPHYKEY,antiTrophy);
+  selTrophyType=""; document.getElementById("trophy-type-custom").value=""; document.getElementById("trophy-helped").value=""; document.getElementById("trophy-outcome").value="";
+  renderTrophyList(); buildTrophyChips();
+};
+
+
 /* ===================== INIT ===================== */
 buildParams();
 buildChartSelect();
@@ -742,12 +1581,6 @@ loadEntry();
 updateStreak();
 
 })();
-</script>
-
-<script>
-if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
-  window.addEventListener('load',function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
-}
 </script>
 </body>
 </html>
