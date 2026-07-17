@@ -1205,7 +1205,7 @@ var ANTI_META={
 var ANTI_ROWS=["perm","tech","antivirus","projects","jurisdiction"];
 var TROPHY_TYPES=["Вина/стыд","Боязнь ошибки","Страх осуждения","Желание бросить","Тревога о будущем","Обесценивание смысла"];
 
-function todayISO(){ var d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function toolTodayISO(){ var d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
 function load(k,def){ try{var v=localStorage.getItem(k); return v?JSON.parse(v):def;}catch(e){return def;} }
 function save(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
 function esc(s){ return String(s||"").replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
@@ -1232,7 +1232,7 @@ function ruPlural(n,one,few,many){ var m=Math.abs(n)%100, n1=m%10; if(m>10&&m<20
 
 /* ---------- usage / guardrails ---------- */
 var opens=load(OPENKEY,{date:"",count:0});
-if(opens.date!==todayISO()){ opens={date:todayISO(),count:0}; save(OPENKEY,opens); }
+if(opens.date!==toolTodayISO()){ opens={date:toolTodayISO(),count:0}; save(OPENKEY,opens); }
 var results=load(RESKEY,[]);   // [{ts, rating}]
 
 function registerOpen(){
@@ -1523,7 +1523,7 @@ document.getElementById("prog-add").onclick=function(){
   var t=document.getElementById("prog-input").value.trim();
   if(!t){ alert("Опиши, что конкретно ты сделал."); return; }
   var nid=antiProgress.reduce(function(m,x){return Math.max(m,x.id||0);},0)+1;
-  antiProgress.unshift({id:nid, date:todayISO(), text:t});
+  antiProgress.unshift({id:nid, date:toolTodayISO(), text:t});
   save(PROGKEY,antiProgress);
   document.getElementById("prog-input").value="";
   renderProgressList();
