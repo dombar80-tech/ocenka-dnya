@@ -1121,7 +1121,6 @@ var navToday=document.getElementById("nav-today"),
     navHist=document.getElementById("nav-history"),
     navCharts=document.getElementById("nav-charts");
 var tabTools=document.getElementById("tab-tools"), navTools=document.getElementById("nav-tools");
-var toolsInited=false;
 function show(which){
   tabToday.classList.toggle("hidden", which!=="today");
   tabHist.classList.toggle("hidden", which!=="history");
@@ -1134,7 +1133,7 @@ function show(which){
   window.scrollTo(0,0);
   if(which==="history"){ refreshHistory(); }
   if(which==="charts"){ drawChart(); }
-  if(which==="tools" && !toolsInited){ toolsInited=true; showTool("home"); }
+  if(which==="tools"){ showTool("home"); }
 }
 navToday.addEventListener("click", function(){ show("today"); });
 navHist.addEventListener("click", function(){ show("history"); });
