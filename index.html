@@ -155,26 +155,30 @@
   .tile.yellow{background:linear-gradient(135deg,#5c4a1c,#3a2e10)}
   .tile.green{background:linear-gradient(135deg,#1c5c33,#103a20)}
   .tile.blue{background:linear-gradient(135deg,#332c6b,#201a45)}
+  .tile.neutral{background:var(--panel);border:1px solid var(--line)}
+  .tile.neutral:active{background:#262a4a}
+
+  .stub .d{font-style:italic}
 
   .center-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px 18px;text-align:center}
-  .center-card .big{font-size:20px;font-weight:700;margin-bottom:10px}
+
   .center-card p{color:var(--muted);font-size:14.5px;line-height:1.55}
 
   /* trigger chips */
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
   .trig{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:16px 10px;text-align:center;font-size:14.5px;font-weight:600}
   .trig:active{background:#31335c}
-  .trig.any{grid-column:1 / -1;background:var(--panel);border-style:dashed}
 
-
+  /* suggestion cards */
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px 14px;margin-bottom:10px}
   .card .txt{font-size:16px;font-weight:700}
   .card .anchor{color:var(--muted);font-size:13px;margin-top:3px;font-style:italic}
   .badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
   .badge{font-size:11px;font-weight:700;border-radius:6px;padding:2px 7px;border:1px solid var(--line);color:#c7cbf0;background:#2a2c52}
   .apply-btn{display:block;width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:10px;font-size:14px;font-weight:700;margin-top:10px}
   .apply-btn:active{background:#666dea}
-  .more-toggle{background:none;border:none;color:var(--accent);font-size:13.5px;font-weight:600;padding:8px 0;text-align:left;width:100%}
 
+  .more-toggle{background:none;border:none;color:var(--accent);font-size:13.5px;font-weight:600;padding:8px 0;text-align:left;width:100%}
 
   /* rate screen */
   .rate-opts{display:flex;flex-direction:column;gap:10px;margin-top:16px}
@@ -182,8 +186,8 @@
   .rate-opts button.r1{color:#ff9a9a}
   .rate-opts button.r2{color:var(--amber)}
   .rate-opts button.r3{color:var(--pos)}
-  .rate-opts button:active{background:#31335c}
 
+  .rate-opts button:active{background:#31335c}
 
   /* list / manage */
   .filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
@@ -200,15 +204,15 @@
   .link-row button{background:none;border:none;color:var(--accent);font-size:14.5px;font-weight:600}
   .info-btn{display:block;width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:12px;
     color:var(--text);padding:13px;font-size:15px;font-weight:700;margin:4px 0 18px}
-  .info-btn:active{background:#31335c}
 
+  .info-btn:active{background:#31335c}
 
   /* info screen */
   .info-h{font-size:15px;font-weight:800;color:var(--text);margin:20px 0 10px}
   .info-block{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
   .row-icons{font-size:26px;letter-spacing:8px;margin:6px 0 10px}
-  .info-p{color:var(--muted);font-size:13.5px;line-height:1.5}
 
+  .info-p{color:var(--muted);font-size:13.5px;line-height:1.5}
 
   /* article reader */
   .article-body{font-size:15px;line-height:1.65;padding-bottom:10px}
@@ -237,8 +241,8 @@
 
   .bh{background:#2a1622;border:1px solid #5a2c3c;border-radius:12px;padding:11px 12px;margin-bottom:9px}
   .bh b{color:#ffb3c7}
-  .bh .d{color:var(--muted);font-size:13px;margin-top:2px}
-  .bh .x{float:right;color:#ff9a9a;font-weight:800;border:none;background:none;font-size:16px;margin-left:8px}
+
+  .empty{color:var(--muted);text-align:center;padding:20px 0}
 
   /* anti-sabotage */
   .anti-row{display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--panel);
@@ -257,8 +261,8 @@
   .trophy-count .n{font-size:32px;font-weight:800;color:var(--pos)}
   .trophy-count .l{color:var(--muted);font-size:13px;margin-top:2px}
   .add-inline{display:block;width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:12px;font-size:14.5px;font-weight:700;margin-top:10px}
-  .add-inline:active{background:#666dea}
 
+  .add-inline:active{background:#666dea}
 
   /* modal */
   .ov{position:fixed;inset:0;background:rgba(6,7,18,.72);backdrop-filter:blur(4px);display:flex;align-items:flex-end;justify-content:center;z-index:50}
@@ -273,8 +277,6 @@
   .seg button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
   .acts{display:flex;gap:10px;margin-top:16px}
   .acts button{flex:1;border:none;border-radius:12px;padding:14px;font-size:16px;font-weight:700}
-  .primary{background:var(--accent);color:#fff}
-  .ghost{background:var(--panel2);border:1px solid var(--line)!important;color:var(--text)}
 </style>
 </head>
 <body>
@@ -363,15 +365,15 @@
     <div class="sub">Как ты сейчас? Выбери, что ближе.</div>
 
     <div class="tiles">
-      <button class="tile blue" id="t-exhaust">
+      <button class="tile neutral" id="t-exhaust">
         <span class="ic">🔴</span><span class="t">Истощение</span>
         <div class="d">Нет сил даже на приятное. Сначала поешь и поспи.</div>
       </button>
-      <button class="tile blue" id="t-situational">
+      <button class="tile neutral" id="t-situational">
         <span class="ic">🟡</span><span class="t">Ситуативный сбой</span>
         <div class="d">Что-то выбило из колеи — конфликт, новость, усталость.</div>
       </button>
-      <button class="tile blue" id="t-burnout">
+      <button class="tile neutral" id="t-burnout">
         <span class="ic">🟢</span><span class="t">Выгорание</span>
         <div class="d">Силы есть, но нет смысла и мотивации.</div>
       </button>
