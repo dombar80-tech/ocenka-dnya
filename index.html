@@ -268,7 +268,7 @@
   .sheet{background:var(--panel);border:1px solid var(--line);border-radius:20px 20px 0 0;width:100%;max-width:640px;padding:18px 16px calc(20px + var(--safe-b));max-height:90vh;overflow:auto}
   .sheet h3{margin:0 0 12px;font-size:19px}
   label{display:block;font-size:13px;color:var(--muted);margin:10px 0 5px}
-  input[type=text],textarea{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--text);font:15px inherit;padding:11px}
+  input[type=text],input[type=password],textarea{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--text);font:15px inherit;padding:11px}
   textarea{min-height:44px;resize:vertical}
   .seg{display:flex;flex-wrap:wrap;gap:6px}
   .seg button{border:1px solid var(--line);background:var(--panel2);color:var(--muted);border-radius:10px;padding:9px 11px;font-size:13px;font-weight:600}
@@ -277,6 +277,20 @@
   .acts button{flex:1;border:none;border-radius:12px;padding:14px;font-size:16px;font-weight:700}
   .primary{background:var(--accent);color:#fff}
   .ghost{background:var(--panel2);border:1px solid var(--line)!important;color:var(--text)}
+
+  /* diagnostics: жалобная книга */
+  .diag-ic-svg{width:26px;height:26px;vertical-align:-6px;flex:0 0 auto}
+  h1 .diag-ic-svg{width:22px;height:22px;vertical-align:-3px;margin-right:6px}
+  .diag-example{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:10px;font-size:12.5px;color:var(--muted);line-height:1.6}
+  .diag-example b{color:var(--text)}
+  /* зеркальный слой подсветки поверх textarea: моноширинный шрифт обязателен, иначе курсив
+     занимает другую ширину символа, чем прямое начертание в невидимой textarea, и курсор «уезжает» */
+  .diag-input-wrap{position:relative;flex:1;min-height:140px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .diag-input-wrap textarea, .diag-input-wrap .diag-mirror{position:absolute;inset:0;margin:0;padding:11px;font:15px/1.55 ui-monospace,"SF Mono",Menlo,Consolas,monospace;white-space:pre-wrap;word-wrap:break-word;overflow:auto;box-sizing:border-box}
+  .diag-input-wrap textarea{background:transparent;border:none;border-radius:0;color:transparent;caret-color:var(--text);resize:none;z-index:2}
+  .diag-mirror{z-index:1;pointer-events:none;color:var(--text)}
+  .diag-mirror .gh{opacity:.45}
+  .diag-mirror .draft{font-style:italic}
 </style>
 </head>
 <body>
@@ -355,7 +369,85 @@
         <span class="ic">🛡️</span><span class="t">Антисаботаж</span>
         <div class="d">Протокол против внутреннего сопротивления переменам.</div>
       </button>
+      <button class="tile neutral" id="t-open-diag">
+        <span class="ic"><svg class="diag-ic-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="13" width="5" height="8" rx="1.5" fill="#7c83ff"/><rect x="9.5" y="8" width="5" height="13" rx="1.5" fill="#ffcf6b"/><rect x="16" y="3" width="5" height="18" rx="1.5" fill="#4ade80"/></svg></span><span class="t">Диагностика</span>
+        <div class="d">Разовая инвентаризация проблем, тревог и триггеров — чтобы видеть, откуда стартуешь.</div>
+      </button>
     </div>
+  </section>
+
+  <!-- ===================== VIEW: DIAGNOSTIC MAP LANDING ===================== -->
+  <section id="v-diag" class="hidden">
+    <button class="back" data-back="home">← Инструменты</button>
+    <h1><svg class="diag-ic-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="13" width="5" height="8" rx="1.5" fill="#7c83ff"/><rect x="9.5" y="8" width="5" height="13" rx="1.5" fill="#ffcf6b"/><rect x="16" y="3" width="5" height="18" rx="1.5" fill="#4ade80"/></svg>Диагностика</h1>
+    <div class="sub">Разовая инвентаризация: то, что не записано, тянет незаметно. Записанное можно взвесить и постепенно разгрузить.</div>
+
+    <div class="note">
+      Это не лёгкое упражнение — придётся честно зафиксировать свою «тёмную сторону» только для себя, без прикрас.
+      Если сейчас острый кризис, хронический стресс на пределе, клиническая депрессия, ПТСР или диагностированное
+      расстройство личности — самодиагностику лучше не делать без сопровождения терапевта. Сильная эмоциональная
+      реакция даже на это предупреждение — тоже повод быть осторожнее. <span style="opacity:.7">(по мотивам
+      Михаила Муравьёва, autohumanism.com)</span>
+    </div>
+
+    <div id="diag-rows"></div>
+  </section>
+
+  <!-- ===================== VIEW: DIAGNOSTIC MAP — ЖАЛОБНАЯ КНИГА (поток) ===================== -->
+  <section id="v-diag-complaints" class="hidden">
+    <button class="back" data-back="diag">← Диагностика</button>
+    <h1>📓 Жалобная книга</h1>
+    <div class="sub">Пиши подряд всё, что гнетёт, злит, тревожит, стыдит — без сортировки и самоцензуры. Одна проблема — одна строка с тире.</div>
+
+    <div class="note">
+      После каждой записи в скобках через запятую отметь, что почувствовал(а) в теле и эмоционально именно в
+      момент записи, и сразу поставь одну цифру 0–10 — насколько сильно это давит на психику прямо сейчас:
+      например «(комок в горле, Цена: 7)». Остальные веса и категории — отдельным шагом, позже.
+      <span style="opacity:.7">(по мотивам Михаила Муравьёва, autohumanism.com)</span>
+    </div>
+
+    <div class="diag-example">
+      <b>Например:</b><br>
+      - Уже год не решаюсь поговорить об увеличении зарплаты (комок в горле, Цена: 7)<br>
+      - Каждое утро дико болит шея (напряжение в шее, Цена: 4)
+    </div>
+
+    <div class="diag-input-wrap">
+      <div class="diag-mirror" id="diag-mirror" aria-hidden="true"></div>
+      <textarea class="tpl-textarea" id="diag-stream-textarea" placeholder="- ..." spellcheck="false" autocapitalize="off" autocorrect="off"></textarea>
+    </div>
+    <div class="save-hint" id="diag-stream-save-hint">Сохраняется автоматически.</div>
+
+    <div class="diag-example hidden" id="diag-sensation-hint" style="margin-top:12px;margin-bottom:0">
+      Напиши телесное, эмоциональное или психологическое ощущение: щемит в груди, ком в горле,
+      чувство беспомощности, меня потряхивает и т.д.
+    </div>
+  </section>
+
+  <!-- ===================== VIEW: ЖАЛОБНАЯ КНИГА — ПЕРВАЯ НАСТРОЙКА ПАРОЛЯ ===================== -->
+  <section id="v-diag-setpw" class="hidden">
+    <button class="back" data-back="diag">← Диагностика</button>
+    <h1>🔒 Пароль для Жалобной книги</h1>
+    <div class="sub">Придумай пароль (минимум 8 символов) — он будет спрашиваться при каждом входе в этот раздел.
+      Это локальная защита от чужого взгляда, а не шифрование: пароль нигде не хранится в открытом виде и
+      его нельзя восстановить — если забудешь, придётся стереть записи и начать заново.</div>
+    <label>Пароль</label>
+    <input type="password" id="diag-pw-new" placeholder="минимум 8 символов" autocomplete="new-password">
+    <label>Повтори пароль</label>
+    <input type="password" id="diag-pw-new2" placeholder="ещё раз" autocomplete="new-password">
+    <div class="note" id="diag-pw-setup-error" style="display:none;margin-top:12px"></div>
+    <div class="acts" style="margin-top:14px"><button class="primary" id="diag-pw-setup-save">Сохранить пароль</button></div>
+  </section>
+
+  <!-- ===================== VIEW: ЖАЛОБНАЯ КНИГА — ВВОД ПАРОЛЯ ===================== -->
+  <section id="v-diag-unlock" class="hidden">
+    <button class="back" data-back="diag">← Диагностика</button>
+    <h1>🔒 Жалобная книга</h1>
+    <div class="sub">Введи пароль, чтобы открыть.</div>
+    <input type="password" id="diag-pw-enter" placeholder="Пароль" autocomplete="current-password">
+    <div class="note" id="diag-pw-enter-error" style="display:none;margin-top:12px">Неверный пароль.</div>
+    <div class="acts" style="margin-top:14px"><button class="primary" id="diag-pw-enter-submit">Открыть</button></div>
+    <div class="link-row"><button id="diag-pw-forgot">Забыл пароль?</button></div>
   </section>
 
   <!-- ===================== VIEW: APTECZKA DIAGNOSTIC (🔴🟡🟢) ===================== -->
@@ -611,7 +703,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
-    <div class="menu-title" style="margin-top:10px">Energy Live · версия 2.0 · Аптечка + Антисаботаж</div>
+    <div class="menu-title" style="margin-top:10px">Energy Live · версия 2.1 · Аптечка + Антисаботаж + Диагностика</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
@@ -1253,7 +1345,7 @@ function last3AllBad(){
 
 /* ---------- navigation ---------- */
 
-var VIEWS=["home","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article"];
+var VIEWS=["home","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock"];
 var currentTrigger="";
 var currentSuggest=null;
 function showTool(v){
@@ -1261,10 +1353,12 @@ function showTool(v){
   if(v==="anti") renderAntiLanding();
   if(v==="anti-progress") renderProgressList();
   if(v==="anti-trophy"){ buildTrophyChips(); renderTrophyList(); }
+  if(v==="diag") renderDiagLanding();
   window.scrollTo(0,0);
 }
 document.getElementById("t-open-apt").onclick=function(){ showTool("apt"); };
 document.getElementById("t-open-anti").onclick=function(){ showTool("anti"); };
+document.getElementById("t-open-diag").onclick=function(){ showTool("diag"); };
 document.getElementById("t-exhaust").onclick=function(){ showTool("exhaust"); };
 document.getElementById("t-burnout").onclick=function(){ showTool("burnout"); };
 document.getElementById("t-situational").onclick=function(){ registerOpen(); renderUsageNote(); renderTriggerGrid(); showTool("trigger"); };
@@ -1278,6 +1372,286 @@ document.getElementById("open-info").onclick=function(){
 };
 [].forEach.call(document.querySelectorAll("#tab-tools [data-back]"),function(b){
   b.onclick=function(){ showTool(b.getAttribute("data-back")); };
+});
+
+/* ---------- diagnostics: жалобная книга (поток) ---------- */
+var DSKEY="diag_stream";
+var diagStream=load(DSKEY,"");
+var DIAG_PWKEY="diag_pwhash";
+
+function diagLineCount(){ return diagStream.split("\n").filter(function(l){ return l.trim(); }).length; }
+
+// SHA-256 хеш пароля (Web Crypto) — сам пароль нигде не хранится в открытом виде
+function diagHashPassword(pw){
+  return crypto.subtle.digest("SHA-256", new TextEncoder().encode(pw)).then(function(buf){
+    return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,"0"); }).join("");
+  });
+}
+function diagOpenBook(){
+  var ta=document.getElementById("diag-stream-textarea");
+  ta.value=diagStream;
+  diagResetHint();
+  showTool("diag-complaints");
+}
+
+function renderDiagLanding(){
+  var box=document.getElementById("diag-rows");
+  var hasPw=!!load(DIAG_PWKEY,null);
+  var n=diagLineCount();
+  var countLabel=hasPw? "🔒" : (n? n+" "+ruPlural(n,"запись","записи","записей") : "пусто");
+  box.innerHTML=
+    "<button class='anti-row' id='row-diag-complaints'><span class='l'><span class='ic'>📓</span>Жалобная книга</span>"+
+      "<span class='r'><span class='cnt'>"+countLabel+"</span><span class='chev'>›</span></span></button>"+
+    "<button class='anti-row' disabled style='opacity:.5'><span class='l'><span class='ic'>😟</span>Тревоги</span><span class='r'><span class='cnt'>скоро</span></span></button>"+
+    "<button class='anti-row' disabled style='opacity:.5'><span class='l'><span class='ic'>👻</span>Фантомы</span><span class='r'><span class='cnt'>скоро</span></span></button>"+
+    "<button class='anti-row' disabled style='opacity:.5'><span class='l'><span class='ic'>🩹</span>Язвы</span><span class='r'><span class='cnt'>скоро</span></span></button>"+
+    "<button class='anti-row' disabled style='opacity:.5'><span class='l'><span class='ic'>🧹</span>Быстрая приборка</span><span class='r'><span class='cnt'>скоро</span></span></button>";
+  document.getElementById("row-diag-complaints").onclick=function(){
+    if(!load(DIAG_PWKEY,null)){
+      document.getElementById("diag-pw-new").value="";
+      document.getElementById("diag-pw-new2").value="";
+      document.getElementById("diag-pw-setup-error").style.display="none";
+      showTool("diag-setpw");
+    } else {
+      document.getElementById("diag-pw-enter").value="";
+      document.getElementById("diag-pw-enter-error").style.display="none";
+      showTool("diag-unlock");
+    }
+  };
+}
+document.getElementById("diag-pw-setup-save").onclick=function(){
+  var p1=document.getElementById("diag-pw-new").value;
+  var p2=document.getElementById("diag-pw-new2").value;
+  var errEl=document.getElementById("diag-pw-setup-error");
+  if(p1.length<8){ errEl.textContent="Пароль должен быть не короче 8 символов."; errEl.style.display="block"; return; }
+  if(p1!==p2){ errEl.textContent="Пароли не совпадают."; errEl.style.display="block"; return; }
+  errEl.style.display="none";
+  diagHashPassword(p1).then(function(hash){
+    save(DIAG_PWKEY, hash);
+    diagOpenBook();
+  });
+};
+document.getElementById("diag-pw-enter-submit").onclick=function(){
+  var p=document.getElementById("diag-pw-enter").value;
+  var errEl=document.getElementById("diag-pw-enter-error");
+  diagHashPassword(p).then(function(hash){
+    if(hash===load(DIAG_PWKEY,null)){
+      errEl.style.display="none";
+      diagOpenBook();
+    } else {
+      errEl.style.display="block";
+      document.getElementById("diag-pw-enter").value="";
+    }
+  });
+};
+document.getElementById("diag-pw-forgot").onclick=function(){
+  if(!confirm("Пароль восстановить нельзя. Продолжить — значит стереть ВСЕ записи Жалобной книги и задать пароль заново. Стереть?")) return;
+  diagStream=""; save(DSKEY,diagStream);
+  localStorage.removeItem(DIAG_PWKEY);
+  document.getElementById("diag-pw-new").value="";
+  document.getElementById("diag-pw-new2").value="";
+  document.getElementById("diag-pw-setup-error").style.display="none";
+  showTool("diag-setpw");
+};
+
+function diagResetHint(){
+  var hint=document.getElementById("diag-stream-save-hint");
+  hint.textContent="Сохраняется автоматически."; hint.style.color="var(--pos)"; hint.style.opacity=""; hint.style.fontStyle="";
+  document.getElementById("diag-sensation-hint").classList.add("hidden");
+  diagRenderMirror();
+}
+// цифры прямо перед курсором (для оценки 0-10: "1" неоднозначна — может стать "10")
+function diagDigitsBeforeCursor(el){
+  var m=el.value.slice(0,el.selectionStart).match(/(\d+)$/);
+  return m?m[1]:"";
+}
+// внутри незакрытой скобки на текущей строке: ждём сначала описание ощущения, после запятой — цифру оценки
+function diagParenState(el){
+  var upToCursor=el.value.slice(0,el.selectionStart);
+  var line=upToCursor.slice(upToCursor.lastIndexOf("\n")+1);
+  var openIdx=line.lastIndexOf("(");
+  if(openIdx===-1 || line.lastIndexOf(")")>openIdx) return null;
+  var inner=line.slice(openIdx+1), commaIdx=inner.indexOf(",");
+  if(commaIdx===-1) return "body";
+  var digits=diagDigitsBeforeCursor(el);
+  return (digits===""||digits==="1") ? "score" : "done";
+}
+// текст от последней запятой (в текущей незакрытой скобке) до курсора — только пробелы (т.е. "Цена:" ещё не набрана)?
+function diagScoreZoneEmpty(el){
+  var upToCursor=el.value.slice(0,el.selectionStart);
+  var line=upToCursor.slice(upToCursor.lastIndexOf("\n")+1);
+  var openIdx=line.lastIndexOf("(");
+  if(openIdx===-1) return false;
+  var inner=line.slice(openIdx+1), commaIdx=inner.indexOf(",");
+  if(commaIdx===-1) return false;
+  return /^\s*$/.test(inner.slice(commaIdx+1));
+}
+function diagUpdateHint(el){
+  var hint=document.getElementById("diag-stream-save-hint");
+  var state=diagParenState(el);
+  document.getElementById("diag-sensation-hint").classList.toggle("hidden", state===null);
+  if(state==="body"){ hint.textContent="Где и как это отзывается в теле?"; hint.style.color="var(--pos)"; hint.style.opacity="0.75"; hint.style.fontStyle="italic"; }
+  else if(state==="score"){ hint.textContent="Теперь поставь оценку 0–10, например «Цена: 6»."; hint.style.color="var(--pos)"; hint.style.opacity="0.75"; hint.style.fontStyle="italic"; }
+  else if(state==="done"){ hint.textContent="Можно закрывать скобку и жать Enter."; hint.style.color="var(--pos)"; hint.style.opacity="0.75"; hint.style.fontStyle="italic"; }
+  else { diagResetHint(); hint.textContent="Сохранено."; return; }
+  diagRenderMirror();
+}
+// требуем ОБА параметра: непустое тело и цифру оценки внутри последней скобки строки
+function diagLineComplete(line){
+  return /\([^()]+,\s*Цена:\s*\d+\)\s*$/.test(line.trim());
+}
+function diagEscapeHtml(s){
+  return String(s).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; });
+}
+// рисует подсветку внутри "(...)": пусто -> бледный призрак, до запятой -> курсив (черновик),
+// после запятой пусто -> бледный призрак «Цена», иначе -> обычный текст (в т.ч. набранная "Цена: N")
+function diagRenderParenInner(inner){
+  var commaIdx=inner.indexOf(",");
+  if(commaIdx===-1){
+    return inner===""? "<span class='gh'>ощущение</span>" : "<span class='draft'>"+diagEscapeHtml(inner)+"</span>";
+  }
+  var body=inner.slice(0,commaIdx), after=inner.slice(commaIdx+1);
+  var out=diagEscapeHtml(body)+",";
+  out += /^\s*$/.test(after) ? " <span class='gh'>Цена</span>" : diagEscapeHtml(after);
+  return out;
+}
+function diagRenderMirror(){
+  var ta=document.getElementById("diag-stream-textarea");
+  var mirror=document.getElementById("diag-mirror");
+  mirror.innerHTML=ta.value.split("\n").map(function(line){
+    var openIdx=line.indexOf("(");
+    if(openIdx===-1) return diagEscapeHtml(line);
+    var closeIdx=line.indexOf(")", openIdx+1);
+    var prefix=diagEscapeHtml(line.slice(0,openIdx+1));
+    if(closeIdx===-1) return prefix+diagRenderParenInner(line.slice(openIdx+1));
+    return prefix+diagRenderParenInner(line.slice(openIdx+1,closeIdx))+diagEscapeHtml(line.slice(closeIdx));
+  }).join("\n");
+}
+document.getElementById("diag-stream-textarea").addEventListener("focus", function(){
+  if(!this.value) this.value="- ";
+  diagRenderMirror();
+});
+document.getElementById("diag-stream-textarea").addEventListener("scroll", function(){
+  document.getElementById("diag-mirror").scrollTop=this.scrollTop;
+});
+// подсказка/подсветка должны отражать место, где сейчас курсор, а не только момент набора текста —
+// обновляем при ЛЮБОМ изменении позиции курсора (клик, стрелки, стирание, набор)
+document.addEventListener("selectionchange", function(){
+  var ta=document.getElementById("diag-stream-textarea");
+  if(document.activeElement===ta) diagUpdateHint(ta);
+});
+document.getElementById("diag-stream-textarea").addEventListener("beforeinput", function(e){
+  var el=this, start=el.selectionStart, end=el.selectionEnd;
+  var hint=document.getElementById("diag-stream-save-hint");
+  // перенос строки полностью обрабатывает наш keydown-обработчик (там же проверка на оба параметра);
+  // здесь глушим «родную» вставку переноса, чтобы на некоторых мобильных клавиатурах строка не задваивалась
+  if(e.inputType==="insertLineBreak"){ e.preventDefault(); return; }
+  if(e.inputType==="deleteContentBackward" && start===end){
+    var upToCursor=el.value.slice(0,start);
+    // курсор сразу после набранной "Цена: " без единой цифры -> стираем лейбл целиком, возвращаемся к запятой
+    var labelMatch=upToCursor.match(/,(\s*Цена:\s*)$/);
+    if(labelMatch){
+      e.preventDefault();
+      var rl=labelMatch[1].length;
+      el.value=el.value.slice(0,start-rl)+el.value.slice(start);
+      el.selectionStart=el.selectionEnd=start-rl;
+      diagStream=el.value; save(DSKEY,diagStream); diagUpdateHint(el);
+      return;
+    }
+    // курсор сразу после "(" с пустым/незавершённым хвостом ")" или ",[Цена: N])" -> стираем скобку целиком
+    if(start>0 && el.value.charAt(start-1)==="("){
+      var tailMatch=el.value.slice(start).match(/^(,\s*(Цена:\s*\d+)?)?\)/);
+      if(tailMatch){
+        e.preventDefault();
+        el.value=el.value.slice(0,start-1)+el.value.slice(start+tailMatch[0].length);
+        el.selectionStart=el.selectionEnd=start-1;
+        diagStream=el.value; save(DSKEY,diagStream); diagUpdateHint(el);
+      }
+      return;
+    }
+    return;
+  }
+  if(e.inputType!=="insertText") return;
+  // «(» -> сразу авто-закрываем "()", курсор между ними; для красоты добавляем пробел перед "(", если его ещё нет
+  if(e.data==="(" && start===end){
+    e.preventDefault();
+    var needSpace=start>0 && !/\s/.test(el.value.charAt(start-1));
+    var openPos=start+(needSpace?1:0);
+    el.value=el.value.slice(0,start)+(needSpace?" ":"")+"()"+el.value.slice(start);
+    el.selectionStart=el.selectionEnd=openPos+1;
+    diagStream=el.value; save(DSKEY,diagStream); diagUpdateHint(el);
+    return;
+  }
+  // оценка 0-10: после "1" пропускаем только "0" (даёт "10"); если уже есть готовая цифра (0, 2-9 или "10") — дальше не пускаем.
+  // вставляем/блокируем вручную (не полагаясь на дефолтную вставку браузера) — надёжнее на всех устройствах.
+  // первую цифру сопровождаем автоматической меткой " Цена: ", если до неё в зоне оценки было пусто
+  if(/^\d$/.test(e.data)){
+    var state=diagParenState(el);
+    if(state==="score" || state==="done"){
+      e.preventDefault();
+      var existing=diagDigitsBeforeCursor(el);
+      var blocked=(state==="done") || (existing==="1" && e.data!=="0");
+      if(blocked){
+        hint.textContent="Оценка должна быть от 0 до 10."; hint.style.color="#ff9a9a"; hint.style.opacity=""; hint.style.fontStyle="";
+      } else {
+        var insertStr=diagScoreZoneEmpty(el) ? (" Цена: "+e.data) : e.data;
+        el.value=el.value.slice(0,start)+insertStr+el.value.slice(end);
+        var newPos=start+insertStr.length;
+        el.selectionStart=el.selectionEnd=newPos;
+        // цифра завершила оценку (0, 2-9 или только что сложившаяся "10") -> перескакиваем за закрывающую скобку;
+        // если её почему-то нет (например, случайно стёрли раньше) — сами восстанавливаем, а не молчим
+        if(diagParenState(el)==="done"){
+          if(el.value.charAt(newPos)!==")"){
+            el.value=el.value.slice(0,newPos)+")"+el.value.slice(newPos);
+          }
+          newPos+=1; el.selectionStart=el.selectionEnd=newPos;
+        }
+        diagStream=el.value; save(DSKEY,diagStream); diagUpdateHint(el);
+      }
+    }
+  }
+});
+document.getElementById("diag-stream-textarea").addEventListener("input", function(){
+  diagStream=this.value;
+  save(DSKEY,diagStream);
+  diagUpdateHint(this);
+});
+// позиция конца первой пустой незаполненной строки-тире ("-" или "- " без содержимого) во всём тексте, если есть
+function diagFindEmptyLineEnd(text){
+  var lines=text.split("\n"), pos=0;
+  for(var i=0;i<lines.length;i++){
+    if(/^-\s*$/.test(lines[i])) return pos+lines[i].length;
+    pos+=lines[i].length+1;
+  }
+  return -1;
+}
+document.getElementById("diag-stream-textarea").addEventListener("keydown", function(e){
+  if(e.key!=="Enter") return;
+  var el=this, start=el.selectionStart, end=el.selectionEnd;
+  var upToCursor=el.value.slice(0,start);
+  var currentLine=upToCursor.slice(upToCursor.lastIndexOf("\n")+1);
+  var hint=document.getElementById("diag-stream-save-hint");
+  if(!diagLineComplete(currentLine)){
+    e.preventDefault();
+    hint.textContent="Сначала укажи в скобках, где и как это ощущается в теле, и поставь оценку — например «(комок в горле, Цена: 6)» — и жми Enter.";
+    hint.style.color="#ff9a9a"; hint.style.opacity=""; hint.style.fontStyle="";
+    return;
+  }
+  e.preventDefault();
+  // если где-то в тексте уже есть свободное незаполненное тире — не плодим новое, а переводим курсор туда
+  var emptyPos=diagFindEmptyLineEnd(el.value);
+  if(emptyPos!==-1){
+    el.selectionStart=el.selectionEnd=emptyPos;
+    diagUpdateHint(el);
+    return;
+  }
+  var insert="\n- ";
+  el.value=el.value.slice(0,start)+insert+el.value.slice(end);
+  var pos=start+insert.length;
+  el.selectionStart=el.selectionEnd=pos;
+  diagStream=el.value;
+  save(DSKEY,diagStream);
+  diagResetHint(); hint.textContent="Сохранено.";
 });
 
 function renderUsageNote(){
