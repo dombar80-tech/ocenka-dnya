@@ -286,7 +286,7 @@
   /* зеркальный слой подсветки поверх textarea: моноширинный шрифт обязателен, иначе курсив
      занимает другую ширину символа, чем прямое начертание в невидимой textarea, и курсор «уезжает» */
   .diag-input-wrap{position:relative;flex:1;min-height:140px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;overflow:hidden}
-  .diag-input-wrap textarea, .diag-input-wrap .diag-mirror{position:absolute;inset:0;margin:0;padding:11px;font:15px/1.55 ui-monospace,"SF Mono",Menlo,Consolas,monospace;white-space:pre-wrap;word-wrap:break-word;overflow:auto;box-sizing:border-box}
+  .diag-input-wrap textarea, .diag-input-wrap .diag-mirror{position:absolute;inset:0;margin:0;padding:11px 11px 34px 11px;font:15px/1.55 ui-monospace,"SF Mono",Menlo,Consolas,monospace;white-space:pre-wrap;word-wrap:break-word;overflow:auto;box-sizing:border-box}
   .diag-input-wrap textarea{background:transparent;border:none;border-radius:0;color:transparent;caret-color:var(--text);resize:none;z-index:2}
   .diag-mirror{z-index:1;pointer-events:none;color:var(--text)}
   .diag-mirror .gh{opacity:.45}
@@ -528,6 +528,131 @@
     <div id="diag-table-main-block"></div>
     <div class="filters" id="diag-table-cat-filter"></div>
     <div id="diag-table-wrap"></div>
+  </section>
+
+  <!-- ===================== VIEW: ФАНТОМЫ — СПИСОК ===================== -->
+  <section id="v-diag-phantoms" class="hidden">
+    <button class="back" data-back="diag">← Диагностика</button>
+    <h1>👻 Фантомы</h1>
+    <div class="sub">Образы людей, которых уже нет в жизни, но которые продолжают занимать место в психике.</div>
+
+    <div class="note">
+      Подумайте, кого из людей, которых уже нет в вашей жизни (разрыв отношений, прекращение общения, смерть),
+      вы регулярно или ежедневно вспоминаете. Проанализируйте, что это такое — просто воспоминание о человеке,
+      который был для вас важен, или фантом, хозяйничающий в вашей голове. Для каждого фантома запишите имя,
+      тип, год ухода, активность, цену и реакцию — отдельной карточкой.
+      <span style="opacity:.7">(по мотивам Михаила Муравьёва, autohumanism.com)</span>
+    </div>
+
+    <div class="acts" style="margin-top:4px;margin-bottom:14px"><button class="primary" id="diag-phantom-add">+ Добавить фантома</button></div>
+    <div id="diag-phantoms-list"></div>
+    <div class="empty hidden" id="diag-phantoms-empty">Пока пусто — и это нормально, если фантомов правда нет.</div>
+  </section>
+
+  <!-- ===================== VIEW: ФАНТОМ — ФОРМА (добавление/редактирование) ===================== -->
+  <section id="v-diag-phantom-form" class="hidden">
+    <button class="back" data-back="diag-phantoms">← Фантомы</button>
+    <h1 id="diag-phantom-form-title">Новый фантом</h1>
+
+    <label>Имя</label>
+    <input type="text" id="diag-phantom-name" placeholder="Имя или псевдоним, если не помнишь">
+
+    <label style="margin-top:14px">Фантом</label>
+    <button type="button" class="info-btn" id="diag-phantom-types-info-btn" style="margin-bottom:8px">ℹ️ Что означает каждый тип</button>
+    <div class="seg" id="diag-phantom-type-chips" style="flex-wrap:wrap"></div>
+    <input type="text" id="diag-phantom-type-custom" placeholder="Свой вариант" class="hidden" style="margin-top:8px">
+
+    <label style="margin-top:14px">Год ухода</label>
+    <input type="text" id="diag-phantom-year" placeholder="Например: 2015, или «года три назад»">
+
+    <label style="margin-top:14px">Активность</label>
+    <div class="seg" id="diag-phantom-activity-chips"></div>
+
+    <label style="margin-top:14px">Цена <span style="opacity:.6;font-weight:400">— сколько времени и сил это отнимает</span></label>
+    <div id="diag-phantom-cena-block">
+      <div class="diag-val" id="diag-phantom-cena-value">5</div>
+      <div class="diag-slider-row">
+        <button class="diag-nudge" id="diag-phantom-cena-minus">−</button>
+        <div class="diag-slwrap"><input type="range" min="1" max="10" step="1" value="5" id="diag-phantom-cena-slider"></div>
+        <button class="diag-nudge" id="diag-phantom-cena-plus">+</button>
+      </div>
+      <div class="diag-ticks"><span>1</span><span>5</span><span>10</span></div>
+    </div>
+
+    <label style="margin-top:14px">Реакция <span style="opacity:.6;font-weight:400">— что почувствовал(а) в теле и эмоционально прямо сейчас</span></label>
+    <textarea id="diag-phantom-reaction" placeholder="Ком в горле, злость, тяжесть в груди..." style="width:100%;min-height:70px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--text);font-size:15px;line-height:1.4;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,sans-serif;padding:10px;resize:vertical;box-sizing:border-box"></textarea>
+
+    <div class="note" id="diag-phantom-form-error" style="display:none;margin-top:12px"></div>
+    <div class="acts" style="margin-top:16px"><button class="primary" id="diag-phantom-save">Сохранить</button></div>
+    <div class="link-row hidden" id="diag-phantom-delete-row"><button id="diag-phantom-delete">Удалить этого фантома</button></div>
+  </section>
+
+  <!-- ===================== VIEW: ФАНТОМ — ТИПЫ (справка по мотивам статьи) ===================== -->
+  <section id="v-diag-phantom-types-info" class="hidden">
+    <button class="back" data-back="diag-phantom-form">← Назад</button>
+    <h1>👻 Типы фантомов</h1>
+    <div class="sub">По мотивам Михаила Муравьёва — необязательно совпадёт один в один, выбери ближайший или впиши свой в «Другое».</div>
+    <div id="diag-phantom-types-list"></div>
+  </section>
+
+  <!-- ===================== VIEW: ЯЗВЫ — СПИСОК ===================== -->
+  <section id="v-diag-ulcers" class="hidden">
+    <button class="back" data-back="diag">← Диагностика</button>
+    <h1>🩹 Язвы</h1>
+    <div class="sub">Непереваренные события прошлого, которые периодически вторгаются в сознание.</div>
+
+    <div class="note">
+      Вспомните, к каким неприятным и болезненным событиям вы регулярно возвращаетесь в мыслях и заново их
+      эмоционально «пережёвываете». Для каждой язвы запишите событие, год, активность, цену и реакцию —
+      отдельной карточкой.
+      <span style="opacity:.7">(по мотивам Михаила Муравьёва, autohumanism.com)</span>
+    </div>
+
+    <button class="info-btn" id="diag-ulcer-types-info-btn" style="margin-bottom:14px">ℹ️ Основные виды язв (для ориентира)</button>
+    <div class="acts" style="margin-top:4px;margin-bottom:14px"><button class="primary" id="diag-ulcer-add">+ Добавить язву</button></div>
+    <div id="diag-ulcers-list"></div>
+    <div class="empty hidden" id="diag-ulcers-empty">Пока пусто — но такое бывает редко: язвы есть почти у всех.</div>
+  </section>
+
+  <!-- ===================== VIEW: ЯЗВА — ФОРМА (добавление/редактирование) ===================== -->
+  <section id="v-diag-ulcer-form" class="hidden">
+    <button class="back" data-back="diag-ulcers">← Язвы</button>
+    <h1 id="diag-ulcer-form-title">Новая язва</h1>
+
+    <label>Событие <span style="opacity:.6;font-weight:400">— кратко, чтобы однозначно узнать его</span></label>
+    <input type="text" id="diag-ulcer-event" placeholder="Например: публичный провал на защите проекта">
+
+    <label style="margin-top:14px">Год</label>
+    <input type="text" id="diag-ulcer-year" placeholder="Например: 2019, или «пять лет назад»">
+
+    <label style="margin-top:14px">Активность</label>
+    <div class="seg" id="diag-ulcer-activity-chips"></div>
+
+    <label style="margin-top:14px">Цена <span style="opacity:.6;font-weight:400">— сколько времени и энергии это отнимает</span></label>
+    <div id="diag-ulcer-cena-block">
+      <div class="diag-val" id="diag-ulcer-cena-value">5</div>
+      <div class="diag-slider-row">
+        <button class="diag-nudge" id="diag-ulcer-cena-minus">−</button>
+        <div class="diag-slwrap"><input type="range" min="1" max="10" step="1" value="5" id="diag-ulcer-cena-slider"></div>
+        <button class="diag-nudge" id="diag-ulcer-cena-plus">+</button>
+      </div>
+      <div class="diag-ticks"><span>1</span><span>5</span><span>10</span></div>
+    </div>
+
+    <label style="margin-top:14px">Реакция <span style="opacity:.6;font-weight:400">— что почувствовал(а) в теле и эмоционально прямо сейчас</span></label>
+    <textarea id="diag-ulcer-reaction" placeholder="Стыд, злость на себя, сжимает живот..." style="width:100%;min-height:70px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--text);font-size:15px;line-height:1.4;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,sans-serif;padding:10px;resize:vertical;box-sizing:border-box"></textarea>
+
+    <div class="note" id="diag-ulcer-form-error" style="display:none;margin-top:12px"></div>
+    <div class="acts" style="margin-top:16px"><button class="primary" id="diag-ulcer-save">Сохранить</button></div>
+    <div class="link-row hidden" id="diag-ulcer-delete-row"><button id="diag-ulcer-delete">Удалить эту язву</button></div>
+  </section>
+
+  <!-- ===================== VIEW: ЯЗВЫ — ОСНОВНЫЕ ВИДЫ (справка по мотивам статьи) ===================== -->
+  <section id="v-diag-ulcer-types-info" class="hidden">
+    <button class="back" data-back="diag-ulcers">← Назад</button>
+    <h1>🩹 Основные виды язв</h1>
+    <div class="sub">По мотивам Михаила Муравьёва — для ориентира, не обязательно выбирать; язва может возникнуть из любого события.</div>
+    <div id="diag-ulcer-types-list"></div>
   </section>
 
   <!-- ===================== VIEW: APTECZKA DIAGNOSTIC (🔴🟡🟢) ===================== -->
@@ -783,7 +908,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
-    <div class="menu-title" style="margin-top:10px">Energy Live · версия 2.2 · Аптечка + Антисаботаж + Диагностика</div>
+    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.0 · Аптечка + Антисаботаж + Диагностика</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
@@ -1219,9 +1344,21 @@ function download(name, text, type){
   var a=document.createElement("a"); a.href=url; a.download=name; document.body.appendChild(a); a.click();
   setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 400);
 }
+// данные Инструментов (Аптечка/Антисаботаж/Диагностика) хранятся отдельно от дневных записей —
+// без этого списка бэкап сохранял бы только Сегодня/Историю
+var TOOL_KEYS=["apt2_items","apt2_bh","apt2_opens","apt2_results","anti_texts","anti_progress","anti_trophy","diag_stream","diag_anx_stream","diag_phantoms","diag_ulcers","diag_pwhash"];
+function collectToolsData(){
+  var out={};
+  TOOL_KEYS.forEach(function(k){
+    var v=localStorage.getItem(k);
+    if(v!==null) out[k]=v;
+  });
+  return out;
+}
 document.getElementById("exp-json").addEventListener("click", function(){
   var data=allRecords();
-  download("ocenka-dnya-backup-"+todayISO+".json", JSON.stringify({app:"ocenka-dnya",version:1,exported:todayISO,records:data},null,2), "application/json");
+  var payload={app:"ocenka-dnya",version:2,exported:todayISO,records:data,tools:collectToolsData()};
+  download("ocenka-dnya-backup-"+todayISO+".json", JSON.stringify(payload,null,2), "application/json");
   localStorage.setItem(BACKUP_KEY, todayISO);
   document.getElementById("backup-hint").classList.add("hidden");
   closeMenu();
@@ -1259,7 +1396,13 @@ document.getElementById("imp-file").addEventListener("change", function(e){
       if(!Array.isArray(recs)) throw 0;
       var n=0;
       recs.forEach(function(r){ if(r&&r.date&&r.params){ if(r.dow==null) r.dow=new Date(r.date).getDay(); saveDay(r); n++; } });
-      alert("Восстановлено записей: "+n);
+      var toolsRestored=0;
+      if(obj.tools && typeof obj.tools==="object"){
+        TOOL_KEYS.forEach(function(k){
+          if(Object.prototype.hasOwnProperty.call(obj.tools,k)){ localStorage.setItem(k, obj.tools[k]); toolsRestored++; }
+        });
+      }
+      alert("Восстановлено записей: "+n+(toolsRestored?"\nДанные Инструментов тоже восстановлены — открой их заново, чтобы обновить экран.":""));
       refreshHistory(); updateStreak(); loadEntry();
     }catch(err){ alert("Не удалось прочитать файл бэкапа."); }
     e.target.value="";
@@ -1425,7 +1568,7 @@ function last3AllBad(){
 
 /* ---------- navigation ---------- */
 
-var VIEWS=["home","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table"];
+var VIEWS=["home","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info"];
 var currentTrigger="";
 var currentSuggest=null;
 function showTool(v){
@@ -1436,6 +1579,8 @@ function showTool(v){
   if(v==="diag") renderDiagLanding();
   if(v==="diag-book-home") renderDiagBookHome();
   if(v==="diag-weights-home") renderDiagWeightsHome();
+  if(v==="diag-phantoms") renderDiagPhantomsList();
+  if(v==="diag-ulcers") renderDiagUlcersList();
   window.scrollTo(0,0);
 }
 document.getElementById("t-open-apt").onclick=function(){ showTool("apt"); };
@@ -1509,10 +1654,16 @@ function renderDiagLanding(){
     return "<button class='anti-row' data-book='"+id+"'><span class='l'><span class='ic'>"+b.icon+"</span>"+b.title+"</span>"+
       "<span class='r'><span class='cnt'>"+countLabel+"</span><span class='chev'>›</span></span></button>";
   }).join("");
-  html+="<button class='anti-row' disabled style='opacity:.5'><span class='l'><span class='ic'>👻</span>Фантомы</span><span class='r'><span class='cnt'>скоро</span></span></button>"+
-    "<button class='anti-row' disabled style='opacity:.5'><span class='l'><span class='ic'>🩹</span>Язвы</span><span class='r'><span class='cnt'>скоро</span></span></button>"+
+  var phCount=diagLoadPhantoms().length;
+  var phLabel=phCount? phCount+" "+ruPlural(phCount,"фантом","фантома","фантомов") : "пусто";
+  var ulCount=diagLoadUlcers().length;
+  var ulLabel=ulCount? ulCount+" "+ruPlural(ulCount,"язва","язвы","язв") : "пусто";
+  html+="<button class='anti-row' id='row-diag-phantoms'><span class='l'><span class='ic'>👻</span>Фантомы</span><span class='r'><span class='cnt'>"+phLabel+"</span><span class='chev'>›</span></span></button>"+
+    "<button class='anti-row' id='row-diag-ulcers'><span class='l'><span class='ic'>🩹</span>Язвы</span><span class='r'><span class='cnt'>"+ulLabel+"</span><span class='chev'>›</span></span></button>"+
     "<button class='anti-row' disabled style='opacity:.5'><span class='l'><span class='ic'>🧹</span>Быстрая приборка</span><span class='r'><span class='cnt'>скоро</span></span></button>";
   box.innerHTML=html;
+  document.getElementById("row-diag-phantoms").onclick=function(){ showTool("diag-phantoms"); };
+  document.getElementById("row-diag-ulcers").onclick=function(){ showTool("diag-ulcers"); };
   [].forEach.call(box.querySelectorAll("[data-book]"),function(b){
     b.onclick=function(){ diagOpenBook(b.getAttribute("data-book")); };
   });
@@ -1569,6 +1720,15 @@ document.getElementById("diag-pw-forgot").onclick=function(){
   showTool("diag-setpw");
 };
 
+// ставит курсор в позицию pos; если сделать это одним прыжком ровно на границе переноса
+// строки, некоторые браузеры рисуют курсор в конце предыдущей визуальной строки вместо
+// начала следующей (двусмысленная позиция — она же конец строки N, она же начало строки N+1).
+// Короткий шаг "на символ назад, потом вперёд" имитирует обычное перемещение стрелкой вправо,
+// на которое браузер корректно резолвит нужную сторону.
+function diagSetCaret(el, pos){
+  el.selectionStart=el.selectionEnd=Math.max(0,pos-1);
+  el.selectionStart=el.selectionEnd=pos;
+}
 function diagResetHint(){
   var hint=document.getElementById("diag-stream-save-hint");
   hint.textContent="Сохраняется автоматически."; hint.style.color="var(--pos)"; hint.style.opacity=""; hint.style.fontStyle="";
@@ -1621,14 +1781,21 @@ function diagEscapeHtml(s){
 }
 // рисует подсветку внутри "(...)": пусто -> бледный призрак, до запятой -> курсив (черновик),
 // после запятой пусто -> бледный призрак «Цена», иначе -> обычный текст (в т.ч. набранная "Цена: N")
+// подсказки-«призраки» рисуются абсолютно спозиционированным слоем поверх текста, а не вставкой
+// слов в поток: если бы слово "ощущение"/"Цена" реально занимало место в потоке зеркала, а в
+// невидимой textarea в этом месте по-прежнему пусто — перенос строк в них разъехался бы
+// начиная с этой точки, и невидимый курсор оказался бы визуально не там, где кажется
+function diagGhostSpan(text){
+  return "<span style='position:relative;display:inline-block;width:0'><span class='gh' style='position:absolute;left:0;top:0;white-space:nowrap'>"+text+"</span></span>";
+}
 function diagRenderParenInner(inner){
   var commaIdx=inner.indexOf(",");
   if(commaIdx===-1){
-    return inner===""? "<span class='gh'>ощущение</span>" : "<span class='draft'>"+diagEscapeHtml(inner)+"</span>";
+    return inner===""? diagGhostSpan("ощущение") : "<span class='draft'>"+diagEscapeHtml(inner)+"</span>";
   }
   var body=inner.slice(0,commaIdx), after=inner.slice(commaIdx+1);
   var out=diagEscapeHtml(body)+",";
-  out += /^\s*$/.test(after) ? " <span class='gh'>Цена</span>" : diagEscapeHtml(after);
+  out += /^\s*$/.test(after) ? diagEscapeHtml(after)+diagGhostSpan(" Цена") : diagEscapeHtml(after);
   return out;
 }
 function diagRenderMirror(){
@@ -1670,7 +1837,7 @@ document.getElementById("diag-stream-textarea").addEventListener("beforeinput", 
       e.preventDefault();
       var rl=labelMatch[1].length;
       el.value=el.value.slice(0,start-rl)+el.value.slice(start);
-      el.selectionStart=el.selectionEnd=start-rl;
+      diagSetCaret(el, start-rl);
       diagStream=el.value; save(DSKEY,diagStream); diagUpdateHint(el);
       return;
     }
@@ -1680,7 +1847,7 @@ document.getElementById("diag-stream-textarea").addEventListener("beforeinput", 
       if(tailMatch){
         e.preventDefault();
         el.value=el.value.slice(0,start-1)+el.value.slice(start+tailMatch[0].length);
-        el.selectionStart=el.selectionEnd=start-1;
+        diagSetCaret(el, start-1);
         diagStream=el.value; save(DSKEY,diagStream); diagUpdateHint(el);
       }
       return;
@@ -1694,7 +1861,7 @@ document.getElementById("diag-stream-textarea").addEventListener("beforeinput", 
     var needSpace=start>0 && !/\s/.test(el.value.charAt(start-1));
     var openPos=start+(needSpace?1:0);
     el.value=el.value.slice(0,start)+(needSpace?" ":"")+"()"+el.value.slice(start);
-    el.selectionStart=el.selectionEnd=openPos+1;
+    diagSetCaret(el, openPos+1);
     diagStream=el.value; save(DSKEY,diagStream); diagUpdateHint(el);
     return;
   }
@@ -1713,14 +1880,14 @@ document.getElementById("diag-stream-textarea").addEventListener("beforeinput", 
         var insertStr=diagScoreZoneEmpty(el) ? (" Цена: "+e.data) : e.data;
         el.value=el.value.slice(0,start)+insertStr+el.value.slice(end);
         var newPos=start+insertStr.length;
-        el.selectionStart=el.selectionEnd=newPos;
+        diagSetCaret(el, newPos);
         // цифра завершила оценку (0, 2-9 или только что сложившаяся "10") -> перескакиваем за закрывающую скобку;
         // если её почему-то нет (например, случайно стёрли раньше) — сами восстанавливаем, а не молчим
         if(diagParenState(el)==="done"){
           if(el.value.charAt(newPos)!==")"){
             el.value=el.value.slice(0,newPos)+")"+el.value.slice(newPos);
           }
-          newPos+=1; el.selectionStart=el.selectionEnd=newPos;
+          newPos+=1; diagSetCaret(el, newPos);
         }
         diagStream=el.value; save(DSKEY,diagStream); diagUpdateHint(el);
       }
@@ -1757,14 +1924,14 @@ document.getElementById("diag-stream-textarea").addEventListener("keydown", func
   // если где-то в тексте уже есть свободное незаполненное тире — не плодим новое, а переводим курсор туда
   var emptyPos=diagFindEmptyLineEnd(el.value);
   if(emptyPos!==-1){
-    el.selectionStart=el.selectionEnd=emptyPos;
+    diagSetCaret(el, emptyPos);
     diagUpdateHint(el);
     return;
   }
   var insert="\n- ";
   el.value=el.value.slice(0,start)+insert+el.value.slice(end);
   var pos=start+insert.length;
-  el.selectionStart=el.selectionEnd=pos;
+  diagSetCaret(el, pos);
   diagStream=el.value;
   save(DSKEY,diagStream);
   diagResetHint(); hint.textContent="Сохранено.";
@@ -2064,6 +2231,287 @@ function renderDiagTable(){
     "<div class='empty'>Пока пусто.</div>";
   diagWireSortHeaders(wrap);
 }
+
+/* ---------- фантомы: структурированные карточки (имя, тип, год, активность, цена, реакция) ---------- */
+var PHANTOM_KEY="diag_phantoms";
+var PHANTOM_TYPES=["Умерший","Бывший","Изменник","Злодей","Предатель","Недотрога","Ментор","Жертва","Благодетель","Демон"];
+var PHANTOM_ACTIVITY=["Ежедневно","Еженедельно","Редко"];
+var PHANTOM_TYPE_DESC={
+  "Умерший":"Умерший родитель или близкий родственник. Чувство вины, что не успел сказать или сделать что-то важное, незавершённые диалоги, невысказанные обиды, постоянные мысли «что бы он/она сказал(а)?».",
+  "Бывший":"Бывший муж, жена, романтический партнёр. Прокрутка прошлых ссор, желание доказать свою правоту, сожаления о разрыве или мысли о мести, «шпионаж» за его/её жизнью, сравнение новых партнёров с бывшим.",
+  "Изменник":"Ушедший из семьи родитель, лишённая прав мать, близкий родственник, с которым вы разорвали отношения. Чувство несправедливости, прокручивание конфликтов и обид, внутренние споры, сожаления об упущенном.",
+  "Злодей":"Человек, который преследовал вас, вредил, отравлял жизнь. Ненависть, чувство унижения и гнева, злость на себя за мягкотелость, фантазии о его наказании.",
+  "Предатель":"Бывший друг, деловой партнёр, коллега. Обида на предательство, зависть к его успехам, внутренние «разборки», желание поквитаться.",
+  "Недотрога":"Человек, отвергший ваши попытки завязать романтические, дружеские или деловые отношения. Чувство уязвлённости, навязчивые фантазии «а что было бы, если...», стремление доказать, что человек совершил ошибку.",
+  "Ментор":"Авторитет, оказавший на вас критическое влияние — учитель, тренер, лидер группы. Подстройка под его мнение, внутренний поиск одобрения, страх ошибиться или подвести.",
+  "Жертва":"Человек, перед которым вы чувствуете вину. Постоянное возвращение к событию, душевные терзания, мысленные извинения, самонаказание отказом от радостей, попытки загладить вину прощением и помощью другим людям.",
+  "Благодетель":"Человек, к которому вы испытываете благодарность. Груз неоплаченного долга, невозможность сказать «нет» в ответ на просьбы, попытки расплатиться помощью другим людям.",
+  "Демон":"Известный человек, организация или социальная группа, кто «виноват во всех ваших бедах»: Путин, «голубые», Чубайс, экологи, олигархи, женщины и пр. Отслеживание новостей о нём, гнев на его «злодеяния», чувство бессилия и злости, объяснение своих проблем его действиями, конфликты с его сторонниками."
+};
+function diagLoadPhantoms(){ return load(PHANTOM_KEY, []); }
+function diagSavePhantoms(arr){ save(PHANTOM_KEY, arr); }
+
+function renderDiagPhantomsList(){
+  var box=document.getElementById("diag-phantoms-list");
+  var empty=document.getElementById("diag-phantoms-empty");
+  var arr=diagLoadPhantoms();
+  var sorted=arr.map(function(p,i){ return {p:p,i:i}; }).sort(function(a,b){ return b.p.cena-a.p.cena; });
+  if(!sorted.length){
+    box.innerHTML=""; empty.classList.remove("hidden");
+    return;
+  }
+  empty.classList.add("hidden");
+  box.innerHTML=sorted.map(function(o){
+    var p=o.p;
+    var typeLabel=p.type||"—";
+    var c=diagColorFor(p.cena, false);
+    return "<button class='anti-row' data-i='"+o.i+"'><span class='l'><span class='ic' style='color:"+c+";font-weight:800;font-size:15px'>"+p.cena+"</span>"+
+      "<span style='display:flex;flex-direction:column;align-items:flex-start'><b>"+diagEscapeHtml(p.name||"Без имени")+"</b>"+
+      "<span style='color:var(--muted);font-size:12px'>"+diagEscapeHtml(typeLabel)+(p.activity?" · "+diagEscapeHtml(p.activity):"")+"</span></span></span>"+
+      "<span class='r'><span class='chev'>›</span></span></button>";
+  }).join("");
+  [].forEach.call(box.querySelectorAll("[data-i]"),function(b){
+    b.onclick=function(){ diagOpenPhantomForm(+b.getAttribute("data-i")); };
+  });
+}
+document.getElementById("diag-phantom-add").onclick=function(){ diagOpenPhantomForm(null); };
+
+var diagPhantomEditIndex=null;
+function diagRenderPhantomTypeChips(selected){
+  var box=document.getElementById("diag-phantom-type-chips");
+  var isCustom = selected!=="" && PHANTOM_TYPES.indexOf(selected)===-1;
+  box.innerHTML=PHANTOM_TYPES.concat(["Другое"]).map(function(t){
+    var on=(t==="Другое")? isCustom : (t===selected);
+    return "<button class='chip"+(on?" on":"")+"' data-t='"+t+"'>"+t+"</button>";
+  }).join("");
+  var customInput=document.getElementById("diag-phantom-type-custom");
+  customInput.classList.toggle("hidden", !isCustom);
+  if(isCustom) customInput.value=selected;
+  [].forEach.call(box.children,function(b){
+    b.onclick=function(){
+      var t=b.getAttribute("data-t");
+      [].forEach.call(box.children,function(x){ x.classList.remove("on"); });
+      b.classList.add("on");
+      customInput.classList.toggle("hidden", t!=="Другое");
+      if(t==="Другое") customInput.focus(); else customInput.value="";
+    };
+  });
+}
+function diagRenderPhantomActivityChips(selected){
+  var box=document.getElementById("diag-phantom-activity-chips");
+  box.innerHTML=PHANTOM_ACTIVITY.map(function(a){
+    return "<button class='chip"+(a===selected?" on":"")+"' data-a='"+a+"'>"+a+"</button>";
+  }).join("");
+  [].forEach.call(box.children,function(b){
+    b.onclick=function(){
+      [].forEach.call(box.children,function(x){ x.classList.remove("on"); });
+      b.classList.add("on");
+    };
+  });
+}
+function diagPaintPhantomSlider(v){
+  var c=diagColorFor(v, false);
+  document.getElementById("diag-phantom-cena-value").style.color=c;
+  var st=document.getElementById("diag-phantom-cena-paint");
+  if(!st){ st=document.createElement("style"); st.id="diag-phantom-cena-paint"; document.head.appendChild(st); }
+  st.textContent="#diag-phantom-cena-slider::-webkit-slider-thumb{background:"+c+"}#diag-phantom-cena-slider{background:linear-gradient(90deg,#4ade80,"+c+" "+((v-1)/9*100)+"%,var(--line))}";
+}
+function diagOpenPhantomForm(index){
+  diagPhantomEditIndex=index;
+  var arr=diagLoadPhantoms();
+  var p=(index!==null)? arr[index] : {name:"",type:"",yearGone:"",activity:"",cena:5,reaction:""};
+  document.getElementById("diag-phantom-form-title").textContent=(index!==null)? "Редактировать фантома" : "Новый фантом";
+  document.getElementById("diag-phantom-name").value=p.name||"";
+  document.getElementById("diag-phantom-year").value=p.yearGone||"";
+  document.getElementById("diag-phantom-reaction").value=p.reaction||"";
+  document.getElementById("diag-phantom-form-error").style.display="none";
+  diagRenderPhantomTypeChips(p.type||"");
+  diagRenderPhantomActivityChips(p.activity||"");
+  var slider=document.getElementById("diag-phantom-cena-slider");
+  slider.value=p.cena||5;
+  document.getElementById("diag-phantom-cena-value").textContent=slider.value;
+  diagPaintPhantomSlider(+slider.value);
+  document.getElementById("diag-phantom-delete-row").classList.toggle("hidden", index===null);
+  showTool("diag-phantom-form");
+}
+document.getElementById("diag-phantom-cena-slider").addEventListener("input", function(){
+  var v=+this.value;
+  document.getElementById("diag-phantom-cena-value").textContent=v;
+  diagPaintPhantomSlider(v);
+});
+document.getElementById("diag-phantom-cena-minus").onclick=function(){
+  var slider=document.getElementById("diag-phantom-cena-slider");
+  slider.value=Math.max(1, +slider.value-1);
+  slider.dispatchEvent(new Event("input",{bubbles:true}));
+};
+document.getElementById("diag-phantom-cena-plus").onclick=function(){
+  var slider=document.getElementById("diag-phantom-cena-slider");
+  slider.value=Math.min(10, +slider.value+1);
+  slider.dispatchEvent(new Event("input",{bubbles:true}));
+};
+document.getElementById("diag-phantom-save").onclick=function(){
+  var name=document.getElementById("diag-phantom-name").value.trim();
+  var errEl=document.getElementById("diag-phantom-form-error");
+  if(!name){ errEl.textContent="Укажи имя или псевдоним."; errEl.style.display="block"; return; }
+  errEl.style.display="none";
+  var typeBtn=document.querySelector("#diag-phantom-type-chips .chip.on");
+  var type="";
+  if(typeBtn){
+    var t=typeBtn.getAttribute("data-t");
+    type=(t==="Другое")? document.getElementById("diag-phantom-type-custom").value.trim() : t;
+  }
+  var activityBtn=document.querySelector("#diag-phantom-activity-chips .chip.on");
+  var entry={
+    name:name,
+    type:type,
+    yearGone:document.getElementById("diag-phantom-year").value.trim(),
+    activity:activityBtn? activityBtn.getAttribute("data-a") : "",
+    cena:+document.getElementById("diag-phantom-cena-slider").value,
+    reaction:document.getElementById("diag-phantom-reaction").value.trim()
+  };
+  var arr=diagLoadPhantoms();
+  if(diagPhantomEditIndex!==null) arr[diagPhantomEditIndex]=entry; else arr.push(entry);
+  diagSavePhantoms(arr);
+  showTool("diag-phantoms");
+};
+document.getElementById("diag-phantom-delete").onclick=function(){
+  if(diagPhantomEditIndex===null) return;
+  if(!confirm("Удалить эту карточку без возможности восстановить?")) return;
+  var arr=diagLoadPhantoms();
+  arr.splice(diagPhantomEditIndex,1);
+  diagSavePhantoms(arr);
+  showTool("diag-phantoms");
+};
+document.getElementById("diag-phantom-types-info-btn").onclick=function(){
+  document.getElementById("diag-phantom-types-list").innerHTML=PHANTOM_TYPES.map(function(t){
+    return "<div class='info-block' style='margin-bottom:10px'><div class='info-h' style='margin:0 0 6px'>"+t+"</div><div class='info-p'>"+PHANTOM_TYPE_DESC[t]+"</div></div>";
+  }).join("");
+  showTool("diag-phantom-types-info");
+};
+
+/* ---------- язвы: непереваренные события (событие, год, активность, цена, реакция) ---------- */
+var ULCER_KEY="diag_ulcers";
+var ULCER_ACTIVITY=["Ежедневно","Еженедельно","Редко"];
+var ULCER_TYPES_INFO=[
+  ["Провалы и неудачи","Неудачное выступление, профессиональная ошибка, банкротство бизнеса, отвергнутое предложение и т.п."],
+  ["Проблемы в отношениях","Конфликты, ссоры, измены, обиды, обман."],
+  ["Кризисы и потери","Увольнение, тяжёлая болезнь, денежные потери, смерть близких."],
+  ["Судьбоносные ошибки","Важнейшие решения, в которых вы разочаровались: не тот ВУЗ, профессия, человек, город."],
+  ["Публичное унижение","Ситуации, где вас прилюдно высмеяли, оскорбили, унизили, выставили слабаком либо вы сами оконфузились."],
+  ["Собственная вина","Моменты, когда вы оскорбили, подвели, обманули, обидели кого-то."]
+];
+function diagLoadUlcers(){ return load(ULCER_KEY, []); }
+function diagSaveUlcers(arr){ save(ULCER_KEY, arr); }
+
+function renderDiagUlcersList(){
+  var box=document.getElementById("diag-ulcers-list");
+  var empty=document.getElementById("diag-ulcers-empty");
+  var arr=diagLoadUlcers();
+  var sorted=arr.map(function(u,i){ return {u:u,i:i}; }).sort(function(a,b){ return b.u.cena-a.u.cena; });
+  if(!sorted.length){
+    box.innerHTML=""; empty.classList.remove("hidden");
+    return;
+  }
+  empty.classList.add("hidden");
+  box.innerHTML=sorted.map(function(o){
+    var u=o.u;
+    var c=diagColorFor(u.cena, false);
+    return "<button class='anti-row' data-i='"+o.i+"'><span class='l'><span class='ic' style='color:"+c+";font-weight:800;font-size:15px'>"+u.cena+"</span>"+
+      "<span style='display:flex;flex-direction:column;align-items:flex-start'><b>"+diagEscapeHtml(u.event||"Без описания")+"</b>"+
+      "<span style='color:var(--muted);font-size:12px'>"+(u.year?diagEscapeHtml(u.year):"")+(u.activity?" · "+diagEscapeHtml(u.activity):"")+"</span></span></span>"+
+      "<span class='r'><span class='chev'>›</span></span></button>";
+  }).join("");
+  [].forEach.call(box.querySelectorAll("[data-i]"),function(b){
+    b.onclick=function(){ diagOpenUlcerForm(+b.getAttribute("data-i")); };
+  });
+}
+document.getElementById("diag-ulcer-add").onclick=function(){ diagOpenUlcerForm(null); };
+
+var diagUlcerEditIndex=null;
+function diagRenderUlcerActivityChips(selected){
+  var box=document.getElementById("diag-ulcer-activity-chips");
+  box.innerHTML=ULCER_ACTIVITY.map(function(a){
+    return "<button class='chip"+(a===selected?" on":"")+"' data-a='"+a+"'>"+a+"</button>";
+  }).join("");
+  [].forEach.call(box.children,function(b){
+    b.onclick=function(){
+      [].forEach.call(box.children,function(x){ x.classList.remove("on"); });
+      b.classList.add("on");
+    };
+  });
+}
+function diagPaintUlcerSlider(v){
+  var c=diagColorFor(v, false);
+  document.getElementById("diag-ulcer-cena-value").style.color=c;
+  var st=document.getElementById("diag-ulcer-cena-paint");
+  if(!st){ st=document.createElement("style"); st.id="diag-ulcer-cena-paint"; document.head.appendChild(st); }
+  st.textContent="#diag-ulcer-cena-slider::-webkit-slider-thumb{background:"+c+"}#diag-ulcer-cena-slider{background:linear-gradient(90deg,#4ade80,"+c+" "+((v-1)/9*100)+"%,var(--line))}";
+}
+function diagOpenUlcerForm(index){
+  diagUlcerEditIndex=index;
+  var arr=diagLoadUlcers();
+  var u=(index!==null)? arr[index] : {event:"",year:"",activity:"",cena:5,reaction:""};
+  document.getElementById("diag-ulcer-form-title").textContent=(index!==null)? "Редактировать язву" : "Новая язва";
+  document.getElementById("diag-ulcer-event").value=u.event||"";
+  document.getElementById("diag-ulcer-year").value=u.year||"";
+  document.getElementById("diag-ulcer-reaction").value=u.reaction||"";
+  document.getElementById("diag-ulcer-form-error").style.display="none";
+  diagRenderUlcerActivityChips(u.activity||"");
+  var slider=document.getElementById("diag-ulcer-cena-slider");
+  slider.value=u.cena||5;
+  document.getElementById("diag-ulcer-cena-value").textContent=slider.value;
+  diagPaintUlcerSlider(+slider.value);
+  document.getElementById("diag-ulcer-delete-row").classList.toggle("hidden", index===null);
+  showTool("diag-ulcer-form");
+}
+document.getElementById("diag-ulcer-cena-slider").addEventListener("input", function(){
+  var v=+this.value;
+  document.getElementById("diag-ulcer-cena-value").textContent=v;
+  diagPaintUlcerSlider(v);
+});
+document.getElementById("diag-ulcer-cena-minus").onclick=function(){
+  var slider=document.getElementById("diag-ulcer-cena-slider");
+  slider.value=Math.max(1, +slider.value-1);
+  slider.dispatchEvent(new Event("input",{bubbles:true}));
+};
+document.getElementById("diag-ulcer-cena-plus").onclick=function(){
+  var slider=document.getElementById("diag-ulcer-cena-slider");
+  slider.value=Math.min(10, +slider.value+1);
+  slider.dispatchEvent(new Event("input",{bubbles:true}));
+};
+document.getElementById("diag-ulcer-save").onclick=function(){
+  var event=document.getElementById("diag-ulcer-event").value.trim();
+  var errEl=document.getElementById("diag-ulcer-form-error");
+  if(!event){ errEl.textContent="Укажи, что за событие — хотя бы коротко."; errEl.style.display="block"; return; }
+  errEl.style.display="none";
+  var activityBtn=document.querySelector("#diag-ulcer-activity-chips .chip.on");
+  var entry={
+    event:event,
+    year:document.getElementById("diag-ulcer-year").value.trim(),
+    activity:activityBtn? activityBtn.getAttribute("data-a") : "",
+    cena:+document.getElementById("diag-ulcer-cena-slider").value,
+    reaction:document.getElementById("diag-ulcer-reaction").value.trim()
+  };
+  var arr=diagLoadUlcers();
+  if(diagUlcerEditIndex!==null) arr[diagUlcerEditIndex]=entry; else arr.push(entry);
+  diagSaveUlcers(arr);
+  showTool("diag-ulcers");
+};
+document.getElementById("diag-ulcer-delete").onclick=function(){
+  if(diagUlcerEditIndex===null) return;
+  if(!confirm("Удалить эту карточку без возможности восстановить?")) return;
+  var arr=diagLoadUlcers();
+  arr.splice(diagUlcerEditIndex,1);
+  diagSaveUlcers(arr);
+  showTool("diag-ulcers");
+};
+document.getElementById("diag-ulcer-types-info-btn").onclick=function(){
+  document.getElementById("diag-ulcer-types-list").innerHTML=ULCER_TYPES_INFO.map(function(t){
+    return "<div class='info-block' style='margin-bottom:10px'><div class='info-h' style='margin:0 0 6px'>"+t[0]+"</div><div class='info-p'>"+t[1]+"</div></div>";
+  }).join("");
+  showTool("diag-ulcer-types-info");
+};
+
 
 function renderUsageNote(){
   var el=document.getElementById("usage-note");
