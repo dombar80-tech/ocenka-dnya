@@ -1764,24 +1764,92 @@ function renderDiagLanding(){
 }
 
 /* ---- быстрая приборка + списание убытков (по мотивам Муравьева) ---- */
-function diagCleanupLists(){
-  var complaints=JSON.parse(load(DIAG_BOOKS.complaints.streamKey,""));
-  var anxiety=JSON.parse(load(DIAG_BOOKS.anxiety.streamKey,""));
-  var entries=[].concat(complaints||[], anxiety||[]);
-  var writeoff=[], quickwins=[], worries=[], archived=[];
-  entries.forEach(function(e){
-    if(!e.vazhnost || !e.cena) return; // пропускаем неоценённые
-    var isArchived=e.archived;
-    var isAnxiety=e.kontrola!==undefined;
-    if(isArchived){ archived.push(e); return; }
-    if(isAnxiety){
-      if(e.kontrola===0 && e.vazhnost<=3) worries.push(e);
-    } else {
-      if(e.vazhnost<=3 && (e.slozhnost-e.vazhnost>=3 || e.cena-e.vazhnost>=3)) writeoff.push(e);
-      if(e.slozhnost>=1 && e.slozhnost<=3 && e.resurs>=5 && (e.cena>=8 || e.vazhnost>=8)) quickwins.push(e);
+var DIAG_CLEANUP_GAP=3, DIAG_CLEANUP_HIGH=8;
+// разбирает произвольный поток (для конкретной книги) на завершённые записи, не завися от активной книги
+function diagParseStreamEntries(book, stream){
+  var lines=stream.split("\n");
+  var entries=[];
+  lines.forEach(function(line,idx){
+    var m=line.match(/^-\s*(.*)$/);
+    if(!m) return;
+    var pm=m[1].match(/^(.*?)\(([^,()]*),\s*Цена:\s*(\d+)\)(.*)$/);
+    if(!pm) return;
+    var tail=pm[4];
+    var weights={};
+    var wm=tail.match(/\[([^\]]*)\]/);
+    if(wm){
+      var re=/([А-ЯЁ]):(\d+)/g, mm;
+      while(mm=re.exec(wm[1])) weights[mm[1]]=+mm[2];
     }
+    var catM=tail.match(/#(\S+)/);
+    var entry={
+      lineIndex:idx,
+      text:pm[1].trim(),
+      sensation:pm[2].trim(),
+      cena:+pm[3],
+      category:catM?catM[1]:"",
+      archived:tail.indexOf("!архив")!==-1
+    };
+    book.dimOrder.forEach(function(dimId){ entry[dimId]=weights[book.dims[dimId].key]; });
+    entries.push(entry);
   });
-  quickwins.sort(function(a,b){ return a.slozhnost-b.slozhnost; });
+  return entries;
+}
+// переписывает хвост-метаданные строки lineIndex в произвольном потоке, возвращает новый текст потока целиком
+function diagWriteStreamLineMeta(book, stream, lineIndex, patch){
+  var lines=stream.split("\n");
+  var line=lines[lineIndex];
+  var closeIdx=line.lastIndexOf(")");
+  if(closeIdx===-1) return stream;
+  var head=line.slice(0,closeIdx+1);
+  var tail=line.slice(closeIdx+1);
+  var weights={};
+  var wm=tail.match(/\[([^\]]*)\]/);
+  if(wm){
+    var re=/([А-ЯЁ]):(\d+)/g, mm;
+    while(mm=re.exec(wm[1])) weights[mm[1]]=+mm[2];
+  }
+  var category=(tail.match(/#(\S+)/)||[])[1]||"";
+  var archived=tail.indexOf("!архив")!==-1;
+  Object.keys(patch).forEach(function(k){
+    if(k==="category") category=patch.category;
+    else if(k==="archived") archived=patch.archived;
+    else weights[k]=patch[k];
+  });
+  var newTail="";
+  var wKeys=book.dimOrder.map(function(d){ return book.dims[d].key; }).filter(function(k){ return weights[k]!==undefined; });
+  if(wKeys.length) newTail+=" ["+wKeys.map(function(k){ return k+":"+weights[k]; }).join(" ")+"]";
+  if(category) newTail+=" #"+category;
+  if(archived) newTail+=" !архив";
+  lines[lineIndex]=head+newTail;
+  return lines.join("\n");
+}
+function diagCleanupLists(){
+  var complaintsBook=DIAG_BOOKS.complaints, anxietyBook=DIAG_BOOKS.anxiety;
+  var complaintsEntries=diagParseStreamEntries(complaintsBook, load(complaintsBook.streamKey,""));
+  var anxietyEntries=diagParseStreamEntries(anxietyBook, load(anxietyBook.streamKey,""));
+
+  var writeoff=complaintsEntries.filter(function(e){
+    if(e.archived) return false;
+    if(e.vazhnost===undefined || e.slozhnost===undefined || e.cena===undefined) return false;
+    if(e.vazhnost>3) return false;
+    return (e.slozhnost-e.vazhnost>=DIAG_CLEANUP_GAP) || (e.cena-e.vazhnost>=DIAG_CLEANUP_GAP);
+  }).sort(function(a,b){ return b.cena-a.cena; });
+
+  var quickwins=complaintsEntries.filter(function(e){
+    if(e.slozhnost===undefined || e.resurs===undefined || e.vazhnost===undefined || e.cena===undefined) return false;
+    if(e.slozhnost<1 || e.slozhnost>3) return false;
+    if(e.resurs<5) return false;
+    return e.cena>=DIAG_CLEANUP_HIGH || e.vazhnost>=DIAG_CLEANUP_HIGH;
+  }).sort(function(a,b){ return a.slozhnost-b.slozhnost; });
+
+  var worries=anxietyEntries.filter(function(e){
+    if(e.control===undefined || e.vazhnost===undefined) return false;
+    return e.control===0 && e.vazhnost<=3;
+  }).sort(function(a,b){ return b.cena-a.cena; });
+
+  var archived=complaintsEntries.filter(function(e){ return e.archived; });
+
   return {writeoff:writeoff, quickwins:quickwins, worries:worries, archived:archived};
 }
 function diagCleanupCardHtml(e, meta, action){
@@ -1833,14 +1901,11 @@ function renderDiagCleanup(){
     };
   });
 }
-function diagCleanupSetArchived(book, lineIdx, archive){
+function diagCleanupSetArchived(book, lineIndex, archived){
   var stream=load(book.streamKey,"");
-  var lines=stream.split("\n");
-  if(!lines[lineIdx]) return;
-  var marker=" !архив";
-  if(archive && lines[lineIdx].indexOf(marker)===-1) lines[lineIdx]+=marker;
-  else if(!archive) lines[lineIdx]=lines[lineIdx].replace(marker,"");
-  save(book.streamKey, lines.join("\n"));
+  var newStream=diagWriteStreamLineMeta(book, stream, lineIndex, {archived:archived});
+  save(book.streamKey, newStream);
+  if(diagActiveBookId===book.id) diagStream=newStream;
 }
 document.getElementById("diag-cleanup-archive-toggle").onclick=function(){
   document.getElementById("diag-cleanup-archive").classList.toggle("hidden");
