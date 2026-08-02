@@ -310,6 +310,15 @@
   .diag-tbl-wrap th.d{z-index:3}
   .diag-tbl-wrap td.d{z-index:1;font-weight:600}
   .diag-tbl-wrap tr.fire-row td{background:#2c1c1c}
+
+  /* diagnostics: быстрая приборка — карточки-строки с действием */
+  .diag-cleanup-h{font-size:15px;font-weight:800;margin:22px 0 2px}
+  .diag-cleanup-sub{color:var(--muted);font-size:12.5px;margin-bottom:10px}
+  .diag-cleanup-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .diag-cleanup-card .txt{font-weight:600;font-size:14.5px}
+  .diag-cleanup-card .meta{color:var(--muted);font-size:12px;margin-top:4px}
+  .diag-cleanup-card button{flex:0 0 auto;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:12.5px;font-weight:600;color:var(--text)}
+  .diag-cleanup-card button:active{background:#31335c}
 </style>
 </head>
 <body>
@@ -1853,7 +1862,7 @@ function diagCleanupLists(){
   return {writeoff:writeoff, quickwins:quickwins, worries:worries, archived:archived};
 }
 function diagCleanupCardHtml(e, meta, action){
-  return "<div class='diag-cleanup-card'><div class='txt'>"+esc(e.text)+"</div><div class='meta'>"+meta.join(" · ")+"</div><div class='action'>"+action+"</div></div>";
+  return "<div class='diag-cleanup-card'><div><div class='txt'>"+esc(e.text)+"</div><div class='meta'>"+meta.join(" · ")+"</div></div><div class='action'>"+action+"</div></div>";
 }
 function renderDiagCleanup(){
   var lists=diagCleanupLists();
