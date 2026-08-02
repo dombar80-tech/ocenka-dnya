@@ -664,6 +664,65 @@
     <div id="diag-ulcer-types-list"></div>
   </section>
 
+  <!-- ===================== VIEW: ВЫБОРЫ — СПИСОК ===================== -->
+  <section id="v-diag-choices" class="hidden">
+    <button class="back" data-back="diag">← Диагностика</button>
+    <h1>🔀 Выборы</h1>
+    <div class="sub">Незавершённые решения — «делать или нет», «так или эдак» — которые крутятся в фоне, пока не зафиксируешь дату и не выберешь.</div>
+
+    <div class="acts" style="margin-top:4px;margin-bottom:14px"><button class="primary" id="diag-choice-add">+ Добавить выбор</button></div>
+    <div id="diag-choices-list"></div>
+    <div class="empty hidden" id="diag-choices-empty">Пока пусто — зависших решений нет.</div>
+
+    <button class="info-btn hidden" id="diag-choices-decided-toggle" style="margin-top:22px">✓ Показать решённые (<span id="diag-choices-decided-count">0</span>)</button>
+    <div id="diag-choices-decided" class="hidden" style="margin-top:12px"></div>
+  </section>
+
+  <!-- ===================== VIEW: ВЫБОР — ФОРМА (добавление/редактирование) ===================== -->
+  <section id="v-diag-choice-form" class="hidden">
+    <button class="back" data-back="diag-choices">← Выборы</button>
+    <h1 id="diag-choice-form-title">Новый выбор</h1>
+
+    <label>Формулировка <span style="opacity:.6;font-weight:400">— какое решение висит</span></label>
+    <textarea id="diag-choice-text" placeholder="Переезжать в другой город или нет?" style="width:100%;min-height:60px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--text);font-size:15px;line-height:1.4;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,sans-serif;padding:10px;resize:vertical;box-sizing:border-box"></textarea>
+
+    <label style="margin-top:14px">Тип выбора</label>
+    <button type="button" class="info-btn" id="diag-choice-types-info-btn" style="margin-bottom:8px">ℹ️ Как переформулировать в задачу</button>
+    <div class="seg" id="diag-choice-type-chips" style="flex-wrap:wrap"></div>
+
+    <label style="margin-top:14px">Дедлайн решения <span style="opacity:.6;font-weight:400">— зафиксируй дату, чтобы мозг перестал дёргать</span></label>
+    <input type="date" id="diag-choice-deadline">
+
+    <label style="margin-top:14px">Цена <span style="opacity:.6;font-weight:400">— сколько сил отнимает эта неопределённость</span></label>
+    <div id="diag-choice-cena-block">
+      <div class="diag-val" id="diag-choice-cena-value">5</div>
+      <div class="diag-slider-row">
+        <button class="diag-nudge" id="diag-choice-cena-minus">−</button>
+        <div class="diag-slwrap"><input type="range" min="1" max="10" step="1" value="5" id="diag-choice-cena-slider"></div>
+        <button class="diag-nudge" id="diag-choice-cena-plus">+</button>
+      </div>
+      <div class="diag-ticks"><span>1</span><span>5</span><span>10</span></div>
+    </div>
+
+    <label style="margin-top:14px">Заметки <span style="opacity:.6;font-weight:400">— варианты, критерии, что мешает решить (необязательно)</span></label>
+    <textarea id="diag-choice-note" placeholder="Варианты, критерии выбора..." style="width:100%;min-height:60px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--text);font-size:14px;line-height:1.4;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,sans-serif;padding:9px;resize:vertical;box-sizing:border-box"></textarea>
+
+    <div class="note" id="diag-choice-form-error" style="display:none;margin-top:12px"></div>
+    <div class="acts" style="margin-top:16px"><button class="primary" id="diag-choice-save">Сохранить</button></div>
+    <div class="link-row hidden" id="diag-choice-decide-row"><button id="diag-choice-decide">✓ Решение принято</button></div>
+    <div class="link-row hidden" id="diag-choice-delete-row"><button id="diag-choice-delete">Удалить этот выбор</button></div>
+  </section>
+
+  <!-- ===================== VIEW: ВЫБОР — СПРАВКА (переформулировка + когнитивные ошибки) ===================== -->
+  <section id="v-diag-choice-types-info" class="hidden">
+    <button class="back" data-back="diag-choice-form">← Назад</button>
+    <h1>🔀 Как переформулировать выбор в задачу</h1>
+    <div class="sub">По мотивам Михаила Муравьёва.</div>
+    <div id="diag-choice-types-list" style="margin-bottom:20px"></div>
+    <div class="info-h">Когнитивные ошибки, которые держат выбор</div>
+    <div id="diag-choice-antidotes-list"></div>
+  </section>
+
   <!-- ===================== VIEW: БЫСТРАЯ ПРИБОРКА (готовые списки из уже оценённых записей) ===================== -->
   <section id="v-diag-cleanup" class="hidden">
     <button class="back" data-back="diag">← Диагностика</button>
@@ -695,8 +754,36 @@
     <div id="diag-cleanup-worries"></div>
     <div class="empty hidden" id="diag-cleanup-worries-empty">Таких пунктов пока нет.</div>
 
+    <div class="diag-cleanup-h">⏳ На паузу</div>
+    <div class="diag-cleanup-sub">Высокая Сложность, но Ресурса не хватает, а Важность не критическая — сейчас не время; отложи с конкретной датой возврата.</div>
+    <div class="note" style="margin-bottom:12px">
+      Это геморройные задачи из категории «чёрт бы их побрал» — сложные, а ресурса на них сейчас нет, но и не бросить.
+      Они будут потихоньку выматывать, а быстрого результата всё равно не будет. Пока не появится достаточно ресурса —
+      официально уберите их из очереди в голове, зафиксировав дату возврата. Часто к этому сроку окажется, что задача
+      уже не актуальна и её можно смело списать.
+      <span style="opacity:.7">(по мотивам Михаила Муравьёва, autohumanism.com)</span>
+    </div>
+    <div id="diag-cleanup-pause"></div>
+    <div class="empty hidden" id="diag-cleanup-pause-empty">Таких пунктов пока нет.</div>
+
     <button class="info-btn" id="diag-cleanup-archive-toggle" style="margin-top:22px">🗄 Показать архив (<span id="diag-cleanup-archive-count">0</span>)</button>
     <div id="diag-cleanup-archive" class="hidden" style="margin-top:12px"></div>
+
+    <button class="info-btn" id="diag-cleanup-paused-toggle" style="margin-top:12px">⏳ Показать отложенные (<span id="diag-cleanup-paused-count">0</span>)</button>
+    <div id="diag-cleanup-paused" class="hidden" style="margin-top:12px"></div>
+  </section>
+
+  <!-- ===================== VIEW: НА ПАУЗУ — ФОРМА (дата возврата) ===================== -->
+  <section id="v-diag-pause-form" class="hidden">
+    <button class="back" data-back="diag-cleanup">← Быстрая приборка</button>
+    <h1>⏳ На паузу</h1>
+    <div class="center-card" style="text-align:left;margin-bottom:14px">
+      <div class="big" id="diag-pause-text" style="font-size:16px"></div>
+    </div>
+    <label>До какой даты вернуться к этой задаче</label>
+    <input type="date" id="diag-pause-date">
+    <div class="note" id="diag-pause-form-error" style="display:none;margin-top:12px"></div>
+    <div class="acts" style="margin-top:16px"><button class="primary" id="diag-pause-save">Поставить на паузу</button></div>
   </section>
 
   <!-- ===================== VIEW: РЕГЛАМЕНТ СПИСАНИЯ (редактируемый шаблон) ===================== -->
@@ -1005,7 +1092,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
-    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.1 · Аптечка + Антисаботаж + Диагностика + Списание</div>
+    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.2 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
@@ -1665,7 +1752,7 @@ function last3AllBad(){
 
 /* ---------- navigation ---------- */
 
-var VIEWS=["home","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-cleanup","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info"];
+var VIEWS=["home","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-cleanup","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
 var currentTrigger="";
 var currentSuggest=null;
 function showTool(v){
@@ -1678,6 +1765,7 @@ function showTool(v){
   if(v==="diag-weights-home") renderDiagWeightsHome();
   if(v==="diag-phantoms") renderDiagPhantomsList();
   if(v==="diag-ulcers") renderDiagUlcersList();
+  if(v==="diag-choices") renderDiagChoicesList();
   if(v==="diag-cleanup") renderDiagCleanup();
   window.scrollTo(0,0);
 }
@@ -1758,22 +1846,195 @@ function renderDiagLanding(){
   var phLabel=phCount? phCount+" "+ruPlural(phCount,"фантом","фантома","фантомов") : "пусто";
   var ulCount=diagLoadUlcers().length;
   var ulLabel=ulCount? ulCount+" "+ruPlural(ulCount,"язва","язвы","язв") : "пусто";
+  var openChoices=diagLoadChoices().filter(function(c){ return !c.decided; }).length;
+  var choicesLabel=openChoices? openChoices+" "+ruPlural(openChoices,"выбор","выбора","выборов") : "пусто";
   var cleanupLists=diagCleanupLists();
-  var cleanupLabel=(cleanupLists.writeoff.length+cleanupLists.quickwins.length+cleanupLists.worries.length)+" пунктов";
+  var cleanupN=cleanupLists.writeoff.length+cleanupLists.quickwins.length+cleanupLists.worries.length+cleanupLists.pauseCandidates.length;
+  var cleanupLabel=cleanupN+" пунктов";
   html+="<button class='anti-row' id='row-diag-phantoms'><span class='l'><span class='ic'>👻</span>Фантомы</span><span class='r'><span class='cnt'>"+phLabel+"</span><span class='chev'>›</span></span></button>"+
     "<button class='anti-row' id='row-diag-ulcers'><span class='l'><span class='ic'>🩹</span>Язвы</span><span class='r'><span class='cnt'>"+ulLabel+"</span><span class='chev'>›</span></span></button>"+
+    "<button class='anti-row' id='row-diag-choices'><span class='l'><span class='ic'>🔀</span>Выборы</span><span class='r'><span class='cnt'>"+choicesLabel+"</span><span class='chev'>›</span></span></button>"+
     "<button class='anti-row' id='row-diag-cleanup'><span class='l'><span class='ic'>🧹</span>Быстрая приборка</span><span class='r'><span class='cnt'>"+cleanupLabel+"</span><span class='chev'>›</span></span></button>";
   box.innerHTML=html;
   document.getElementById("row-diag-phantoms").onclick=function(){ showTool("diag-phantoms"); };
   document.getElementById("row-diag-ulcers").onclick=function(){ showTool("diag-ulcers"); };
+  document.getElementById("row-diag-choices").onclick=function(){ showTool("diag-choices"); };
   document.getElementById("row-diag-cleanup").onclick=function(){ showTool("diag-cleanup"); };
   [].forEach.call(box.querySelectorAll("[data-book]"),function(b){
     b.onclick=function(){ diagOpenBook(b.getAttribute("data-book")); };
   });
 }
 
+/* ---------- выборы: незавершённые решения (по мотивам статьи о списании убытков) ---------- */
+var CHOICE_KEY="diag_choices";
+var CHOICE_TYPES=["Бинарный","Многовариантный","Затратный","Неопределённый"];
+var CHOICE_TYPE_DESC={
+  "Бинарный":"«Да или нет?» → Сформулируй чёткие критерии и прими решение к конкретной дате.",
+  "Многовариантный":"«Вот так или вот эдак?» → Выпиши все варианты, оцени по 2-3 критериям, выбери лучший.",
+  "Затратный":"«А вдруг выберу не то?» → Оцени риски каждого варианта — убедись, что катастрофы не будет в любом случае, выбери один.",
+  "Неопределённый":"«Не горит — ещё подумаю» → Раз решение не критично, отложи выбор до конкретной даты и зафиксируй её."
+};
+var CHOICE_ANTIDOTES=[
+  {title:"Иллюзия наилучшего варианта", desc:"Убеждение, что существует идеальное решение, которое нужно найти.", antidote:"Мне не нужно идеальное решение. Мне достаточно просто хорошего."},
+  {title:"Страх упущенной выгоды", desc:"Отказ от одного варианта ощущается как потеря выгоды второго.", antidote:"Я выбираю этот вариант. Если потом окажется, что другой был выгоднее — не страшно."},
+  {title:"Дефицит информации", desc:"Вера в то, что если собрать побольше данных, выбор станет очевидным.", antidote:"У меня достаточно информации для решения. Дополнительные данные не упростят, а, наоборот, усложнят выбор."},
+  {title:"Эмоциональный якорь", desc:"Объективно лучший вариант ассоциируется со страхом или стыдом, и вы избегаете его.", antidote:"Я избегаю не самого варианта, а эмоции. Я выбираю лучший вариант, а с эмоцией буду разбираться отдельно."},
+  {title:"Перфекционизм", desc:"Установка, что выбор должен быть абсолютно правильным, без права на ошибку.", antidote:"Ошибка — это опыт, а не конец света. Если ошибусь, в следующий раз буду просто учитывать результат."}
+];
+function diagLoadChoices(){ return load(CHOICE_KEY, []); }
+function diagSaveChoices(arr){ save(CHOICE_KEY, arr); }
+
+function renderDiagChoicesList(){
+  var box=document.getElementById("diag-choices-list");
+  var empty=document.getElementById("diag-choices-empty");
+  var arr=diagLoadChoices();
+  var open=arr.map(function(c,i){ return {c:c,i:i}; }).filter(function(o){ return !o.c.decided; })
+    .sort(function(a,b){
+      var da=a.c.deadline||"9999-99-99", db=b.c.deadline||"9999-99-99";
+      return da<db? -1 : da>db? 1 : 0;
+    });
+  var decided=arr.map(function(c,i){ return {c:c,i:i}; }).filter(function(o){ return o.c.decided; });
+
+  if(!open.length){ box.innerHTML=""; empty.classList.remove("hidden"); }
+  else {
+    empty.classList.add("hidden");
+    var today=diagTodayIso();
+    box.innerHTML=open.map(function(o){
+      var c=o.c;
+      var overdue=c.deadline && c.deadline<today;
+      var deadlineLabel=c.deadline? (overdue?"⚠️ Просрочен, был ":"До ")+diagFormatDateRu(c.deadline) : "без даты";
+      var col=diagColorFor(c.cena, false);
+      return "<button class='anti-row' data-i='"+o.i+"'><span class='l'><span class='ic' style='color:"+col+";font-weight:800;font-size:15px'>"+c.cena+"</span>"+
+        "<span style='display:flex;flex-direction:column;align-items:flex-start'><b>"+esc(c.text)+"</b>"+
+        "<span style='color:var(--muted);font-size:12px'>"+(c.type?esc(c.type)+" · ":"")+deadlineLabel+"</span></span></span>"+
+        "<span class='r'><span class='chev'>›</span></span></button>";
+    }).join("");
+    [].forEach.call(box.querySelectorAll("[data-i]"),function(b){
+      b.onclick=function(){ diagOpenChoiceForm(+b.getAttribute("data-i")); };
+    });
+  }
+
+  var toggle=document.getElementById("diag-choices-decided-toggle");
+  toggle.classList.toggle("hidden", !decided.length);
+  document.getElementById("diag-choices-decided-count").textContent=decided.length;
+  document.getElementById("diag-choices-decided").innerHTML=decided.map(function(o){
+    return "<button class='anti-row' data-i='"+o.i+"'><span class='l'><b>"+esc(o.c.text)+"</b></span>"+
+      "<span class='r'><span class='chev'>›</span></span></button>";
+  }).join("");
+  [].forEach.call(document.getElementById("diag-choices-decided").querySelectorAll("[data-i]"),function(b){
+    b.onclick=function(){ diagOpenChoiceForm(+b.getAttribute("data-i")); };
+  });
+}
+document.getElementById("diag-choice-add").onclick=function(){ diagOpenChoiceForm(null); };
+document.getElementById("diag-choices-decided-toggle").onclick=function(){
+  document.getElementById("diag-choices-decided").classList.toggle("hidden");
+};
+
+var diagChoiceEditIndex=null;
+function diagRenderChoiceTypeChips(selected){
+  var box=document.getElementById("diag-choice-type-chips");
+  box.innerHTML=CHOICE_TYPES.map(function(t){
+    return "<button class='chip"+(t===selected?" on":"")+"' data-t='"+t+"'>"+t+"</button>";
+  }).join("");
+  [].forEach.call(box.children,function(b){
+    b.onclick=function(){
+      [].forEach.call(box.children,function(x){ x.classList.remove("on"); });
+      b.classList.add("on");
+    };
+  });
+}
+function diagPaintChoiceSlider(v){
+  var c=diagColorFor(v, false);
+  document.getElementById("diag-choice-cena-value").style.color=c;
+  var st=document.getElementById("diag-choice-cena-paint");
+  if(!st){ st=document.createElement("style"); st.id="diag-choice-cena-paint"; document.head.appendChild(st); }
+  st.textContent="#diag-choice-cena-slider::-webkit-slider-thumb{background:"+c+"}#diag-choice-cena-slider{background:linear-gradient(90deg,#4ade80,"+c+" "+((v-1)/9*100)+"%,var(--line))}";
+}
+function diagOpenChoiceForm(index){
+  diagChoiceEditIndex=index;
+  var arr=diagLoadChoices();
+  var c=(index!==null)? arr[index] : {text:"",type:"",deadline:"",cena:5,note:"",decided:false};
+  document.getElementById("diag-choice-form-title").textContent=(index!==null)? "Редактировать выбор" : "Новый выбор";
+  document.getElementById("diag-choice-text").value=c.text||"";
+  document.getElementById("diag-choice-deadline").value=c.deadline||"";
+  document.getElementById("diag-choice-note").value=c.note||"";
+  document.getElementById("diag-choice-form-error").style.display="none";
+  diagRenderChoiceTypeChips(c.type||"");
+  var slider=document.getElementById("diag-choice-cena-slider");
+  slider.value=c.cena||5;
+  document.getElementById("diag-choice-cena-value").textContent=slider.value;
+  diagPaintChoiceSlider(+slider.value);
+  document.getElementById("diag-choice-delete-row").classList.toggle("hidden", index===null);
+  var decideRow=document.getElementById("diag-choice-decide-row");
+  decideRow.classList.toggle("hidden", index===null || c.decided);
+  showTool("diag-choice-form");
+}
+document.getElementById("diag-choice-cena-slider").addEventListener("input", function(){
+  var v=+this.value;
+  document.getElementById("diag-choice-cena-value").textContent=v;
+  diagPaintChoiceSlider(v);
+});
+document.getElementById("diag-choice-cena-minus").onclick=function(){
+  var slider=document.getElementById("diag-choice-cena-slider");
+  slider.value=Math.max(1, +slider.value-1);
+  slider.dispatchEvent(new Event("input",{bubbles:true}));
+};
+document.getElementById("diag-choice-cena-plus").onclick=function(){
+  var slider=document.getElementById("diag-choice-cena-slider");
+  slider.value=Math.min(10, +slider.value+1);
+  slider.dispatchEvent(new Event("input",{bubbles:true}));
+};
+document.getElementById("diag-choice-save").onclick=function(){
+  var text=document.getElementById("diag-choice-text").value.trim();
+  var errEl=document.getElementById("diag-choice-form-error");
+  if(!text){ errEl.textContent="Сформулируй, какое решение висит."; errEl.style.display="block"; return; }
+  errEl.style.display="none";
+  var typeBtn=document.querySelector("#diag-choice-type-chips .chip.on");
+  var arr=diagLoadChoices();
+  var prev=(diagChoiceEditIndex!==null)? arr[diagChoiceEditIndex] : null;
+  var entry={
+    text:text,
+    type:typeBtn? typeBtn.getAttribute("data-t") : "",
+    deadline:document.getElementById("diag-choice-deadline").value,
+    cena:+document.getElementById("diag-choice-cena-slider").value,
+    note:document.getElementById("diag-choice-note").value.trim(),
+    decided:prev? prev.decided : false,
+    decidedDate:prev? prev.decidedDate : ""
+  };
+  if(diagChoiceEditIndex!==null) arr[diagChoiceEditIndex]=entry; else arr.push(entry);
+  diagSaveChoices(arr);
+  showTool("diag-choices");
+};
+document.getElementById("diag-choice-decide").onclick=function(){
+  if(diagChoiceEditIndex===null) return;
+  var arr=diagLoadChoices();
+  arr[diagChoiceEditIndex].decided=true;
+  arr[diagChoiceEditIndex].decidedDate=diagTodayIso();
+  diagSaveChoices(arr);
+  showTool("diag-choices");
+};
+document.getElementById("diag-choice-delete").onclick=function(){
+  if(diagChoiceEditIndex===null) return;
+  if(!confirm("Удалить этот выбор без возможности восстановить?")) return;
+  var arr=diagLoadChoices();
+  arr.splice(diagChoiceEditIndex,1);
+  diagSaveChoices(arr);
+  showTool("diag-choices");
+};
+document.getElementById("diag-choice-types-info-btn").onclick=function(){
+  document.getElementById("diag-choice-types-list").innerHTML=CHOICE_TYPES.map(function(t){
+    return "<div class='info-block' style='margin-bottom:10px'><div class='info-h' style='margin:0 0 6px'>"+t+"</div><div class='info-p'>"+CHOICE_TYPE_DESC[t]+"</div></div>";
+  }).join("");
+  document.getElementById("diag-choice-antidotes-list").innerHTML=CHOICE_ANTIDOTES.map(function(a){
+    return "<div class='info-block' style='margin-bottom:10px'><div class='info-h' style='margin:0 0 6px'>"+a.title+"</div>"+
+      "<div class='info-p'>"+a.desc+"</div><div class='info-p' style='margin-top:6px;font-style:italic'>«"+a.antidote+"»</div></div>";
+  }).join("");
+  showTool("diag-choice-types-info");
+};
+
 /* ---- быстрая приборка + списание убытков (по мотивам Муравьева) ---- */
 var DIAG_CLEANUP_GAP=3, DIAG_CLEANUP_HIGH=8;
+var DIAG_PAUSE_SLOZHNOST_MIN=7, DIAG_PAUSE_RESURS_MAX=3, DIAG_PAUSE_VAZHNOST_MAX=7;
 // разбирает произвольный поток (для конкретной книги) на завершённые записи, не завися от активной книги
 function diagParseStreamEntries(book, stream){
   var lines=stream.split("\n");
@@ -1791,13 +2052,15 @@ function diagParseStreamEntries(book, stream){
       while(mm=re.exec(wm[1])) weights[mm[1]]=+mm[2];
     }
     var catM=tail.match(/#(\S+)/);
+    var pauseM=tail.match(/!пауза:(\d{4}-\d{2}-\d{2})/);
     var entry={
       lineIndex:idx,
       text:pm[1].trim(),
       sensation:pm[2].trim(),
       cena:+pm[3],
       category:catM?catM[1]:"",
-      archived:tail.indexOf("!архив")!==-1
+      archived:tail.indexOf("!архив")!==-1,
+      pauseUntil:pauseM?pauseM[1]:""
     };
     book.dimOrder.forEach(function(dimId){ entry[dimId]=weights[book.dims[dimId].key]; });
     entries.push(entry);
@@ -1820,16 +2083,20 @@ function diagWriteStreamLineMeta(book, stream, lineIndex, patch){
   }
   var category=(tail.match(/#(\S+)/)||[])[1]||"";
   var archived=tail.indexOf("!архив")!==-1;
+  var pauseM=tail.match(/!пауза:(\d{4}-\d{2}-\d{2})/);
+  var pauseUntil=pauseM?pauseM[1]:"";
   Object.keys(patch).forEach(function(k){
     if(k==="category") category=patch.category;
-    else if(k==="archived") archived=patch.archived;
+    else if(k==="archived"){ archived=patch.archived; if(archived) pauseUntil=""; }
+    else if(k==="pauseUntil"){ pauseUntil=patch.pauseUntil||""; if(pauseUntil) archived=false; }
     else weights[k]=patch[k];
   });
   var newTail="";
   var wKeys=book.dimOrder.map(function(d){ return book.dims[d].key; }).filter(function(k){ return weights[k]!==undefined; });
   if(wKeys.length) newTail+=" ["+wKeys.map(function(k){ return k+":"+weights[k]; }).join(" ")+"]";
   if(category) newTail+=" #"+category;
-  if(archived) newTail+=" !архив";
+  if(pauseUntil) newTail+=" !пауза:"+pauseUntil;
+  else if(archived) newTail+=" !архив";
   lines[lineIndex]=head+newTail;
   return lines.join("\n");
 }
@@ -1857,9 +2124,18 @@ function diagCleanupLists(){
     return e.control===0 && e.vazhnost<=3;
   }).sort(function(a,b){ return b.cena-a.cena; });
 
+  var pauseCandidates=complaintsEntries.filter(function(e){
+    if(e.archived || e.pauseUntil) return false;
+    if(e.slozhnost===undefined || e.resurs===undefined || e.vazhnost===undefined) return false;
+    return e.slozhnost>=DIAG_PAUSE_SLOZHNOST_MIN && e.resurs<=DIAG_PAUSE_RESURS_MAX && e.vazhnost<=DIAG_PAUSE_VAZHNOST_MAX;
+  }).sort(function(a,b){ return b.slozhnost-a.slozhnost; });
+
+  var paused=complaintsEntries.filter(function(e){ return !!e.pauseUntil; })
+    .sort(function(a,b){ return a.pauseUntil<b.pauseUntil? -1 : a.pauseUntil>b.pauseUntil? 1 : 0; });
+
   var archived=complaintsEntries.filter(function(e){ return e.archived; });
 
-  return {writeoff:writeoff, quickwins:quickwins, worries:worries, archived:archived};
+  return {writeoff:writeoff, quickwins:quickwins, worries:worries, pauseCandidates:pauseCandidates, paused:paused, archived:archived};
 }
 function diagCleanupCardHtml(e, meta, action){
   return "<div class='diag-cleanup-card'><div><div class='txt'>"+esc(e.text)+"</div><div class='meta'>"+meta.join(" · ")+"</div></div><div class='action'>"+action+"</div></div>";
@@ -1894,6 +2170,35 @@ function renderDiagCleanup(){
       return diagCleanupCardHtml(e, ["Цена "+e.cena, "Важн. "+e.vazhnost], "");
     }).join("");
   } else { wrBox.innerHTML=""; wrEmpty.classList.remove("hidden"); }
+
+  var pBox=document.getElementById("diag-cleanup-pause");
+  var pEmpty=document.getElementById("diag-cleanup-pause-empty");
+  if(lists.pauseCandidates.length){
+    pEmpty.classList.add("hidden");
+    pBox.innerHTML=lists.pauseCandidates.map(function(e,i){
+      return diagCleanupCardHtml(e, ["Сложн. "+e.slozhnost, "Ресурс "+e.resurs, "Важн. "+e.vazhnost],
+        "<button data-pi='"+i+"'>⏳ На паузу</button>");
+    }).join("");
+    [].forEach.call(pBox.querySelectorAll("button"),function(b){
+      b.onclick=function(){ diagOpenPauseForm(lists.pauseCandidates[+b.getAttribute("data-pi")]); };
+    });
+  } else { pBox.innerHTML=""; pEmpty.classList.remove("hidden"); }
+
+  document.getElementById("diag-cleanup-paused-count").textContent=lists.paused.length;
+  var pdBox=document.getElementById("diag-cleanup-paused");
+  var today=diagTodayIso();
+  pdBox.innerHTML=lists.paused.map(function(e){
+    var overdue=e.pauseUntil<today;
+    var dateLabel=(overdue?"⚠️ Пора вернуться, было ":"До ")+diagFormatDateRu(e.pauseUntil);
+    return diagCleanupCardHtml(e, ["Сложн. "+e.slozhnost, dateLabel], "<button data-i='"+e.lineIndex+"'>▶ Снять с паузы</button>");
+  }).join("");
+  [].forEach.call(pdBox.querySelectorAll("button"),function(b){
+    b.onclick=function(){
+      diagCleanupSetPause(DIAG_BOOKS.complaints, +b.getAttribute("data-i"), "");
+      renderDiagCleanup();
+    };
+  });
+
   document.getElementById("diag-cleanup-archive-count").textContent=lists.archived.length;
   var arBox=document.getElementById("diag-cleanup-archive");
   var writeoffs=diagLoadWriteoffs();
@@ -1916,8 +2221,42 @@ function diagCleanupSetArchived(book, lineIndex, archived){
   save(book.streamKey, newStream);
   if(diagActiveBookId===book.id) diagStream=newStream;
 }
+function diagCleanupSetPause(book, lineIndex, dateStr){
+  var stream=load(book.streamKey,"");
+  var newStream=diagWriteStreamLineMeta(book, stream, lineIndex, {pauseUntil:dateStr||""});
+  save(book.streamKey, newStream);
+  if(diagActiveBookId===book.id) diagStream=newStream;
+}
+function diagFormatDateRu(iso){
+  var p=iso.split("-");
+  return p[2]+"."+p[1]+"."+p[0];
+}
+function diagTodayIso(){
+  var d=new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
 document.getElementById("diag-cleanup-archive-toggle").onclick=function(){
   document.getElementById("diag-cleanup-archive").classList.toggle("hidden");
+};
+document.getElementById("diag-cleanup-paused-toggle").onclick=function(){
+  document.getElementById("diag-cleanup-paused").classList.toggle("hidden");
+};
+
+var diagPauseEntry=null;
+function diagOpenPauseForm(entry){
+  diagPauseEntry=entry;
+  document.getElementById("diag-pause-text").textContent=entry.text;
+  document.getElementById("diag-pause-date").value="";
+  document.getElementById("diag-pause-form-error").style.display="none";
+  showTool("diag-pause-form");
+}
+document.getElementById("diag-pause-save").onclick=function(){
+  var date=document.getElementById("diag-pause-date").value;
+  var errEl=document.getElementById("diag-pause-form-error");
+  if(!date){ errEl.textContent="Выбери дату возврата."; errEl.style.display="block"; return; }
+  errEl.style.display="none";
+  diagCleanupSetPause(DIAG_BOOKS.complaints, diagPauseEntry.lineIndex, date);
+  showTool("diag-cleanup");
 };
 
 var WRITEOFF_POLICY_KEY="diag_writeoff_policy";
