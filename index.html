@@ -188,7 +188,8 @@
 
 
   /* list / manage */
-  .filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+  .filters{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px}
+  .filters .chip{padding:4px 7px;font-size:11px}
   .chip{border:1px solid var(--line);background:var(--panel2);color:var(--muted);border-radius:999px;padding:6px 11px;font-size:12px;font-weight:600}
   .chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
   .seg-tabs{display:flex;gap:6px;margin-bottom:12px}
@@ -301,7 +302,9 @@
   .diag-ticks{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:6px}
 
   /* diagnostics: таблица (закреплённый левый столбец + горизонтальная прокрутка) */
-  .diag-tbl-wrap{overflow:auto;-webkit-overflow-scrolling:touch;border-radius:10px;margin-bottom:16px}
+  .diag-tbl-wrap{overflow:auto;-webkit-overflow-scrolling:touch;max-height:calc(100vh - 210px);border-radius:10px;margin-bottom:16px}
+  #diag-tasks-header{overflow:hidden;max-height:600px;transition:max-height .25s ease, opacity .2s ease}
+  #diag-tasks-header.collapsed{max-height:0;opacity:0;margin:0}
   .diag-tbl-wrap table{border-collapse:separate;border-spacing:0;width:100%;font-size:13px}
   .diag-tbl-wrap th,.diag-tbl-wrap td{padding:8px 7px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--panel)}
   .diag-tbl-wrap th{color:var(--muted);font-weight:700;position:sticky;top:0;z-index:2;cursor:pointer;user-select:none}
@@ -723,6 +726,111 @@
     <div id="diag-choice-antidotes-list"></div>
   </section>
 
+  <!-- ===================== VIEW: ЗАДАЧИ В РАБОТЕ — СПИСОК ===================== -->
+  <section id="v-diag-tasks" class="hidden">
+    <button class="back" data-back="diag">← Диагностика</button>
+    <div id="diag-tasks-header">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px">
+        <div style="flex:1;min-width:0">
+          <h1 style="margin:2px 0">📋 Задачи в работе</h1>
+          <div class="sub" style="margin:0">Проблемы, тревоги, выборы — в виде задач.</div>
+        </div>
+        <button class="ghost" id="diag-task-add" style="flex:0 0 auto;padding:6px 10px;font-size:13px;line-height:1.25;white-space:normal;text-align:center;width:70px">+ Добавить задачу</button>
+      </div>
+
+      <div class="acts" style="margin-top:4px;margin-bottom:10px">
+        <button class="ghost" id="diag-task-convert-open">🔄 Перенести из книг (<span id="diag-task-candidates-count">0</span>)</button>
+      </div>
+      <div class="acts" style="margin-bottom:14px"><button class="ghost" id="diag-task-categorize-open">🗂️ Систематизировать (<span id="diag-task-cat-count">0</span>)</button></div>
+
+      <div class="filters" id="diag-task-cat-filter"></div>
+    </div>
+    <div id="diag-tasks-list"></div>
+    <div class="empty hidden" id="diag-tasks-empty">Пока пусто.</div>
+  </section>
+
+  <!-- ===================== VIEW: ЗАДАЧИ — СИСТЕМАТИЗИРОВАТЬ ===================== -->
+  <section id="v-diag-task-categorize" class="hidden">
+    <button class="back" data-back="diag-tasks">← Задачи в работе</button>
+    <h1>🗂️ Систематизировать</h1>
+    <div class="sub" id="diag-task-cat-progress"></div>
+    <div class="center-card" id="diag-task-cat-card">
+      <div class="big" id="diag-task-cat-text" style="font-size:17px"></div>
+    </div>
+    <div class="seg" id="diag-task-cat-chips" style="margin-top:16px;justify-content:center"></div>
+    <div class="empty hidden" id="diag-task-cat-empty">Все задачи разложены по категориям 🎉</div>
+  </section>
+
+  <!-- ===================== VIEW: ЗАДАЧА — ФОРМА (добавление/редактирование) ===================== -->
+  <section id="v-diag-task-form" class="hidden">
+    <button class="back" data-back="diag-tasks">← Задачи в работе</button>
+    <h1 id="diag-task-form-title">Новая задача</h1>
+
+    <label>Формулировка задачи</label>
+    <textarea id="diag-task-text" placeholder="Что нужно сделать?" style="width:100%;min-height:60px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--text);font-size:15px;line-height:1.4;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,sans-serif;padding:10px;resize:vertical;box-sizing:border-box"></textarea>
+
+    <label style="margin-top:14px">Цена</label>
+    <div class="diag-val" id="diag-task-cena-value">5</div>
+    <div class="diag-slider-row">
+      <button class="diag-nudge" id="diag-task-cena-minus">−</button>
+      <div class="diag-slwrap"><input type="range" min="1" max="10" step="1" value="5" id="diag-task-cena-slider"></div>
+      <button class="diag-nudge" id="diag-task-cena-plus">+</button>
+    </div>
+    <div class="diag-ticks"><span>1</span><span>5</span><span>10</span></div>
+
+    <label style="margin-top:14px">Важность</label>
+    <div class="diag-val" id="diag-task-vazhnost-value">5</div>
+    <div class="diag-slider-row">
+      <button class="diag-nudge" id="diag-task-vazhnost-minus">−</button>
+      <div class="diag-slwrap"><input type="range" min="1" max="10" step="1" value="5" id="diag-task-vazhnost-slider"></div>
+      <button class="diag-nudge" id="diag-task-vazhnost-plus">+</button>
+    </div>
+    <div class="diag-ticks"><span>1</span><span>5</span><span>10</span></div>
+
+    <label style="margin-top:14px">Сложность</label>
+    <div class="diag-val" id="diag-task-slozhnost-value">5</div>
+    <div class="diag-slider-row">
+      <button class="diag-nudge" id="diag-task-slozhnost-minus">−</button>
+      <div class="diag-slwrap"><input type="range" min="1" max="10" step="1" value="5" id="diag-task-slozhnost-slider"></div>
+      <button class="diag-nudge" id="diag-task-slozhnost-plus">+</button>
+    </div>
+    <div class="diag-ticks"><span>1</span><span>5</span><span>10</span></div>
+
+    <label style="margin-top:14px">Ресурс</label>
+    <div class="diag-val" id="diag-task-resurs-value">5</div>
+    <div class="diag-slider-row">
+      <button class="diag-nudge" id="diag-task-resurs-minus">−</button>
+      <div class="diag-slwrap"><input type="range" min="1" max="10" step="1" value="5" id="diag-task-resurs-slider"></div>
+      <button class="diag-nudge" id="diag-task-resurs-plus">+</button>
+    </div>
+    <div class="diag-ticks"><span>1</span><span>5</span><span>10</span></div>
+
+    <div class="note" id="diag-task-form-error" style="display:none;margin-top:12px"></div>
+    <div class="acts" style="margin-top:16px"><button class="primary" id="diag-task-save">Сохранить</button></div>
+    <div class="link-row hidden" id="diag-task-delete-row"><button id="diag-task-delete">Удалить эту задачу</button></div>
+  </section>
+
+  <!-- ===================== VIEW: ПЕРЕНОС В ЗАДАЧИ — ОЧЕРЕДЬ НА ПОДТВЕРЖДЕНИЕ ===================== -->
+  <section id="v-diag-task-convert" class="hidden">
+    <button class="back" data-back="diag-tasks">← Задачи в работе</button>
+    <h1>🔄 Перепиши как задачу</h1>
+    <div class="sub" id="diag-task-convert-progress">1 из 1</div>
+
+    <div class="center-card" style="text-align:left;margin-bottom:6px">
+      <div style="color:var(--muted);font-size:12px;margin-bottom:4px" id="diag-task-convert-source-label"></div>
+      <div class="big" id="diag-task-convert-original" style="font-size:15px"></div>
+      <div style="color:var(--muted);font-size:12px;margin-top:8px" id="diag-task-convert-weights"></div>
+    </div>
+
+    <label style="margin-top:10px">Перепиши это как задачу</label>
+    <textarea id="diag-task-convert-draft" style="width:100%;min-height:70px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--text);font-size:15px;line-height:1.4;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,sans-serif;padding:10px;resize:vertical;box-sizing:border-box"></textarea>
+
+    <div class="acts" style="margin-top:16px">
+      <button class="ghost" id="diag-task-convert-skip">Пропустить</button>
+      <button class="primary" id="diag-task-convert-save">Сохранить как задачу</button>
+    </div>
+  </section>
+
   <!-- ===================== VIEW: БЫСТРАЯ ПРИБОРКА (готовые списки из уже оценённых записей) ===================== -->
   <section id="v-diag-cleanup" class="hidden">
     <button class="back" data-back="diag">← Диагностика</button>
@@ -1092,7 +1200,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
-    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.2 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы</div>
+    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.3 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
@@ -1752,7 +1860,7 @@ function last3AllBad(){
 
 /* ---------- navigation ---------- */
 
-var VIEWS=["home","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-cleanup","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
+var VIEWS=["home","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
 var currentTrigger="";
 var currentSuggest=null;
 function showTool(v){
@@ -1766,6 +1874,7 @@ function showTool(v){
   if(v==="diag-phantoms") renderDiagPhantomsList();
   if(v==="diag-ulcers") renderDiagUlcersList();
   if(v==="diag-choices") renderDiagChoicesList();
+  if(v==="diag-tasks") renderDiagTasksList();
   if(v==="diag-cleanup") renderDiagCleanup();
   window.scrollTo(0,0);
 }
@@ -1848,17 +1957,21 @@ function renderDiagLanding(){
   var ulLabel=ulCount? ulCount+" "+ruPlural(ulCount,"язва","язвы","язв") : "пусто";
   var openChoices=diagLoadChoices().filter(function(c){ return !c.decided; }).length;
   var choicesLabel=openChoices? openChoices+" "+ruPlural(openChoices,"выбор","выбора","выборов") : "пусто";
+  var taskCount=diagLoadTasks().length;
+  var taskLabel=taskCount? taskCount+" "+ruPlural(taskCount,"задача","задачи","задач") : "пусто";
   var cleanupLists=diagCleanupLists();
   var cleanupN=cleanupLists.writeoff.length+cleanupLists.quickwins.length+cleanupLists.worries.length+cleanupLists.pauseCandidates.length;
   var cleanupLabel=cleanupN+" пунктов";
   html+="<button class='anti-row' id='row-diag-phantoms'><span class='l'><span class='ic'>👻</span>Фантомы</span><span class='r'><span class='cnt'>"+phLabel+"</span><span class='chev'>›</span></span></button>"+
     "<button class='anti-row' id='row-diag-ulcers'><span class='l'><span class='ic'>🩹</span>Язвы</span><span class='r'><span class='cnt'>"+ulLabel+"</span><span class='chev'>›</span></span></button>"+
     "<button class='anti-row' id='row-diag-choices'><span class='l'><span class='ic'>🔀</span>Выборы</span><span class='r'><span class='cnt'>"+choicesLabel+"</span><span class='chev'>›</span></span></button>"+
+    "<button class='anti-row' id='row-diag-tasks'><span class='l'><span class='ic'>📋</span>Задачи в работе</span><span class='r'><span class='cnt'>"+taskLabel+"</span><span class='chev'>›</span></span></button>"+
     "<button class='anti-row' id='row-diag-cleanup'><span class='l'><span class='ic'>🧹</span>Быстрая приборка</span><span class='r'><span class='cnt'>"+cleanupLabel+"</span><span class='chev'>›</span></span></button>";
   box.innerHTML=html;
   document.getElementById("row-diag-phantoms").onclick=function(){ showTool("diag-phantoms"); };
   document.getElementById("row-diag-ulcers").onclick=function(){ showTool("diag-ulcers"); };
   document.getElementById("row-diag-choices").onclick=function(){ showTool("diag-choices"); };
+  document.getElementById("row-diag-tasks").onclick=function(){ showTool("diag-tasks"); };
   document.getElementById("row-diag-cleanup").onclick=function(){ showTool("diag-cleanup"); };
   [].forEach.call(box.querySelectorAll("[data-book]"),function(b){
     b.onclick=function(){ diagOpenBook(b.getAttribute("data-book")); };
@@ -1948,7 +2061,7 @@ function diagPaintChoiceSlider(v){
   document.getElementById("diag-choice-cena-value").style.color=c;
   var st=document.getElementById("diag-choice-cena-paint");
   if(!st){ st=document.createElement("style"); st.id="diag-choice-cena-paint"; document.head.appendChild(st); }
-  st.textContent="#diag-choice-cena-slider::-webkit-slider-thumb{background:"+c+"}#diag-choice-cena-slider{background:linear-gradient(90deg,#4ade80,"+c+" "+((v-1)/9*100)+"%,var(--line))}";
+  st.textContent="#diag-choice-cena-slider::-webkit-slider-thumb{background:"+c+"}#diag-choice-cena-slider{background:linear-gradient(90deg,var(--line),"+c+" 55%,var(--line))}";
 }
 function diagOpenChoiceForm(index){
   diagChoiceEditIndex=index;
@@ -2032,6 +2145,270 @@ document.getElementById("diag-choice-types-info-btn").onclick=function(){
   showTool("diag-choice-types-info");
 };
 
+/* ---------- задачи в работе: единая таблица из жалоб/тревог/выборов, переписанных в виде задач ---------- */
+var TASK_KEY="diag_tasks";
+function diagLoadTasks(){ return load(TASK_KEY, []); }
+function diagSaveTasks(arr){ save(TASK_KEY, arr); }
+
+// собирает очередь кандидатов на перенос: ещё не помеченных как перенесённые, из трёх источников
+function diagTaskCandidates(){
+  var complaintsBook=DIAG_BOOKS.complaints, anxietyBook=DIAG_BOOKS.anxiety;
+  var complaintsEntries=diagParseStreamEntries(complaintsBook, load(complaintsBook.streamKey,""))
+    .filter(function(e){ return !e.archived && !e.taskConverted; })
+    .map(function(e){ return {source:"complaint", book:complaintsBook, entry:e}; });
+  var anxietyEntries=diagParseStreamEntries(anxietyBook, load(anxietyBook.streamKey,""))
+    .filter(function(e){ return !e.archived && !e.taskConverted; })
+    .map(function(e){ return {source:"anxiety", book:anxietyBook, entry:e}; });
+  var choiceEntries=diagLoadChoices().map(function(c,i){ return {c:c,i:i}; })
+    .filter(function(o){ return !o.c.decided && !o.c.movedToTasks; })
+    .map(function(o){ return {source:"choice", choiceIndex:o.i, entry:o.c}; });
+  return complaintsEntries.concat(anxietyEntries, choiceEntries);
+}
+function diagTaskDraftFor(cand){
+  var e=cand.entry;
+  if(cand.source==="complaint") return e.text;
+  if(cand.source==="anxiety") return "Проанализировать триггеры тревоги «"+e.text+"», найти источники и ограничить взаимодействие с ними.";
+  // choice
+  var dl=e.deadline? " до "+diagFormatDateRu(e.deadline) : "";
+  if(e.type==="Бинарный") return "Сформулировать критерии и принять решение по «"+e.text+"»"+dl+".";
+  if(e.type==="Многовариантный") return "Выписать варианты по «"+e.text+"», оценить по 2-3 критериям и выбрать лучший"+dl+".";
+  if(e.type==="Затратный") return "Оценить риски каждого варианта по «"+e.text+"» и выбрать один"+dl+".";
+  if(e.type==="Неопределённый") return "Отложить выбор «"+e.text+"»"+dl+", раз не горит прямо сейчас.";
+  return e.text;
+}
+function diagTaskWeightsFor(cand){
+  var e=cand.entry;
+  if(cand.source==="complaint") return {cena:e.cena, vazhnost:e.vazhnost, slozhnost:e.slozhnost, resurs:e.resurs};
+  if(cand.source==="anxiety") return {cena:e.cena, vazhnost:e.vazhnost, slozhnost:undefined, resurs:undefined};
+  return {cena:e.cena, vazhnost:undefined, slozhnost:undefined, resurs:undefined};
+}
+function diagTaskSourceLabel(cand){
+  if(cand.source==="complaint") return "📓 Из Жалобной книги";
+  if(cand.source==="anxiety") return "😟 Из Тревог";
+  return "🔀 Из Выборов";
+}
+
+/* ---- задачи: таблица с сортировкой (та же обёртка diag-tbl-wrap, что и в Жалобной книге — липкая шапка бесплатно) ---- */
+var diagTaskSortKey="cena", diagTaskSortDir=-1;
+var TASK_COLS=[["cena","Цена"],["vazhnost","Важн."],["slozhnost","Сложн."],["resurs","Ресурс"]];
+function diagTaskCompare(a,b){
+  var av=a.t[diagTaskSortKey], bv=b.t[diagTaskSortKey];
+  var aU=av===undefined, bU=bv===undefined;
+  if(aU&&bU) return 0;
+  if(aU) return 1;
+  if(bU) return -1;
+  return (av-bv)*diagTaskSortDir;
+}
+function diagTaskTableHeaderHtml(){
+  return "<tr><th class='d'>Задача</th>"+TASK_COLS.map(function(c){
+    var arrow=diagTaskSortKey===c[0]?(diagTaskSortDir===1?" ↑":" ↓"):"";
+    return "<th data-key='"+c[0]+"' class='"+(diagTaskSortKey===c[0]?"sorted":"")+"'>"+c[1]+arrow+"</th>";
+  }).join("")+"</tr>";
+}
+function diagTaskTableRowHtml(o){
+  var t=o.t;
+  var cells=TASK_COLS.map(function(c){ return "<td>"+(t[c[0]]===undefined?"—":t[c[0]])+"</td>"; }).join("");
+  return "<tr data-i='"+o.i+"' style='cursor:pointer'><td class='d'>"+esc(t.text)+"</td>"+cells+"</tr>";
+}
+document.getElementById("diag-tasks-list").addEventListener("scroll", function(){
+  document.getElementById("diag-tasks-header").classList.toggle("collapsed", this.scrollTop>10);
+});
+var diagTaskCatFilter="";
+function renderDiagTasksList(){
+  var box=document.getElementById("diag-tasks-list");
+  var empty=document.getElementById("diag-tasks-empty");
+  var arr=diagLoadTasks();
+  var candidates=diagTaskCandidates();
+  document.getElementById("diag-task-candidates-count").textContent=candidates.length;
+  document.getElementById("diag-task-convert-open").closest(".acts").classList.toggle("hidden", !candidates.length);
+  var uncategorized=arr.filter(function(t){ return !t.category; }).length;
+  document.getElementById("diag-task-cat-count").textContent=uncategorized;
+  document.getElementById("diag-task-categorize-open").closest(".acts").classList.toggle("hidden", !uncategorized);
+
+  var filterBox=document.getElementById("diag-task-cat-filter");
+  if(!arr.length){ filterBox.innerHTML=""; } else {
+    var cats=[""].concat(DIAG_CATS);
+    filterBox.innerHTML=cats.map(function(c){
+      return "<button class='chip"+(diagTaskCatFilter===c?" on":"")+"' data-c='"+c+"'>"+(c||"Все")+"</button>";
+    }).join("");
+    [].forEach.call(filterBox.children,function(b){
+      b.onclick=function(){ diagTaskCatFilter=b.getAttribute("data-c"); renderDiagTasksList(); };
+    });
+  }
+
+  if(!arr.length){ box.className=""; box.innerHTML=""; empty.classList.remove("hidden"); return; }
+  var filtered=diagTaskCatFilter? arr.filter(function(t){ return t.category===diagTaskCatFilter; }) : arr;
+  if(!filtered.length){ box.className=""; box.innerHTML=""; empty.classList.remove("hidden"); return; }
+  empty.classList.add("hidden");
+  var sorted=filtered.map(function(t){ return {t:t,i:arr.indexOf(t)}; }).sort(diagTaskCompare);
+  box.className="diag-tbl-wrap";
+  box.innerHTML="<table>"+diagTaskTableHeaderHtml()+"<tbody>"+sorted.map(diagTaskTableRowHtml).join("")+"</tbody></table>";
+  [].forEach.call(box.querySelectorAll("th[data-key]"),function(th){
+    th.onclick=function(){
+      var key=th.getAttribute("data-key");
+      if(diagTaskSortKey===key) diagTaskSortDir*=-1;
+      else { diagTaskSortKey=key; diagTaskSortDir=-1; }
+      renderDiagTasksList();
+    };
+  });
+  [].forEach.call(box.querySelectorAll("tr[data-i]"),function(tr){
+    tr.onclick=function(){ diagOpenTaskForm(+tr.getAttribute("data-i")); };
+  });
+}
+document.getElementById("diag-task-categorize-open").onclick=function(){ diagOpenTaskCategorize(); };
+var diagTaskCatQueue=[];
+function diagOpenTaskCategorize(){
+  diagTaskCatQueue=diagLoadTasks().map(function(t,i){ return {t:t,i:i}; }).filter(function(o){ return !o.t.category; });
+  diagRenderTaskCatCard();
+  showTool("diag-task-categorize");
+}
+function diagRenderTaskCatCard(){
+  var empty=document.getElementById("diag-task-cat-empty");
+  var card=document.getElementById("diag-task-cat-card");
+  var chips=document.getElementById("diag-task-cat-chips");
+  if(diagTaskCatQueue.length===0){
+    empty.classList.remove("hidden"); card.classList.add("hidden"); chips.classList.add("hidden");
+    document.getElementById("diag-task-cat-progress").textContent="";
+    return;
+  }
+  empty.classList.add("hidden"); card.classList.remove("hidden"); chips.classList.remove("hidden");
+  var cur=diagTaskCatQueue[0];
+  document.getElementById("diag-task-cat-text").textContent=cur.t.text;
+  document.getElementById("diag-task-cat-progress").textContent=diagTaskCatQueue.length+" "+ruPlural(diagTaskCatQueue.length,"задача","задачи","задач")+" без категории";
+  chips.innerHTML=DIAG_CATS.map(function(c){ return "<button data-c='"+c+"'>"+c+"</button>"; }).join("");
+  [].forEach.call(chips.children,function(b){
+    b.onclick=function(){
+      var arr=diagLoadTasks();
+      arr[cur.i].category=b.getAttribute("data-c");
+      diagSaveTasks(arr);
+      diagTaskCatQueue.shift();
+      diagRenderTaskCatCard();
+    };
+  });
+}
+
+/* ---- задача: форма добавления/редактирования ---- */
+var diagTaskEditIndex=null;
+var TASK_SLIDER_INVERT={cena:false, vazhnost:false, slozhnost:false, resurs:true};
+function diagPaintTaskSlider(name, v){
+  var invert=TASK_SLIDER_INVERT[name];
+  var c=diagColorFor(v, invert);
+  document.getElementById("diag-task-"+name+"-value").style.color=c;
+  var st=document.getElementById("diag-task-"+name+"-paint");
+  if(!st){ st=document.createElement("style"); st.id="diag-task-"+name+"-paint"; document.head.appendChild(st); }
+  st.textContent="#diag-task-"+name+"-slider::-webkit-slider-thumb{background:"+c+"}#diag-task-"+name+"-slider{background:linear-gradient(90deg,var(--line),"+c+" 55%,var(--line))}";
+}
+function diagTaskSliderSetup(name){
+  document.getElementById("diag-task-"+name+"-slider").addEventListener("input", function(){
+    document.getElementById("diag-task-"+name+"-value").textContent=this.value;
+    diagPaintTaskSlider(name, +this.value);
+  });
+  document.getElementById("diag-task-"+name+"-minus").onclick=function(){
+    var s=document.getElementById("diag-task-"+name+"-slider");
+    s.value=Math.max(1, +s.value-1);
+    s.dispatchEvent(new Event("input",{bubbles:true}));
+  };
+  document.getElementById("diag-task-"+name+"-plus").onclick=function(){
+    var s=document.getElementById("diag-task-"+name+"-slider");
+    s.value=Math.min(10, +s.value+1);
+    s.dispatchEvent(new Event("input",{bubbles:true}));
+  };
+}
+["cena","vazhnost","slozhnost","resurs"].forEach(diagTaskSliderSetup);
+function diagOpenTaskForm(index){
+  diagTaskEditIndex=index;
+  var arr=diagLoadTasks();
+  var t=(index!==null)? arr[index] : {text:"",cena:5,vazhnost:5,slozhnost:5,resurs:5};
+  document.getElementById("diag-task-form-title").textContent=(index!==null)? "Редактировать задачу" : "Новая задача";
+  document.getElementById("diag-task-text").value=t.text||"";
+  ["cena","vazhnost","slozhnost","resurs"].forEach(function(name){
+    var v=t[name]===undefined?5:t[name];
+    document.getElementById("diag-task-"+name+"-slider").value=v;
+    document.getElementById("diag-task-"+name+"-value").textContent=v;
+    diagPaintTaskSlider(name, v);
+  });
+  document.getElementById("diag-task-form-error").style.display="none";
+  document.getElementById("diag-task-delete-row").classList.toggle("hidden", index===null);
+  showTool("diag-task-form");
+}
+document.getElementById("diag-task-add").onclick=function(){ diagOpenTaskForm(null); };
+document.getElementById("diag-task-save").onclick=function(){
+  var text=document.getElementById("diag-task-text").value.trim();
+  var errEl=document.getElementById("diag-task-form-error");
+  if(!text){ errEl.textContent="Впиши формулировку задачи."; errEl.style.display="block"; return; }
+  errEl.style.display="none";
+  var entry={text:text};
+  ["cena","vazhnost","slozhnost","resurs"].forEach(function(name){
+    entry[name]=+document.getElementById("diag-task-"+name+"-slider").value;
+  });
+  var arr=diagLoadTasks();
+  if(diagTaskEditIndex!==null) arr[diagTaskEditIndex]=entry; else arr.push(entry);
+  diagSaveTasks(arr);
+  showTool("diag-tasks");
+};
+document.getElementById("diag-task-delete").onclick=function(){
+  if(diagTaskEditIndex===null) return;
+  if(!confirm("Удалить эту задачу без возможности восстановить?")) return;
+  var arr=diagLoadTasks();
+  arr.splice(diagTaskEditIndex,1);
+  diagSaveTasks(arr);
+  showTool("diag-tasks");
+};
+
+/* ---- перенос из книг: очередь на подтверждение, по одной записи ---- */
+var diagTaskQueue=[];
+var diagTaskQueueIdx=0;
+function diagTaskConvertShow(){
+  if(diagTaskQueueIdx>=diagTaskQueue.length){
+    showTool("diag-tasks");
+    return;
+  }
+  var cand=diagTaskQueue[diagTaskQueueIdx];
+  document.getElementById("diag-task-convert-progress").textContent=(diagTaskQueueIdx+1)+" из "+diagTaskQueue.length;
+  document.getElementById("diag-task-convert-source-label").textContent=diagTaskSourceLabel(cand);
+  document.getElementById("diag-task-convert-original").textContent=cand.entry.text;
+  var w=diagTaskWeightsFor(cand);
+  document.getElementById("diag-task-convert-weights").textContent=
+    "Цена "+(w.cena===undefined?"—":w.cena)+" · Важн. "+(w.vazhnost===undefined?"—":w.vazhnost)+
+    " · Сложн. "+(w.slozhnost===undefined?"—":w.slozhnost)+" · Ресурс "+(w.resurs===undefined?"—":w.resurs);
+  document.getElementById("diag-task-convert-draft").value=diagTaskDraftFor(cand);
+}
+document.getElementById("diag-task-convert-open").onclick=function(){
+  diagTaskQueue=diagTaskCandidates();
+  diagTaskQueueIdx=0;
+  if(!diagTaskQueue.length) return;
+  showTool("diag-task-convert");
+  diagTaskConvertShow();
+};
+document.getElementById("diag-task-convert-skip").onclick=function(){
+  diagTaskQueueIdx++;
+  diagTaskConvertShow();
+};
+document.getElementById("diag-task-convert-save").onclick=function(){
+  var cand=diagTaskQueue[diagTaskQueueIdx];
+  var text=document.getElementById("diag-task-convert-draft").value.trim();
+  if(!text) return;
+  var w=diagTaskWeightsFor(cand);
+  var arr=diagLoadTasks();
+  arr.push({text:text, cena:w.cena, vazhnost:w.vazhnost, slozhnost:w.slozhnost, resurs:w.resurs, category:cand.entry.category||""});
+  diagSaveTasks(arr);
+  if(cand.source==="choice"){
+    var choices=diagLoadChoices();
+    choices[cand.choiceIndex].movedToTasks=true;
+    diagSaveChoices(choices);
+  } else {
+    diagCleanupSetTaskConverted(cand.book, cand.entry.lineIndex, true);
+  }
+  diagTaskQueueIdx++;
+  diagTaskConvertShow();
+};
+function diagCleanupSetTaskConverted(book, lineIndex, val){
+  var stream=load(book.streamKey,"");
+  var newStream=diagWriteStreamLineMeta(book, stream, lineIndex, {taskConverted:val});
+  save(book.streamKey, newStream);
+  if(diagActiveBookId===book.id) diagStream=newStream;
+}
+
 /* ---- быстрая приборка + списание убытков (по мотивам Муравьева) ---- */
 var DIAG_CLEANUP_GAP=3, DIAG_CLEANUP_HIGH=8;
 var DIAG_PAUSE_SLOZHNOST_MIN=7, DIAG_PAUSE_RESURS_MAX=3, DIAG_PAUSE_VAZHNOST_MAX=7;
@@ -2060,7 +2437,8 @@ function diagParseStreamEntries(book, stream){
       cena:+pm[3],
       category:catM?catM[1]:"",
       archived:tail.indexOf("!архив")!==-1,
-      pauseUntil:pauseM?pauseM[1]:""
+      pauseUntil:pauseM?pauseM[1]:"",
+      taskConverted:tail.indexOf("!задача")!==-1
     };
     book.dimOrder.forEach(function(dimId){ entry[dimId]=weights[book.dims[dimId].key]; });
     entries.push(entry);
@@ -2085,17 +2463,20 @@ function diagWriteStreamLineMeta(book, stream, lineIndex, patch){
   var archived=tail.indexOf("!архив")!==-1;
   var pauseM=tail.match(/!пауза:(\d{4}-\d{2}-\d{2})/);
   var pauseUntil=pauseM?pauseM[1]:"";
+  var taskConverted=tail.indexOf("!задача")!==-1;
   Object.keys(patch).forEach(function(k){
     if(k==="category") category=patch.category;
-    else if(k==="archived"){ archived=patch.archived; if(archived) pauseUntil=""; }
-    else if(k==="pauseUntil"){ pauseUntil=patch.pauseUntil||""; if(pauseUntil) archived=false; }
+    else if(k==="archived"){ archived=patch.archived; if(archived){ pauseUntil=""; taskConverted=false; } }
+    else if(k==="pauseUntil"){ pauseUntil=patch.pauseUntil||""; if(pauseUntil){ archived=false; taskConverted=false; } }
+    else if(k==="taskConverted"){ taskConverted=patch.taskConverted; if(taskConverted){ archived=false; pauseUntil=""; } }
     else weights[k]=patch[k];
   });
   var newTail="";
   var wKeys=book.dimOrder.map(function(d){ return book.dims[d].key; }).filter(function(k){ return weights[k]!==undefined; });
   if(wKeys.length) newTail+=" ["+wKeys.map(function(k){ return k+":"+weights[k]; }).join(" ")+"]";
   if(category) newTail+=" #"+category;
-  if(pauseUntil) newTail+=" !пауза:"+pauseUntil;
+  if(taskConverted) newTail+=" !задача";
+  else if(pauseUntil) newTail+=" !пауза:"+pauseUntil;
   else if(archived) newTail+=" !архив";
   lines[lineIndex]=head+newTail;
   return lines.join("\n");
@@ -2106,13 +2487,14 @@ function diagCleanupLists(){
   var anxietyEntries=diagParseStreamEntries(anxietyBook, load(anxietyBook.streamKey,""));
 
   var writeoff=complaintsEntries.filter(function(e){
-    if(e.archived) return false;
+    if(e.archived || e.taskConverted) return false;
     if(e.vazhnost===undefined || e.slozhnost===undefined || e.cena===undefined) return false;
     if(e.vazhnost>3) return false;
     return (e.slozhnost-e.vazhnost>=DIAG_CLEANUP_GAP) || (e.cena-e.vazhnost>=DIAG_CLEANUP_GAP);
   }).sort(function(a,b){ return b.cena-a.cena; });
 
   var quickwins=complaintsEntries.filter(function(e){
+    if(e.archived || e.taskConverted) return false;
     if(e.slozhnost===undefined || e.resurs===undefined || e.vazhnost===undefined || e.cena===undefined) return false;
     if(e.slozhnost<1 || e.slozhnost>3) return false;
     if(e.resurs<5) return false;
@@ -2120,12 +2502,13 @@ function diagCleanupLists(){
   }).sort(function(a,b){ return a.slozhnost-b.slozhnost; });
 
   var worries=anxietyEntries.filter(function(e){
+    if(e.archived || e.taskConverted) return false;
     if(e.control===undefined || e.vazhnost===undefined) return false;
     return e.control===0 && e.vazhnost<=3;
   }).sort(function(a,b){ return b.cena-a.cena; });
 
   var pauseCandidates=complaintsEntries.filter(function(e){
-    if(e.archived || e.pauseUntil) return false;
+    if(e.archived || e.pauseUntil || e.taskConverted) return false;
     if(e.slozhnost===undefined || e.resurs===undefined || e.vazhnost===undefined) return false;
     return e.slozhnost>=DIAG_PAUSE_SLOZHNOST_MIN && e.resurs<=DIAG_PAUSE_RESURS_MAX && e.vazhnost<=DIAG_PAUSE_VAZHNOST_MAX;
   }).sort(function(a,b){ return b.slozhnost-a.slozhnost; });
@@ -2821,8 +3204,7 @@ function diagPaintSlider(v){
   document.getElementById("diag-rate-value").style.color=c;
   var st=document.getElementById("diag-rate-slider-paint");
   if(!st){ st=document.createElement("style"); st.id="diag-rate-slider-paint"; document.head.appendChild(st); }
-  var start=invert?"#ff5c5c":"#4ade80";
-  st.textContent="#diag-rate-slider::-webkit-slider-thumb{background:"+c+"}#diag-rate-slider{background:linear-gradient(90deg,"+start+","+c+" "+(v*10)+"%,var(--line))}";
+  st.textContent="#diag-rate-slider::-webkit-slider-thumb{background:"+c+"}#diag-rate-slider{background:linear-gradient(90deg,var(--line),"+c+" 55%,var(--line))}";
 }
 function diagRenderRateCard(){
   var empty=document.getElementById("diag-rate-empty");
@@ -3044,7 +3426,7 @@ function diagPaintPhantomSlider(v){
   document.getElementById("diag-phantom-cena-value").style.color=c;
   var st=document.getElementById("diag-phantom-cena-paint");
   if(!st){ st=document.createElement("style"); st.id="diag-phantom-cena-paint"; document.head.appendChild(st); }
-  st.textContent="#diag-phantom-cena-slider::-webkit-slider-thumb{background:"+c+"}#diag-phantom-cena-slider{background:linear-gradient(90deg,#4ade80,"+c+" "+((v-1)/9*100)+"%,var(--line))}";
+  st.textContent="#diag-phantom-cena-slider::-webkit-slider-thumb{background:"+c+"}#diag-phantom-cena-slider{background:linear-gradient(90deg,var(--line),"+c+" 55%,var(--line))}";
 }
 function diagOpenPhantomForm(index){
   diagPhantomEditIndex=index;
@@ -3175,7 +3557,7 @@ function diagPaintUlcerSlider(v){
   document.getElementById("diag-ulcer-cena-value").style.color=c;
   var st=document.getElementById("diag-ulcer-cena-paint");
   if(!st){ st=document.createElement("style"); st.id="diag-ulcer-cena-paint"; document.head.appendChild(st); }
-  st.textContent="#diag-ulcer-cena-slider::-webkit-slider-thumb{background:"+c+"}#diag-ulcer-cena-slider{background:linear-gradient(90deg,#4ade80,"+c+" "+((v-1)/9*100)+"%,var(--line))}";
+  st.textContent="#diag-ulcer-cena-slider::-webkit-slider-thumb{background:"+c+"}#diag-ulcer-cena-slider{background:linear-gradient(90deg,var(--line),"+c+" 55%,var(--line))}";
 }
 function diagOpenUlcerForm(index){
   diagUlcerEditIndex=index;
