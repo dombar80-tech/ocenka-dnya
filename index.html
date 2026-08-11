@@ -881,9 +881,38 @@
     <div id="diag-cleanup-paused" class="hidden" style="margin-top:12px"></div>
   </section>
 
+  <!-- ===================== VIEW: ЕЖЕМЕСЯЧНАЯ ПРИБОРКА (тот же регламент, но для Задач в работе) ===================== -->
+  <section id="v-diag-monthly" class="hidden">
+    <button class="back" data-back="diag">← Диагностика</button>
+    <h1>🗓 Ежемесячная приборка</h1>
+    <div class="sub">Раз в месяц пересматривай накопившиеся Задачи в работе тем же регламентом, что и в Быстрой приборке — по мотивам статьи о списании убытков.</div>
+
+    <div class="diag-cleanup-h">🗑 На списание</div>
+    <div class="diag-cleanup-sub">Важность ≤4, сработал хотя бы один из вычислимых критериев — открой обоснование и проверь остальные.</div>
+    <button class="info-btn" id="diag-writeoff-policy-open-monthly" style="margin-bottom:10px">📋 Регламент списания</button>
+    <div id="diag-monthly-writeoff"></div>
+    <div class="empty hidden" id="diag-monthly-writeoff-empty">Таких пунктов пока нет.</div>
+
+    <div class="diag-cleanup-h">⚡ Быстрые победы</div>
+    <div class="diag-cleanup-sub">Низкая Сложность, высокий Ресурс, при этом высокая Цена или Важность — бери в работу прямо сейчас.</div>
+    <div id="diag-monthly-quickwins"></div>
+    <div class="empty hidden" id="diag-monthly-quickwins-empty">Таких пунктов пока нет.</div>
+
+    <div class="diag-cleanup-h">⏳ На паузу</div>
+    <div class="diag-cleanup-sub">Высокая Сложность, но Ресурса не хватает, а Важность не критическая — отложи с конкретной датой возврата.</div>
+    <div id="diag-monthly-pause"></div>
+    <div class="empty hidden" id="diag-monthly-pause-empty">Таких пунктов пока нет.</div>
+
+    <button class="info-btn" id="diag-monthly-archive-toggle" style="margin-top:22px">🗄 Показать архив (<span id="diag-monthly-archive-count">0</span>)</button>
+    <div id="diag-monthly-archive" class="hidden" style="margin-top:12px"></div>
+
+    <button class="info-btn" id="diag-monthly-paused-toggle" style="margin-top:12px">⏳ Показать отложенные (<span id="diag-monthly-paused-count">0</span>)</button>
+    <div id="diag-monthly-paused" class="hidden" style="margin-top:12px"></div>
+  </section>
+
   <!-- ===================== VIEW: НА ПАУЗУ — ФОРМА (дата возврата) ===================== -->
   <section id="v-diag-pause-form" class="hidden">
-    <button class="back" data-back="diag-cleanup">← Быстрая приборка</button>
+    <button class="back" id="diag-pause-back" data-back="diag-cleanup">← Быстрая приборка</button>
     <h1>⏳ На паузу</h1>
     <div class="center-card" style="text-align:left;margin-bottom:14px">
       <div class="big" id="diag-pause-text" style="font-size:16px"></div>
@@ -896,7 +925,7 @@
 
   <!-- ===================== VIEW: РЕГЛАМЕНТ СПИСАНИЯ (редактируемый шаблон) ===================== -->
   <section id="v-diag-writeoff-policy" class="hidden">
-    <button class="back" data-back="diag-cleanup">← Быстрая приборка</button>
+    <button class="back" id="diag-writeoff-policy-back" data-back="diag-cleanup">← Быстрая приборка</button>
     <h1>📋 Регламент списания</h1>
     <div class="sub">Отредактируй под себя или оставь как есть. Раз принят и подписан — применяй его при списании задач.</div>
     <textarea class="tpl-textarea" id="diag-writeoff-policy-textarea"></textarea>
@@ -909,7 +938,7 @@
 
   <!-- ===================== VIEW: СПИСАНИЕ — ОБОСНОВАНИЕ (форма по мотивам статьи) ===================== -->
   <section id="v-diag-writeoff-form" class="hidden">
-    <button class="back" data-back="diag-cleanup">← Быстрая приборка</button>
+    <button class="back" id="diag-writeoff-back" data-back="diag-cleanup">← Быстрая приборка</button>
     <h1>🗑 Обоснование списания</h1>
     <div class="center-card" style="text-align:left;margin-bottom:14px">
       <div class="big" id="diag-writeoff-text" style="font-size:16px;margin-bottom:4px"></div>
@@ -920,6 +949,7 @@
     <textarea id="diag-writeoff-perception" placeholder="Раздражение, тяжесть, ничего не чувствую..." style="width:100%;min-height:60px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--text);font-size:15px;line-height:1.4;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,sans-serif;padding:10px;resize:vertical;box-sizing:border-box"></textarea>
 
     <label style="margin-top:14px">Критерии <span style="opacity:.6;font-weight:400">— отметь, какие выполнены</span></label>
+    <div id="diag-writeoff-criteria-count" style="color:var(--muted);font-size:12.5px;margin-bottom:6px"></div>
     <div class="seg" id="diag-writeoff-criteria-chips" style="flex-wrap:wrap"></div>
 
     <label style="margin-top:14px">Обоснования <span style="opacity:.6;font-weight:400">— какие когнитивные ошибки держат задачу</span></label>
@@ -1200,7 +1230,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
-    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.5 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе</div>
+    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.6 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
@@ -1860,7 +1890,7 @@ function last3AllBad(){
 
 /* ---------- navigation ---------- */
 
-var VIEWS=["home","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
+var VIEWS=["home","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-monthly","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
 var currentTrigger="";
 var currentSuggest=null;
 function showTool(v){
@@ -1876,6 +1906,7 @@ function showTool(v){
   if(v==="diag-choices") renderDiagChoicesList();
   if(v==="diag-tasks") renderDiagTasksList();
   if(v==="diag-cleanup") renderDiagCleanup();
+  if(v==="diag-monthly") renderDiagMonthly();
   window.scrollTo(0,0);
 }
 document.getElementById("t-open-apt").onclick=function(){ showTool("apt"); };
@@ -1957,22 +1988,27 @@ function renderDiagLanding(){
   var ulLabel=ulCount? ulCount+" "+ruPlural(ulCount,"язва","язвы","язв") : "пусто";
   var openChoices=diagLoadChoices().filter(function(c){ return !c.decided; }).length;
   var choicesLabel=openChoices? openChoices+" "+ruPlural(openChoices,"выбор","выбора","выборов") : "пусто";
-  var taskCount=diagLoadTasks().length;
+  var taskCount=diagLoadTasks().filter(function(t){ return !t.archived && !t.pauseUntil; }).length;
   var taskLabel=taskCount? taskCount+" "+ruPlural(taskCount,"задача","задачи","задач") : "пусто";
   var cleanupLists=diagCleanupLists();
   var cleanupN=cleanupLists.writeoff.length+cleanupLists.quickwins.length+cleanupLists.worries.length+cleanupLists.pauseCandidates.length;
   var cleanupLabel=cleanupN+" пунктов";
+  var monthlyLists=diagMonthlyLists();
+  var monthlyN=monthlyLists.writeoff.length+monthlyLists.quickwins.length+monthlyLists.pauseCandidates.length;
+  var monthlyLabel=monthlyN+" пунктов";
   html+="<button class='anti-row' id='row-diag-phantoms'><span class='l'><span class='ic'>👻</span>Фантомы</span><span class='r'><span class='cnt'>"+phLabel+"</span><span class='chev'>›</span></span></button>"+
     "<button class='anti-row' id='row-diag-ulcers'><span class='l'><span class='ic'>🩹</span>Язвы</span><span class='r'><span class='cnt'>"+ulLabel+"</span><span class='chev'>›</span></span></button>"+
     "<button class='anti-row' id='row-diag-choices'><span class='l'><span class='ic'>🔀</span>Выборы</span><span class='r'><span class='cnt'>"+choicesLabel+"</span><span class='chev'>›</span></span></button>"+
+    "<button class='anti-row' id='row-diag-cleanup'><span class='l'><span class='ic'>🧹</span>Быстрая приборка</span><span class='r'><span class='cnt'>"+cleanupLabel+"</span><span class='chev'>›</span></span></button>"+
     "<button class='anti-row' id='row-diag-tasks'><span class='l'><span class='ic'>📋</span>Задачи в работе</span><span class='r'><span class='cnt'>"+taskLabel+"</span><span class='chev'>›</span></span></button>"+
-    "<button class='anti-row' id='row-diag-cleanup'><span class='l'><span class='ic'>🧹</span>Быстрая приборка</span><span class='r'><span class='cnt'>"+cleanupLabel+"</span><span class='chev'>›</span></span></button>";
+    "<button class='anti-row' id='row-diag-monthly'><span class='l'><span class='ic'>🗓</span>Ежемесячная приборка</span><span class='r'><span class='cnt'>"+monthlyLabel+"</span><span class='chev'>›</span></span></button>";
   box.innerHTML=html;
   document.getElementById("row-diag-phantoms").onclick=function(){ showTool("diag-phantoms"); };
   document.getElementById("row-diag-ulcers").onclick=function(){ showTool("diag-ulcers"); };
   document.getElementById("row-diag-choices").onclick=function(){ showTool("diag-choices"); };
   document.getElementById("row-diag-tasks").onclick=function(){ showTool("diag-tasks"); };
   document.getElementById("row-diag-cleanup").onclick=function(){ showTool("diag-cleanup"); };
+  document.getElementById("row-diag-monthly").onclick=function(){ showTool("diag-monthly"); };
   [].forEach.call(box.querySelectorAll("[data-book]"),function(b){
     b.onclick=function(){ diagOpenBook(b.getAttribute("data-book")); };
   });
@@ -2216,7 +2252,8 @@ var diagTaskCatFilter="";
 function renderDiagTasksList(){
   var box=document.getElementById("diag-tasks-list");
   var empty=document.getElementById("diag-tasks-empty");
-  var arr=diagLoadTasks();
+  var fullArr=diagLoadTasks();
+  var arr=fullArr.filter(function(t){ return !t.archived && !t.pauseUntil; });
   var candidates=diagTaskCandidates();
   document.getElementById("diag-task-candidates-count").textContent=candidates.length;
   document.getElementById("diag-task-convert-open").closest(".acts").classList.toggle("hidden", !candidates.length);
@@ -2239,7 +2276,7 @@ function renderDiagTasksList(){
   var filtered=diagTaskCatFilter? arr.filter(function(t){ return t.category===diagTaskCatFilter; }) : arr;
   if(!filtered.length){ box.className=""; box.innerHTML=""; empty.classList.remove("hidden"); return; }
   empty.classList.add("hidden");
-  var sorted=filtered.map(function(t){ return {t:t,i:arr.indexOf(t)}; }).sort(diagTaskCompare);
+  var sorted=filtered.map(function(t){ return {t:t,i:fullArr.indexOf(t)}; }).sort(diagTaskCompare);
   box.className="diag-tbl-wrap";
   box.innerHTML="<table>"+diagTaskTableHeaderHtml()+"<tbody>"+sorted.map(diagTaskTableRowHtml).join("")+"</tbody></table>";
   [].forEach.call(box.querySelectorAll("th[data-key]"),function(th){
@@ -2257,7 +2294,7 @@ function renderDiagTasksList(){
 document.getElementById("diag-task-categorize-open").onclick=function(){ diagOpenTaskCategorize(); };
 var diagTaskCatQueue=[];
 function diagOpenTaskCategorize(){
-  diagTaskCatQueue=diagLoadTasks().map(function(t,i){ return {t:t,i:i}; }).filter(function(o){ return !o.t.category; });
+  diagTaskCatQueue=diagLoadTasks().map(function(t,i){ return {t:t,i:i}; }).filter(function(o){ return !o.t.category && !o.t.archived && !o.t.pauseUntil; });
   diagRenderTaskCatCard();
   showTool("diag-task-categorize");
 }
@@ -2411,6 +2448,21 @@ function diagCleanupSetTaskConverted(book, lineIndex, val){
 /* ---- быстрая приборка + списание убытков (по мотивам Муравьева) ---- */
 var DIAG_CLEANUP_GAP=3, DIAG_CLEANUP_HIGH=8;
 var DIAG_PAUSE_SLOZHNOST_MIN=7, DIAG_PAUSE_RESURS_MAX=3, DIAG_PAUSE_VAZHNOST_MAX=7;
+// уточнённый регламент списания (для Ежемесячной приборки): Важность 0-4, чем важнее — тем больше критериев из 8 нужно
+var DIAG_WRITEOFF_GAP=1, DIAG_WRITEOFF_VAZHNOST_MAX=4;
+function diagWriteoffNeeded(vazhnost){ return Math.max(2, vazhnost); }
+// [критерий0 «Важность<Сложности», критерий1 «Ресурс<Сложности»] — единственные два из 8, вычислимые по весам; остальные 6 — вручную, в форме обоснования
+function diagWriteoffAutoFlags(e){
+  return [
+    e.slozhnost!==undefined && e.vazhnost!==undefined && e.slozhnost-e.vazhnost>=DIAG_WRITEOFF_GAP,
+    e.slozhnost!==undefined && e.resurs!==undefined && e.slozhnost-e.resurs>=DIAG_WRITEOFF_GAP
+  ];
+}
+function diagWriteoffAutoCount(e){
+  var n=0;
+  diagWriteoffAutoFlags(e).forEach(function(f){ if(f) n++; });
+  return n;
+}
 // разбирает произвольный поток (для конкретной книги) на завершённые записи, не завися от активной книги
 function diagParseStreamEntries(book, stream){
   var lines=stream.split("\n");
@@ -2597,6 +2649,128 @@ function renderDiagCleanup(){
     };
   });
 }
+
+/* ---- ежемесячная приборка: тот же регламент списания/быстрых побед/паузы, но для Задач в работе ---- */
+function diagMonthlyLists(){
+  var tasks=diagLoadTasks();
+  var writeoff=tasks.map(function(t,i){ return {t:t,i:i}; }).filter(function(o){
+    var t=o.t;
+    if(t.archived || t.pauseUntil) return false;
+    if(t.vazhnost===undefined||t.slozhnost===undefined||t.resurs===undefined) return false;
+    if(t.vazhnost>DIAG_WRITEOFF_VAZHNOST_MAX) return false;
+    return diagWriteoffAutoCount(t)>=1;
+  }).sort(function(a,b){ return b.t.cena-a.t.cena; });
+
+  var quickwins=tasks.filter(function(t){
+    if(t.archived || t.pauseUntil) return false;
+    if(t.slozhnost===undefined||t.resurs===undefined||t.vazhnost===undefined||t.cena===undefined) return false;
+    if(t.slozhnost<1 || t.slozhnost>3) return false;
+    if(t.resurs<5) return false;
+    return t.cena>=DIAG_CLEANUP_HIGH || t.vazhnost>=DIAG_CLEANUP_HIGH;
+  }).sort(function(a,b){ return a.slozhnost-b.slozhnost; });
+
+  var pauseCandidates=tasks.map(function(t,i){ return {t:t,i:i}; }).filter(function(o){
+    var t=o.t;
+    if(t.archived || t.pauseUntil) return false;
+    if(t.slozhnost===undefined||t.resurs===undefined||t.vazhnost===undefined) return false;
+    return t.slozhnost>=DIAG_PAUSE_SLOZHNOST_MIN && t.resurs<=DIAG_PAUSE_RESURS_MAX && t.vazhnost<=DIAG_PAUSE_VAZHNOST_MAX;
+  }).sort(function(a,b){ return b.t.slozhnost-a.t.slozhnost; });
+
+  var paused=tasks.map(function(t,i){ return {t:t,i:i}; }).filter(function(o){ return !!o.t.pauseUntil; })
+    .sort(function(a,b){ return a.t.pauseUntil<b.t.pauseUntil? -1 : a.t.pauseUntil>b.t.pauseUntil? 1 : 0; });
+
+  var archived=tasks.map(function(t,i){ return {t:t,i:i}; }).filter(function(o){ return o.t.archived; });
+
+  return {writeoff:writeoff, quickwins:quickwins, pauseCandidates:pauseCandidates, paused:paused, archived:archived};
+}
+function renderDiagMonthly(){
+  var lists=diagMonthlyLists();
+
+  var woBox=document.getElementById("diag-monthly-writeoff");
+  var woEmpty=document.getElementById("diag-monthly-writeoff-empty");
+  if(lists.writeoff.length){
+    woEmpty.classList.add("hidden");
+    woBox.innerHTML=lists.writeoff.map(function(o,idx){
+      var e=o.t, need=diagWriteoffNeeded(e.vazhnost), auto=diagWriteoffAutoCount(e);
+      return diagCleanupCardHtml(e, ["Цена "+e.cena, "Важн. "+e.vazhnost, "Сложн. "+e.slozhnost, "Ресурс "+e.resurs, "нужно "+need+" из 8 (авто "+auto+")"],
+        "<button data-idx='"+idx+"'>→ В архив</button>");
+    }).join("");
+    [].forEach.call(woBox.querySelectorAll("button"),function(b){
+      b.onclick=function(){
+        var o=lists.writeoff[+b.getAttribute("data-idx")];
+        diagOpenWriteoffForm(o.t, function(){
+          var arr=diagLoadTasks(); arr[o.i].archived=true; diagSaveTasks(arr); showTool("diag-monthly");
+        }, "diag-monthly", "Ежемесячная приборка");
+      };
+    });
+  } else { woBox.innerHTML=""; woEmpty.classList.remove("hidden"); }
+
+  var wBox=document.getElementById("diag-monthly-quickwins");
+  var wEmpty=document.getElementById("diag-monthly-quickwins-empty");
+  if(lists.quickwins.length){
+    wEmpty.classList.add("hidden");
+    wBox.innerHTML=lists.quickwins.map(function(e){
+      return diagCleanupCardHtml(e, ["Цена "+e.cena, "Важн. "+e.vazhnost, "Сложн. "+e.slozhnost, "Ресурс "+e.resurs], "");
+    }).join("");
+  } else { wBox.innerHTML=""; wEmpty.classList.remove("hidden"); }
+
+  var pBox=document.getElementById("diag-monthly-pause");
+  var pEmpty=document.getElementById("diag-monthly-pause-empty");
+  if(lists.pauseCandidates.length){
+    pEmpty.classList.add("hidden");
+    pBox.innerHTML=lists.pauseCandidates.map(function(o,idx){
+      var e=o.t;
+      return diagCleanupCardHtml(e, ["Сложн. "+e.slozhnost, "Ресурс "+e.resurs, "Важн. "+e.vazhnost],
+        "<button data-idx='"+idx+"'>⏳ На паузу</button>");
+    }).join("");
+    [].forEach.call(pBox.querySelectorAll("button"),function(b){
+      b.onclick=function(){
+        var o=lists.pauseCandidates[+b.getAttribute("data-idx")];
+        diagOpenPauseForm(o.t, function(date){
+          var arr=diagLoadTasks(); arr[o.i].pauseUntil=date; diagSaveTasks(arr); showTool("diag-monthly");
+        }, "diag-monthly", "Ежемесячная приборка");
+      };
+    });
+  } else { pBox.innerHTML=""; pEmpty.classList.remove("hidden"); }
+
+  document.getElementById("diag-monthly-paused-count").textContent=lists.paused.length;
+  var pdBox=document.getElementById("diag-monthly-paused");
+  var today=diagTodayIso();
+  pdBox.innerHTML=lists.paused.map(function(o){
+    var e=o.t;
+    var overdue=e.pauseUntil<today;
+    var dateLabel=(overdue?"⚠️ Пора вернуться, было ":"До ")+diagFormatDateRu(e.pauseUntil);
+    return diagCleanupCardHtml(e, ["Сложн. "+e.slozhnost, dateLabel], "<button data-i='"+o.i+"'>▶ Снять с паузы</button>");
+  }).join("");
+  [].forEach.call(pdBox.querySelectorAll("button"),function(b){
+    b.onclick=function(){
+      var arr=diagLoadTasks(); arr[+b.getAttribute("data-i")].pauseUntil=""; diagSaveTasks(arr); renderDiagMonthly();
+    };
+  });
+
+  document.getElementById("diag-monthly-archive-count").textContent=lists.archived.length;
+  var arBox=document.getElementById("diag-monthly-archive");
+  var writeoffs=diagLoadWriteoffs();
+  arBox.innerHTML=lists.archived.map(function(o){
+    var e=o.t;
+    var meta=["Цена "+e.cena, "Важн. "+(e.vazhnost===undefined?"—":e.vazhnost)];
+    var wo=writeoffs.filter(function(w){ return w.text===e.text; }).pop();
+    if(wo && wo.perception) meta.push("«"+wo.perception+"»");
+    return diagCleanupCardHtml(e, meta, "<button data-i='"+o.i+"'>↩ Вернуть</button>");
+  }).join("");
+  [].forEach.call(arBox.querySelectorAll("button"),function(b){
+    b.onclick=function(){
+      var arr=diagLoadTasks(); arr[+b.getAttribute("data-i")].archived=false; diagSaveTasks(arr); renderDiagMonthly();
+    };
+  });
+}
+document.getElementById("diag-monthly-archive-toggle").onclick=function(){
+  document.getElementById("diag-monthly-archive").classList.toggle("hidden");
+};
+document.getElementById("diag-monthly-paused-toggle").onclick=function(){
+  document.getElementById("diag-monthly-paused").classList.toggle("hidden");
+};
+
 function diagCleanupSetArchived(book, lineIndex, archived){
   var stream=load(book.streamKey,"");
   var newStream=diagWriteStreamLineMeta(book, stream, lineIndex, {archived:archived});
@@ -2625,8 +2799,13 @@ document.getElementById("diag-cleanup-paused-toggle").onclick=function(){
 };
 
 var diagPauseEntry=null;
-function diagOpenPauseForm(entry){
+var diagPauseOnSaved=null;
+function diagOpenPauseForm(entry, onSaved, backView, backLabel){
   diagPauseEntry=entry;
+  diagPauseOnSaved=onSaved || function(date){ diagCleanupSetPause(DIAG_BOOKS.complaints, entry.lineIndex, date); showTool("diag-cleanup"); };
+  var backBtn=document.getElementById("diag-pause-back");
+  backBtn.setAttribute("data-back", backView||"diag-cleanup");
+  backBtn.textContent="← "+(backLabel||"Быстрая приборка");
   document.getElementById("diag-pause-text").textContent=entry.text;
   document.getElementById("diag-pause-date").value="";
   document.getElementById("diag-pause-form-error").style.display="none";
@@ -2637,8 +2816,7 @@ document.getElementById("diag-pause-save").onclick=function(){
   var errEl=document.getElementById("diag-pause-form-error");
   if(!date){ errEl.textContent="Выбери дату возврата."; errEl.style.display="block"; return; }
   errEl.style.display="none";
-  diagCleanupSetPause(DIAG_BOOKS.complaints, diagPauseEntry.lineIndex, date);
-  showTool("diag-cleanup");
+  diagPauseOnSaved(date);
 };
 
 var WRITEOFF_POLICY_KEY="diag_writeoff_policy";
@@ -2673,11 +2851,16 @@ var WRITEOFF_POLICY_DEFAULT=
 "- Финансовыми обязательствами (кредиты, долги);\n"+
 "- Актуальными договорными обязательствами перед другими людьми.\n\n"+
 "Принят: <Дата>, <Подпись>";
-document.getElementById("diag-writeoff-policy-open").onclick=function(){
+function diagOpenWriteoffPolicy(backView, backLabel){
+  var backBtn=document.getElementById("diag-writeoff-policy-back");
+  backBtn.setAttribute("data-back", backView||"diag-cleanup");
+  backBtn.textContent="← "+(backLabel||"Быстрая приборка");
   document.getElementById("diag-writeoff-policy-textarea").value=load(WRITEOFF_POLICY_KEY, WRITEOFF_POLICY_DEFAULT);
   document.getElementById("diag-writeoff-policy-save-hint").textContent="Сохраняется автоматически.";
   showTool("diag-writeoff-policy");
-};
+}
+document.getElementById("diag-writeoff-policy-open").onclick=function(){ diagOpenWriteoffPolicy("diag-cleanup","Быстрая приборка"); };
+document.getElementById("diag-writeoff-policy-open-monthly").onclick=function(){ diagOpenWriteoffPolicy("diag-monthly","Ежемесячная приборка"); };
 document.getElementById("diag-writeoff-policy-textarea").addEventListener("input", function(){
   save(WRITEOFF_POLICY_KEY, this.value);
   document.getElementById("diag-writeoff-policy-save-hint").textContent="Сохранено.";
@@ -2716,8 +2899,14 @@ function diagLoadWriteoffs(){ return load(WRITEOFF_KEY, []); }
 function diagSaveWriteoffs(arr){ save(WRITEOFF_KEY, arr); }
 
 var diagWriteoffEntry=null;
-function diagOpenWriteoffForm(entry){
+var diagWriteoffOnSaved=null;
+// entry — любой объект с {text,cena,vazhnost,slozhnost,resurs}; onSaved(record) — что делать после сохранения (архивировать + куда вернуться). По умолчанию — старое поведение (жалоба -> архив -> Быстрая приборка)
+function diagOpenWriteoffForm(entry, onSaved, backView, backLabel){
   diagWriteoffEntry=entry;
+  diagWriteoffOnSaved=onSaved || function(){ diagCleanupSetArchived(DIAG_BOOKS.complaints, entry.lineIndex, true); showTool("diag-cleanup"); };
+  var backBtn=document.getElementById("diag-writeoff-back");
+  backBtn.setAttribute("data-back", backView||"diag-cleanup");
+  backBtn.textContent="← "+(backLabel||"Быстрая приборка");
   document.getElementById("diag-writeoff-text").textContent=entry.text;
   document.getElementById("diag-writeoff-weights").textContent=
     "Цена "+entry.cena+" · Важн. "+entry.vazhnost+" · Сложн. "+entry.slozhnost+" · Ресурс "+entry.resurs;
@@ -2731,11 +2920,19 @@ function diagOpenWriteoffForm(entry){
   document.getElementById("diag-writeoff-form-error").style.display="none";
 
   var critBox=document.getElementById("diag-writeoff-criteria-chips");
-  var selCrit=existing?existing.criteria:[];
+  var autoFlags=diagWriteoffAutoFlags(entry);
+  var selCrit=existing?existing.criteria:[0,1].filter(function(i){ return autoFlags[i]; });
+  var needed=diagWriteoffNeeded(entry.vazhnost===undefined?0:entry.vazhnost);
+  var countEl=document.getElementById("diag-writeoff-criteria-count");
+  function renderCritCount(){
+    var on=critBox.querySelectorAll(".chip.on").length;
+    countEl.textContent="Отмечено "+on+" из "+needed+" нужных для Важности "+entry.vazhnost+" (первые два — по весам, автоматически)";
+  }
   critBox.innerHTML=WRITEOFF_CRITERIA.map(function(c,i){
     return "<button class='chip"+(selCrit.indexOf(i)!==-1?" on":"")+"' data-i='"+i+"'>"+c+"</button>";
   }).join("");
-  [].forEach.call(critBox.children,function(b){ b.onclick=function(){ b.classList.toggle("on"); }; });
+  [].forEach.call(critBox.children,function(b){ b.onclick=function(){ b.classList.toggle("on"); renderCritCount(); }; });
+  renderCritCount();
 
   var verdBox=document.getElementById("diag-writeoff-verdicts-chips");
   var selVerd=existing?existing.verdicts:[];
@@ -2753,10 +2950,20 @@ document.getElementById("diag-writeoff-verdicts-info-btn").onclick=function(){
   }).join("");
   showTool("diag-writeoff-verdicts-info");
 };
+document.getElementById("diag-writeoff-perception").addEventListener("input", function(){ this.style.borderColor=""; });
 document.getElementById("diag-writeoff-save").onclick=function(){
-  var perception=document.getElementById("diag-writeoff-perception").value.trim();
+  var perceptionEl=document.getElementById("diag-writeoff-perception");
+  var perception=perceptionEl.value.trim();
   var errEl=document.getElementById("diag-writeoff-form-error");
-  if(!perception){ errEl.textContent="Опиши хотя бы коротко ощущение от задачи."; errEl.style.display="block"; return; }
+  if(!perception){
+    errEl.textContent="Опиши хотя бы коротко ощущение от задачи — поле подсвечено выше.";
+    errEl.style.display="block";
+    perceptionEl.style.borderColor="#ff5c5c";
+    perceptionEl.scrollIntoView({behavior:"smooth", block:"center"});
+    perceptionEl.focus();
+    return;
+  }
+  perceptionEl.style.borderColor="";
   errEl.style.display="none";
   var criteria=[].map.call(document.querySelectorAll("#diag-writeoff-criteria-chips .chip.on"),function(b){ return +b.getAttribute("data-i"); });
   var verdicts=[].map.call(document.querySelectorAll("#diag-writeoff-verdicts-chips .chip.on"),function(b){ return +b.getAttribute("data-i"); });
@@ -2776,8 +2983,7 @@ document.getElementById("diag-writeoff-save").onclick=function(){
   var arr=diagLoadWriteoffs().filter(function(w){ return w.text!==record.text; });
   arr.push(record);
   diagSaveWriteoffs(arr);
-  diagCleanupSetArchived(DIAG_BOOKS.complaints, diagWriteoffEntry.lineIndex, true);
-  showTool("diag-cleanup");
+  diagWriteoffOnSaved(record);
 };
 
 function diagEnterSection(){
