@@ -810,6 +810,19 @@
     <div class="link-row hidden" id="diag-task-delete-row"><button id="diag-task-delete">Удалить эту задачу</button></div>
   </section>
 
+  <!-- ===================== VIEW: ЗАДАЧА — УДАЛЕНИЕ (свайп или из редактирования; причина обязательна) ===================== -->
+  <section id="v-diag-task-delete-form" class="hidden">
+    <button class="back" data-back="diag-tasks">← Задачи в работе</button>
+    <h1>🗑 Удалить задачу</h1>
+    <div class="center-card" style="text-align:left;margin-bottom:14px">
+      <div class="big" id="diag-task-delete-text" style="font-size:16px"></div>
+    </div>
+    <label>Почему удаляешь <span style="opacity:.6;font-weight:400">— коротко, для истории</span></label>
+    <textarea id="diag-task-delete-reason" placeholder="Дубль, уже неактуально, ошибся при вводе..." style="width:100%;min-height:60px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--text);font-size:15px;line-height:1.4;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,sans-serif;padding:10px;resize:vertical;box-sizing:border-box"></textarea>
+    <div class="note" id="diag-task-delete-error" style="display:none;margin-top:12px"></div>
+    <div class="acts" style="margin-top:16px"><button class="primary" style="background:#ff5c5c" id="diag-task-delete-save">Удалить</button></div>
+  </section>
+
   <!-- ===================== VIEW: ПЕРЕНОС В ЗАДАЧИ — ОЧЕРЕДЬ НА ПОДТВЕРЖДЕНИЕ ===================== -->
   <section id="v-diag-task-convert" class="hidden">
     <button class="back" data-back="diag-tasks">← Задачи в работе</button>
@@ -1230,7 +1243,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
-    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.6 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка</div>
+    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.7 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
@@ -1668,7 +1681,7 @@ function download(name, text, type){
 }
 // данные Инструментов (Аптечка/Антисаботаж/Диагностика) хранятся отдельно от дневных записей —
 // без этого списка бэкап сохранял бы только Сегодня/Историю
-var TOOL_KEYS=["apt2_items","apt2_bh","apt2_opens","apt2_results","anti_texts","anti_progress","anti_trophy","diag_stream","diag_anx_stream","diag_phantoms","diag_ulcers","diag_pwhash"];
+var TOOL_KEYS=["apt2_items","apt2_bh","apt2_opens","apt2_results","anti_texts","anti_progress","anti_trophy","diag_stream","diag_anx_stream","diag_phantoms","diag_ulcers","diag_pwhash","diag_choices","diag_tasks","diag_writeoff_policy","diag_writeoffs"];
 function collectToolsData(){
   var out={};
   TOOL_KEYS.forEach(function(k){
@@ -1890,7 +1903,7 @@ function last3AllBad(){
 
 /* ---------- navigation ---------- */
 
-var VIEWS=["home","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-monthly","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
+var VIEWS=["home","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-delete-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-monthly","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
 var currentTrigger="";
 var currentSuggest=null;
 function showTool(v){
@@ -2288,9 +2301,52 @@ function renderDiagTasksList(){
     };
   });
   [].forEach.call(box.querySelectorAll("tr[data-i]"),function(tr){
-    tr.onclick=function(){ diagOpenTaskForm(+tr.getAttribute("data-i")); };
+    var sx=0, sy=0, swiped=false;
+    tr.addEventListener("touchstart", function(e){ sx=e.touches[0].clientX; sy=e.touches[0].clientY; swiped=false; }, {passive:true});
+    tr.addEventListener("touchmove", function(e){
+      var dx=e.touches[0].clientX-sx, dy=e.touches[0].clientY-sy;
+      if(dx<-40 && Math.abs(dx)>Math.abs(dy)*1.5) swiped=true;
+    }, {passive:true});
+    tr.addEventListener("touchend", function(){
+      if(swiped) diagOpenTaskDeleteForm(+tr.getAttribute("data-i"));
+    });
+    tr.onclick=function(){
+      if(swiped){ swiped=false; return; }
+      diagOpenTaskForm(+tr.getAttribute("data-i"));
+    };
   });
 }
+var diagTaskDeleteIndex=null;
+function diagOpenTaskDeleteForm(index){
+  diagTaskDeleteIndex=index;
+  var arr=diagLoadTasks();
+  var t=arr[index];
+  document.getElementById("diag-task-delete-text").textContent=t.text;
+  document.getElementById("diag-task-delete-reason").value="";
+  document.getElementById("diag-task-delete-error").style.display="none";
+  showTool("diag-task-delete-form");
+}
+document.getElementById("diag-task-delete-reason").addEventListener("input", function(){ this.style.borderColor=""; });
+document.getElementById("diag-task-delete-save").onclick=function(){
+  var reasonEl=document.getElementById("diag-task-delete-reason");
+  var reason=reasonEl.value.trim();
+  var errEl=document.getElementById("diag-task-delete-error");
+  if(!reason){
+    errEl.textContent="Укажи причину — поле подсвечено выше.";
+    errEl.style.display="block";
+    reasonEl.style.borderColor="#ff5c5c";
+    reasonEl.scrollIntoView({behavior:"smooth", block:"center"});
+    reasonEl.focus();
+    return;
+  }
+  errEl.style.display="none";
+  var arr=diagLoadTasks();
+  arr[diagTaskDeleteIndex].archived=true;
+  arr[diagTaskDeleteIndex].deleteReason=reason;
+  arr[diagTaskDeleteIndex].deleteDate=diagTodayIso();
+  diagSaveTasks(arr);
+  showTool("diag-tasks");
+};
 document.getElementById("diag-task-categorize-open").onclick=function(){ diagOpenTaskCategorize(); };
 var diagTaskCatQueue=[];
 function diagOpenTaskCategorize(){
@@ -2384,11 +2440,7 @@ document.getElementById("diag-task-save").onclick=function(){
 };
 document.getElementById("diag-task-delete").onclick=function(){
   if(diagTaskEditIndex===null) return;
-  if(!confirm("Удалить эту задачу без возможности восстановить?")) return;
-  var arr=diagLoadTasks();
-  arr.splice(diagTaskEditIndex,1);
-  diagSaveTasks(arr);
-  showTool("diag-tasks");
+  diagOpenTaskDeleteForm(diagTaskEditIndex);
 };
 
 /* ---- перенос из книг: очередь на подтверждение, по одной записи ---- */
@@ -2754,8 +2806,11 @@ function renderDiagMonthly(){
   arBox.innerHTML=lists.archived.map(function(o){
     var e=o.t;
     var meta=["Цена "+e.cena, "Важн. "+(e.vazhnost===undefined?"—":e.vazhnost)];
-    var wo=writeoffs.filter(function(w){ return w.text===e.text; }).pop();
-    if(wo && wo.perception) meta.push("«"+wo.perception+"»");
+    if(e.deleteReason) meta.push("«"+e.deleteReason+"»");
+    else {
+      var wo=writeoffs.filter(function(w){ return w.text===e.text; }).pop();
+      if(wo && wo.perception) meta.push("«"+wo.perception+"»");
+    }
     return diagCleanupCardHtml(e, meta, "<button data-i='"+o.i+"'>↩ Вернуть</button>");
   }).join("");
   [].forEach.call(arBox.querySelectorAll("button"),function(b){
