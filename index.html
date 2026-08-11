@@ -302,7 +302,7 @@
   .diag-ticks{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:6px}
 
   /* diagnostics: таблица (закреплённый левый столбец + горизонтальная прокрутка) */
-  .diag-tbl-wrap{overflow:auto;-webkit-overflow-scrolling:touch;max-height:calc(100vh - 210px);border-radius:10px;margin-bottom:16px}
+  .diag-tbl-wrap{overflow:auto;-webkit-overflow-scrolling:touch;max-height:calc(100vh - 210px);border-radius:10px;border:1px solid var(--line);margin-bottom:16px}
   #diag-tasks-header{overflow:hidden;max-height:600px;transition:max-height .25s ease, opacity .2s ease}
   #diag-tasks-header.collapsed{max-height:0;opacity:0;margin:0}
   .diag-tbl-wrap table{border-collapse:separate;border-spacing:0;width:100%;font-size:13px}
@@ -1200,7 +1200,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
-    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.3 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе</div>
+    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.4 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
@@ -2190,7 +2190,7 @@ function diagTaskSourceLabel(cand){
 
 /* ---- задачи: таблица с сортировкой (та же обёртка diag-tbl-wrap, что и в Жалобной книге — липкая шапка бесплатно) ---- */
 var diagTaskSortKey="cena", diagTaskSortDir=-1;
-var TASK_COLS=[["cena","Цена"],["vazhnost","Важн."],["slozhnost","Сложн."],["resurs","Ресурс"]];
+var TASK_COLS=[["cena","Цена"],["vazhnost","Важность"],["slozhnost","Сложность"],["resurs","Ресурс"]];
 function diagTaskCompare(a,b){
   var av=a.t[diagTaskSortKey], bv=b.t[diagTaskSortKey];
   var aU=av===undefined, bU=bv===undefined;
@@ -2201,8 +2201,7 @@ function diagTaskCompare(a,b){
 }
 function diagTaskTableHeaderHtml(){
   return "<tr><th class='d'>Задача</th>"+TASK_COLS.map(function(c){
-    var arrow=diagTaskSortKey===c[0]?(diagTaskSortDir===1?" ↑":" ↓"):"";
-    return "<th data-key='"+c[0]+"' class='"+(diagTaskSortKey===c[0]?"sorted":"")+"'>"+c[1]+arrow+"</th>";
+    return "<th data-key='"+c[0]+"' class='vt"+(diagTaskSortKey===c[0]?" sorted":"")+"'><span>"+c[1]+"</span></th>";
   }).join("")+"</tr>";
 }
 function diagTaskTableRowHtml(o){
