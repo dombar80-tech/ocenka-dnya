@@ -1200,7 +1200,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
-    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.4 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе</div>
+    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.5 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
@@ -2466,17 +2466,17 @@ function diagWriteStreamLineMeta(book, stream, lineIndex, patch){
   Object.keys(patch).forEach(function(k){
     if(k==="category") category=patch.category;
     else if(k==="archived"){ archived=patch.archived; if(archived){ pauseUntil=""; taskConverted=false; } }
-    else if(k==="pauseUntil"){ pauseUntil=patch.pauseUntil||""; if(pauseUntil){ archived=false; taskConverted=false; } }
-    else if(k==="taskConverted"){ taskConverted=patch.taskConverted; if(taskConverted){ archived=false; pauseUntil=""; } }
+    else if(k==="pauseUntil"){ pauseUntil=patch.pauseUntil||""; if(pauseUntil){ archived=false; } }
+    else if(k==="taskConverted"){ taskConverted=patch.taskConverted; if(taskConverted){ archived=false; } }
     else weights[k]=patch[k];
   });
   var newTail="";
   var wKeys=book.dimOrder.map(function(d){ return book.dims[d].key; }).filter(function(k){ return weights[k]!==undefined; });
   if(wKeys.length) newTail+=" ["+wKeys.map(function(k){ return k+":"+weights[k]; }).join(" ")+"]";
   if(category) newTail+=" #"+category;
+  if(pauseUntil) newTail+=" !пауза:"+pauseUntil;
   if(taskConverted) newTail+=" !задача";
-  else if(pauseUntil) newTail+=" !пауза:"+pauseUntil;
-  else if(archived) newTail+=" !архив";
+  if(archived) newTail+=" !архив";
   lines[lineIndex]=head+newTail;
   return lines.join("\n");
 }
@@ -2507,7 +2507,7 @@ function diagCleanupLists(){
   }).sort(function(a,b){ return b.cena-a.cena; });
 
   var pauseCandidates=complaintsEntries.filter(function(e){
-    if(e.archived || e.pauseUntil || e.taskConverted) return false;
+    if(e.archived || e.pauseUntil) return false;
     if(e.slozhnost===undefined || e.resurs===undefined || e.vazhnost===undefined) return false;
     return e.slozhnost>=DIAG_PAUSE_SLOZHNOST_MIN && e.resurs<=DIAG_PAUSE_RESURS_MAX && e.vazhnost<=DIAG_PAUSE_VAZHNOST_MAX;
   }).sort(function(a,b){ return b.slozhnost-a.slozhnost; });
