@@ -322,6 +322,8 @@
   .diag-cleanup-card .meta{color:var(--muted);font-size:12px;margin-top:4px}
   .diag-cleanup-card button{flex:0 0 auto;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:12.5px;font-weight:600;color:var(--text)}
   .diag-cleanup-card button:active{background:#31335c}
+  .diag-cleanup-card .action{display:flex;flex-direction:column;gap:6px}
+  .diag-cleanup-card .action button.ghost2{background:transparent;border:1px solid var(--line);color:var(--muted);font-weight:500}
 </style>
 </head>
 <body>
@@ -820,7 +822,8 @@
     <label>Почему удаляешь <span style="opacity:.6;font-weight:400">— коротко, для истории</span></label>
     <textarea id="diag-task-delete-reason" placeholder="Дубль, уже неактуально, ошибся при вводе..." style="width:100%;min-height:60px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--text);font-size:15px;line-height:1.4;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,sans-serif;padding:10px;resize:vertical;box-sizing:border-box"></textarea>
     <div class="note" id="diag-task-delete-error" style="display:none;margin-top:12px"></div>
-    <div class="acts" style="margin-top:16px"><button class="primary" style="background:#ff5c5c" id="diag-task-delete-save">Удалить</button></div>
+    <div class="acts" style="margin-top:16px"><button class="ghost" id="diag-task-force-writeoff">🗓 Перенести в Ежемесячную приборку</button></div>
+    <div class="acts" style="margin-top:200px"><button class="primary" style="background:#ff5c5c" id="diag-task-delete-save">Удалить</button></div>
   </section>
 
   <!-- ===================== VIEW: ПЕРЕНОС В ЗАДАЧИ — ОЧЕРЕДЬ НА ПОДТВЕРЖДЕНИЕ ===================== -->
@@ -1243,7 +1246,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
-    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.7 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка</div>
+    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.8 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
@@ -2021,7 +2024,7 @@ function renderDiagLanding(){
   document.getElementById("row-diag-choices").onclick=function(){ showTool("diag-choices"); };
   document.getElementById("row-diag-tasks").onclick=function(){ showTool("diag-tasks"); };
   document.getElementById("row-diag-cleanup").onclick=function(){ showTool("diag-cleanup"); };
-  document.getElementById("row-diag-monthly").onclick=function(){ showTool("diag-monthly"); };
+  document.getElementById("row-diag-monthly").onclick=function(){ diagMonthlyDismissed=[]; showTool("diag-monthly"); };
   [].forEach.call(box.querySelectorAll("[data-book]"),function(b){
     b.onclick=function(){ diagOpenBook(b.getAttribute("data-book")); };
   });
@@ -2344,6 +2347,12 @@ document.getElementById("diag-task-delete-save").onclick=function(){
   arr[diagTaskDeleteIndex].archived=true;
   arr[diagTaskDeleteIndex].deleteReason=reason;
   arr[diagTaskDeleteIndex].deleteDate=diagTodayIso();
+  diagSaveTasks(arr);
+  showTool("diag-tasks");
+};
+document.getElementById("diag-task-force-writeoff").onclick=function(){
+  var arr=diagLoadTasks();
+  arr[diagTaskDeleteIndex].forceWriteoff=true;
   diagSaveTasks(arr);
   showTool("diag-tasks");
 };
@@ -2703,12 +2712,14 @@ function renderDiagCleanup(){
 }
 
 /* ---- ежемесячная приборка: тот же регламент списания/быстрых побед/паузы, но для Задач в работе ---- */
+var diagMonthlyDismissed=[];
 function diagMonthlyLists(){
   var tasks=diagLoadTasks();
   var writeoff=tasks.map(function(t,i){ return {t:t,i:i}; }).filter(function(o){
     var t=o.t;
     if(t.archived || t.pauseUntil) return false;
     if(t.vazhnost===undefined||t.slozhnost===undefined||t.resurs===undefined) return false;
+    if(t.forceWriteoff) return true;
     if(t.vazhnost>DIAG_WRITEOFF_VAZHNOST_MAX) return false;
     return diagWriteoffAutoCount(t)>=1;
   }).sort(function(a,b){ return b.t.cena-a.t.cena; });
@@ -2737,22 +2748,31 @@ function diagMonthlyLists(){
 }
 function renderDiagMonthly(){
   var lists=diagMonthlyLists();
+  var woList=lists.writeoff.filter(function(o){ return diagMonthlyDismissed.indexOf(o.i)===-1; });
+  var pcList=lists.pauseCandidates.filter(function(o){ return diagMonthlyDismissed.indexOf(o.i)===-1; });
 
   var woBox=document.getElementById("diag-monthly-writeoff");
   var woEmpty=document.getElementById("diag-monthly-writeoff-empty");
-  if(lists.writeoff.length){
+  if(woList.length){
     woEmpty.classList.add("hidden");
-    woBox.innerHTML=lists.writeoff.map(function(o,idx){
+    woBox.innerHTML=woList.map(function(o,idx){
       var e=o.t, need=diagWriteoffNeeded(e.vazhnost), auto=diagWriteoffAutoCount(e);
       return diagCleanupCardHtml(e, ["Цена "+e.cena, "Важн. "+e.vazhnost, "Сложн. "+e.slozhnost, "Ресурс "+e.resurs, "нужно "+need+" из 8 (авто "+auto+")"],
-        "<button data-idx='"+idx+"'>→ В архив</button>");
+        "<button class='act' data-idx='"+idx+"'>→ В архив</button><button class='ghost2' data-idx='"+idx+"'>В задачи</button>");
     }).join("");
-    [].forEach.call(woBox.querySelectorAll("button"),function(b){
+    [].forEach.call(woBox.querySelectorAll("button.act"),function(b){
       b.onclick=function(){
-        var o=lists.writeoff[+b.getAttribute("data-idx")];
+        var o=woList[+b.getAttribute("data-idx")];
         diagOpenWriteoffForm(o.t, function(){
           var arr=diagLoadTasks(); arr[o.i].archived=true; diagSaveTasks(arr); showTool("diag-monthly");
         }, "diag-monthly", "Ежемесячная приборка");
+      };
+    });
+    [].forEach.call(woBox.querySelectorAll("button.ghost2"),function(b){
+      b.onclick=function(){
+        var o=woList[+b.getAttribute("data-idx")];
+        diagMonthlyDismissed.push(o.i);
+        renderDiagMonthly();
       };
     });
   } else { woBox.innerHTML=""; woEmpty.classList.remove("hidden"); }
@@ -2768,19 +2788,26 @@ function renderDiagMonthly(){
 
   var pBox=document.getElementById("diag-monthly-pause");
   var pEmpty=document.getElementById("diag-monthly-pause-empty");
-  if(lists.pauseCandidates.length){
+  if(pcList.length){
     pEmpty.classList.add("hidden");
-    pBox.innerHTML=lists.pauseCandidates.map(function(o,idx){
+    pBox.innerHTML=pcList.map(function(o,idx){
       var e=o.t;
       return diagCleanupCardHtml(e, ["Сложн. "+e.slozhnost, "Ресурс "+e.resurs, "Важн. "+e.vazhnost],
-        "<button data-idx='"+idx+"'>⏳ На паузу</button>");
+        "<button class='act' data-idx='"+idx+"'>⏳ На паузу</button><button class='ghost2' data-idx='"+idx+"'>В задачи</button>");
     }).join("");
-    [].forEach.call(pBox.querySelectorAll("button"),function(b){
+    [].forEach.call(pBox.querySelectorAll("button.act"),function(b){
       b.onclick=function(){
-        var o=lists.pauseCandidates[+b.getAttribute("data-idx")];
+        var o=pcList[+b.getAttribute("data-idx")];
         diagOpenPauseForm(o.t, function(date){
           var arr=diagLoadTasks(); arr[o.i].pauseUntil=date; diagSaveTasks(arr); showTool("diag-monthly");
         }, "diag-monthly", "Ежемесячная приборка");
+      };
+    });
+    [].forEach.call(pBox.querySelectorAll("button.ghost2"),function(b){
+      b.onclick=function(){
+        var o=pcList[+b.getAttribute("data-idx")];
+        diagMonthlyDismissed.push(o.i);
+        renderDiagMonthly();
       };
     });
   } else { pBox.innerHTML=""; pEmpty.classList.remove("hidden"); }
