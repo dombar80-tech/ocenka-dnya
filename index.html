@@ -1246,7 +1246,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
-    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.8 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка</div>
+    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.8.1 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
@@ -2718,8 +2718,8 @@ function diagMonthlyLists(){
   var writeoff=tasks.map(function(t,i){ return {t:t,i:i}; }).filter(function(o){
     var t=o.t;
     if(t.archived || t.pauseUntil) return false;
-    if(t.vazhnost===undefined||t.slozhnost===undefined||t.resurs===undefined) return false;
     if(t.forceWriteoff) return true;
+    if(t.vazhnost===undefined||t.slozhnost===undefined||t.resurs===undefined) return false;
     if(t.vazhnost>DIAG_WRITEOFF_VAZHNOST_MAX) return false;
     return diagWriteoffAutoCount(t)>=1;
   }).sort(function(a,b){ return b.t.cena-a.t.cena; });
@@ -2756,8 +2756,9 @@ function renderDiagMonthly(){
   if(woList.length){
     woEmpty.classList.add("hidden");
     woBox.innerHTML=woList.map(function(o,idx){
-      var e=o.t, need=diagWriteoffNeeded(e.vazhnost), auto=diagWriteoffAutoCount(e);
-      return diagCleanupCardHtml(e, ["Цена "+e.cena, "Важн. "+e.vazhnost, "Сложн. "+e.slozhnost, "Ресурс "+e.resurs, "нужно "+need+" из 8 (авто "+auto+")"],
+      var e=o.t, need=diagWriteoffNeeded(e.vazhnost||0), auto=diagWriteoffAutoCount(e);
+      var fmt=function(v){ return v===undefined?"—":v; };
+      return diagCleanupCardHtml(e, ["Цена "+fmt(e.cena), "Важн. "+fmt(e.vazhnost), "Сложн. "+fmt(e.slozhnost), "Ресурс "+fmt(e.resurs), "нужно "+need+" из 8 (авто "+auto+")"],
         "<button class='act' data-idx='"+idx+"'>→ В архив</button><button class='ghost2' data-idx='"+idx+"'>В задачи</button>");
     }).join("");
     [].forEach.call(woBox.querySelectorAll("button.act"),function(b){
