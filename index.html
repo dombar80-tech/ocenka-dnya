@@ -48,6 +48,10 @@
   .hbox .big{font-size:20px;font-weight:700;line-height:1}
   .hbox .cap{font-size:10px;color:var(--muted);line-height:1.1}
   .hbox .ic{font-size:22px;line-height:1}
+  .homecoming-run-item{display:flex;align-items:flex-start;gap:10px;width:100%;box-sizing:border-box;padding:12px 14px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;margin-bottom:8px;cursor:pointer;color:var(--text);font-size:14.5px}
+  .homecoming-run-item input[type="checkbox"]{margin-top:2px}
+  .homecoming-run-item input[type="checkbox"]{width:20px;height:20px;flex:0 0 auto}
+  .homecoming-fav-check{width:22px;height:22px;flex:0 0 auto}
 
   /* param block */
   .param{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 14px 16px;margin-bottom:12px}
@@ -406,7 +410,44 @@
         <span class="ic"><svg class="diag-ic-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="13" width="5" height="8" rx="1.5" fill="#7c83ff"/><rect x="9.5" y="8" width="5" height="13" rx="1.5" fill="#ffcf6b"/><rect x="16" y="3" width="5" height="18" rx="1.5" fill="#4ade80"/></svg></span><span class="t">Диагностика</span>
         <div class="d">Разовая инвентаризация проблем, тревог и триггеров — чтобы видеть, откуда стартуешь.</div>
       </button>
+      <button class="tile neutral" id="t-open-protocols">
+        <span class="ic">🗓️</span><span class="t">Ежедневные протоколы</span>
+        <div class="d">Готовые ритуалы на каждый день — например, выход из рабочего режима дома.</div>
+      </button>
     </div>
+  </section>
+
+  <!-- ===================== VIEW: ЕЖЕДНЕВНЫЕ ПРОТОКОЛЫ — ХАБ ===================== -->
+  <section id="v-protocols" class="hidden">
+    <button class="back" data-back="home">← Инструменты</button>
+    <h1>🗓️ Ежедневные протоколы</h1>
+    <div class="sub">Готовые ритуалы, которые дают мозгу чёткий сигнал о смене режима — по мотивам статей Михаила Муравьёва, autohumanism.com.</div>
+    <div class="tiles">
+      <button class="tile neutral" id="t-open-homecoming">
+        <span class="ic">🏠</span><span class="t">Возвращение домой</span>
+        <div class="d">Протокол перехода из рабочего режима в домашний — набери свой набор техник и запускай по приходу.</div>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===================== VIEW: ВОЗВРАЩЕНИЕ ДОМОЙ — КАТАЛОГ ===================== -->
+  <section id="v-homecoming" class="hidden">
+    <button class="back" data-back="protocols">← Ежедневные протоколы</button>
+    <h1>🏠 Возвращение домой</h1>
+    <div class="sub">Придя домой, тело уже здесь, а мозг ещё «на работе» — ретикулярная формация начеку, кортизол повышен. Эта процедура — чёткий сигнал: «Всё, я дома, можно выдохнуть». Отметь ★ техники, которые тебе заходят, набери свой набор (статья рекомендует ~15) — и запускай его целиком по приходу домой.</div>
+    <div class="acts">
+      <button class="primary" id="homecoming-run-btn">▶ Я дома (<span id="homecoming-fav-count">0</span>)</button>
+    </div>
+    <div id="homecoming-blocks" style="margin-top:10px"></div>
+  </section>
+
+  <!-- ===================== VIEW: ВОЗВРАЩЕНИЕ ДОМОЙ — ЗАПУСК ===================== -->
+  <section id="v-homecoming-run" class="hidden">
+    <button class="back" data-back="homecoming">← Возвращение домой</button>
+    <h1>▶ Прогон протокола</h1>
+    <div class="sub">Отмечай выполненное по ходу — не обязательно всё подряд и не обязательно каждый пункт.</div>
+    <div id="homecoming-run-list"></div>
+    <div class="acts" style="margin-top:16px"><button class="primary" id="homecoming-run-done">Готово, я в норме</button></div>
   </section>
 
   <!-- ===================== VIEW: DIAGNOSTIC MAP LANDING ===================== -->
@@ -1246,7 +1287,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
-    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.8.1 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка</div>
+    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.9 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка + Ежедневные протоколы</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
@@ -1684,7 +1725,7 @@ function download(name, text, type){
 }
 // данные Инструментов (Аптечка/Антисаботаж/Диагностика) хранятся отдельно от дневных записей —
 // без этого списка бэкап сохранял бы только Сегодня/Историю
-var TOOL_KEYS=["apt2_items","apt2_bh","apt2_opens","apt2_results","anti_texts","anti_progress","anti_trophy","diag_stream","diag_anx_stream","diag_phantoms","diag_ulcers","diag_pwhash","diag_choices","diag_tasks","diag_writeoff_policy","diag_writeoffs"];
+var TOOL_KEYS=["apt2_items","apt2_bh","apt2_opens","apt2_results","anti_texts","anti_progress","anti_trophy","diag_stream","diag_anx_stream","diag_phantoms","diag_ulcers","diag_pwhash","diag_choices","diag_tasks","diag_writeoff_policy","diag_writeoffs","homecoming_favorites","homecoming_runs"];
 function collectToolsData(){
   var out={};
   TOOL_KEYS.forEach(function(k){
@@ -1860,6 +1901,106 @@ var ANTI_META={
 var ANTI_ROWS=["perm","tech","antivirus","projects","jurisdiction"];
 var TROPHY_TYPES=["Вина/стыд","Боязнь ошибки","Страх осуждения","Желание бросить","Тревога о будущем","Обесценивание смысла"];
 
+/* ---------- ежедневные протоколы: возвращение домой ---------- */
+var HOMECOMING_BLOCKS=["Входной","Сенсомоторный","Когнитивный","Активный","Транквилизаторы","Якорь"];
+var HOMECOMING_ITEMS=[
+  {block:"Входной", text:"Громкий выдох", dur:"2 сек", d:"Один резкий выдох со звуком «Ха-а-а» — телесный сигнал «можно расслабиться»."},
+  {block:"Входной", text:"Формула безопасности", dur:"10 сек", d:"Вслух проговорить, что ты дома и в безопасности, а все проблемы остались снаружи."},
+  {block:"Входной", text:"Прохладная вода на лицо", dur:"30 сек", d:"Умыть лицо и запястья прохладной водой — запускает нырятельный рефлекс."},
+  {block:"Входной", text:"Стряхнуть руки и ноги", dur:"30 сек", d:"Потрясти кистями и стопами, будто стряхиваешь воду — сбрасывает мышечное напряжение."},
+  {block:"Входной", text:"Несколько зевков", dur:"30 сек", d:"Принудительно широко зевнуть пару раз — физический сигнал перехода к отдыху."},
+  {block:"Входной", text:"Слова по алфавиту", dur:"1 мин", d:"Про себя перечислять любые слова по алфавиту — переключает мозг на простую монотонную задачу."},
+  {block:"Входной", text:"Гримасы в зеркало", dur:"30 сек", d:"Покорчить смешные рожи — ломает застывшую «рабочую маску» лица."},
+  {block:"Входной", text:"Назвать любимые вещи", dur:"30 сек", d:"Вслух перечислить 3-4 предмета вокруг, которые нравятся — заземляет на своей территории."},
+  {block:"Входной", text:"Переодеться в домашнее", dur:"1 мин", d:"Со вкусом переодеться в удобную одежду, отмечая про себя, как это приятно."},
+  {block:"Входной", text:"Обнять себя", dur:"1 мин", d:"Обхватить себя руками за плечи, можно слегка покачаться — телесный сигнал безопасности."},
+
+  {block:"Сенсомоторный", text:"Босиком по полу", dur:"1-2 мин", d:"Постоять босиком — физическое заземление."},
+  {block:"Сенсомоторный", text:"Фиксация взгляда", dur:"1 мин", d:"Смотреть в одну точку на стене, не моргая — гасит сенсорный шум."},
+  {block:"Сенсомоторный", text:"Дыхание 4-6", dur:"2 мин", d:"Вдох на 4 счёта, выдох на 6 — удлинённый выдох тормозит мобилизацию."},
+  {block:"Сенсомоторный", text:"Поглаживание груди", dur:"1 мин", d:"Круговые поглаживания в районе солнечного сплетения — тактильный сигнал через блуждающий нерв."},
+  {block:"Сенсомоторный", text:"Массаж мочек ушей", dur:"1 мин", d:"Помассировать мочки ушей — мягкое воздействие на блуждающий нерв."},
+  {block:"Сенсомоторный", text:"Тёплые ладони на глаза", dur:"1 мин", d:"Растереть ладони до тепла и приложить к глазам — темнота и тепло снижают сенсорную нагрузку."},
+  {block:"Сенсомоторный", text:"Растяжка грудной клетки", dur:"1 мин", d:"Руки на затылок, локти в стороны, прогнуться — снимает зажатость дыхания."},
+  {block:"Сенсомоторный", text:"Наклоны головы", dur:"1 мин", d:"Медленные наклоны головы вперёд-назад — расслабляет мышцы шеи."},
+  {block:"Сенсомоторный", text:"Давление на затылок", dur:"1 мин", d:"Слегка надавить ладонью на затылок — снимает напряжение в шее."},
+  {block:"Сенсомоторный", text:"Взгляд вдаль", dur:"2 мин", d:"Посмотреть в окно на небо или деревья — переключение на дальний фокус."},
+  {block:"Сенсомоторный", text:"Полежать в удобной позе", dur:"2-3 мин", d:"Просто полежать — сигнал телу, что «боевой режим» закончен."},
+
+  {block:"Когнитивный", text:"Игра в слова", dur:"2-3 мин", d:"Сам с собой перечислять города/животных/предметы по цепочке — простая алгоритмическая загрузка ума."},
+  {block:"Когнитивный", text:"Мысленная прогулка", dur:"2-3 мин", d:"Представить, как гуляешь по знакомым улицам, разглядывая детали — переключает с «анализировать» на «вспоминать»."},
+  {block:"Когнитивный", text:"Список приятного", dur:"2-3 мин", d:"Перечислять всё, что нравится и радует — возвращает интерес к себе."},
+  {block:"Когнитивный", text:"Образ героя", dur:"2-3 мин", d:"Представить себя персонажем — капитаном корабля, ковбоем — лёгкая, необременительная фантазия."},
+  {block:"Когнитивный", text:"Воображаемый отдых на природе", dur:"2-3 мин", d:"Представить прогулку в лесу, рыбалку — безопасная сенсорная эмуляция."},
+  {block:"Когнитивный", text:"Мысленная экскурсия", dur:"2-3 мин", d:"В деталях представить знакомое место — музей, собор — загружает ум 3D-визуализацией без анализа."},
+
+  {block:"Активный", text:"Мини-игра в одиночку", dur:"3-5 мин", d:"Дартс, кольца, попадание шариком в цель — игровая задача вместо «боевой»."},
+  {block:"Активный", text:"Спеть под музыку", dur:"3-5 мин", d:"Подвигаться и попеть/помычать под любимую песню, не заботясь о качестве — снимает социальные зажимы."},
+  {block:"Активный", text:"Медленная пародия на кунг-фу", dur:"3-5 мин", d:"В замедленном темпе изобразить киношного мастера боевых искусств — передаёт контроль от головы телу."},
+  {block:"Активный", text:"Медленный танец", dur:"3-5 мин", d:"Плавно потанцевать под спокойную музыку с разнообразными движениями."},
+  {block:"Активный", text:"Покружиться", dur:"1 мин", d:"Раскинув руки и закрыв глаза, покружиться в одну и другую сторону (не до головокружения) — встряхивает вестибулярный аппарат."},
+
+  {block:"Транквилизаторы", text:"Тёплая вода или чай", dur:"1 мин", d:"Несколько медленных глотков тёплой воды — активирует блуждающий нерв."},
+  {block:"Транквилизаторы", text:"Приглушить свет", dur:"1 мин", d:"Убавить яркость освещения — яркий холодный свет поддерживает боевой режим."},
+  {block:"Транквилизаторы", text:"Тихий фон", dur:"фоном", d:"Негромкий белый шум или спокойная музыка — маскирует бытовые звуки и успокаивает."},
+  {block:"Транквилизаторы", text:"Приятный запах", dur:"1 мин", d:"Понюхать что-то ассоциирующееся с покоем — масло, корицу, хвою."},
+  {block:"Транквилизаторы", text:"Погладить питомца или уютную вещь", dur:"30-40 сек", d:"Потискать кота, плед, любимую вещь — активирует окситоциновую систему."},
+
+  {block:"Якорь", text:"Финальный выдох и фраза", dur:"15 сек", d:"Глубокий вдох-выдох, вслух: «Я дома, я пришёл в норму, я молодец». Один хлопок в ладоши, по коленкам или по бёдрам — как физическая точка."}
+];
+var HOMECOMING_FAV_KEY="homecoming_favorites", HOMECOMING_LOG_KEY="homecoming_runs";
+function homecomingLoadFavs(){ return load(HOMECOMING_FAV_KEY, []); }
+function homecomingSaveFavs(arr){ save(HOMECOMING_FAV_KEY, arr); }
+function renderHomecomingBlocks(){
+  var favs=homecomingLoadFavs();
+  var box=document.getElementById("homecoming-blocks");
+  box.innerHTML=HOMECOMING_BLOCKS.map(function(block){
+    var items=HOMECOMING_ITEMS.map(function(it,i){ return {it:it,i:i}; }).filter(function(o){ return o.it.block===block; });
+    return "<div class='diag-cleanup-h'>"+block+"</div>"+items.map(function(o){
+      var on=favs.indexOf(o.i)!==-1;
+      return "<div class='diag-cleanup-card'><div><div class='txt'>"+esc(o.it.text)+" <span style='color:var(--muted);font-weight:400'>· "+esc(o.it.dur)+"</span></div><div class='meta'>"+esc(o.it.d)+"</div></div>"+
+        "<div class='action'><input type='checkbox' class='homecoming-fav-check' data-i='"+o.i+"'"+(on?" checked":"")+"></div></div>";
+    }).join("");
+  }).join("");
+  document.getElementById("homecoming-fav-count").textContent=favs.length;
+  [].forEach.call(box.querySelectorAll("input[data-i]"),function(cb){
+    cb.onchange=function(){
+      var i=+cb.getAttribute("data-i");
+      var arr=homecomingLoadFavs();
+      var idx=arr.indexOf(i);
+      if(idx===-1) arr.push(i); else arr.splice(idx,1);
+      homecomingSaveFavs(arr);
+      document.getElementById("homecoming-fav-count").textContent=arr.length;
+    };
+  });
+}
+function renderHomecomingRun(){
+  var favs=homecomingLoadFavs();
+  var box=document.getElementById("homecoming-run-list");
+  if(!favs.length){
+    box.innerHTML="<div class='empty'>Пока не выбрано ни одной техники — вернись в протокол и отметь ★ то, что нравится.</div>";
+    return;
+  }
+  box.innerHTML=HOMECOMING_BLOCKS.map(function(block){
+    var items=favs.map(function(i){ return {it:HOMECOMING_ITEMS[i],i:i}; }).filter(function(o){ return o.it.block===block; });
+    if(!items.length) return "";
+    return "<div class='diag-cleanup-h'>"+block+"</div>"+items.map(function(o){
+      return "<label class='homecoming-run-item'>"+
+        "<input type='checkbox' data-i='"+o.i+"'>"+
+        "<span><div><b>"+esc(o.it.text)+"</b> <span style='color:var(--muted)'>· "+esc(o.it.dur)+"</span></div><div style='color:var(--muted);font-size:12px;margin-top:4px'>"+esc(o.it.d)+"</div></span></label>";
+    }).join("");
+  }).join("");
+}
+document.getElementById("t-open-protocols").onclick=function(){ showTool("protocols"); };
+document.getElementById("t-open-homecoming").onclick=function(){ renderHomecomingBlocks(); showTool("homecoming"); };
+document.getElementById("homecoming-run-btn").onclick=function(){ renderHomecomingRun(); showTool("homecoming-run"); };
+document.getElementById("homecoming-run-done").onclick=function(){
+  var log=load(HOMECOMING_LOG_KEY,[]);
+  log.push({ts:Date.now()});
+  save(HOMECOMING_LOG_KEY, log.slice(-30));
+  showTool("home");
+};
+
 function toolTodayISO(){ var d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
 function load(k,def){ try{var v=localStorage.getItem(k); return v?JSON.parse(v):def;}catch(e){return def;} }
 function save(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
@@ -1906,7 +2047,7 @@ function last3AllBad(){
 
 /* ---------- navigation ---------- */
 
-var VIEWS=["home","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-delete-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-monthly","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
+var VIEWS=["home","protocols","homecoming","homecoming-run","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-delete-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-monthly","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
 var currentTrigger="";
 var currentSuggest=null;
 function showTool(v){
@@ -1915,6 +2056,8 @@ function showTool(v){
   if(v==="anti-progress") renderProgressList();
   if(v==="anti-trophy"){ buildTrophyChips(); renderTrophyList(); }
   if(v==="diag") renderDiagLanding();
+  if(v==="homecoming") renderHomecomingBlocks();
+  if(v==="homecoming-run") renderHomecomingRun();
   if(v==="diag-book-home") renderDiagBookHome();
   if(v==="diag-weights-home") renderDiagWeightsHome();
   if(v==="diag-phantoms") renderDiagPhantomsList();
