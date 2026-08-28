@@ -427,6 +427,44 @@
         <span class="ic">🏠</span><span class="t">Возвращение домой</span>
         <div class="d">Протокол перехода из рабочего режима в домашний — набери свой набор техник и запускай по приходу.</div>
       </button>
+      <button class="tile neutral" id="t-open-night">
+        <span class="ic">🌙</span><span class="t">Снотворный протокол</span>
+        <div class="d">Короткая последовательность перед сном и в постели — сигнал мозгу, что пора гибернировать.</div>
+      </button>
+      <button class="tile neutral" id="t-open-morning">
+        <span class="ic">☀️</span><span class="t">Побудочный протокол</span>
+        <div class="d">Плавный запуск систем мозга после пробуждения — без рывков и без телефона первые минуты.</div>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===================== VIEW: СНОТВОРНЫЙ ПРОТОКОЛ ===================== -->
+  <section id="v-night" class="hidden">
+    <button class="back" data-back="protocols">← Ежедневные протоколы</button>
+    <h1>🌙 Снотворный протокол</h1>
+    <div class="sub">4-5 минут перед тем, как лечь — явный сигнал всем системам мозга, что пора переходить в режим гибернации. Отмечай по ходу.</div>
+    <div id="night-list"></div>
+    <div class="note" style="margin-top:14px">Если не спится дольше 15 минут — не лежи и не мучайся: встань, 5 минут почитай что-то скучное и монотонное в другой комнате, потом возвращайся. Это лучше, чем приучать мозг к связке «кровать = бессонница».</div>
+    <button class="ghost" id="night-add-open" style="margin-top:14px;width:100%">+ Добавить свой пункт</button>
+    <div id="night-add-form" class="hidden" style="margin-top:10px">
+      <input type="text" id="night-add-text" placeholder="Что делать">
+      <input type="text" id="night-add-dur" placeholder="Сколько времени (необязательно)" style="margin-top:8px">
+      <div class="acts" style="margin-top:10px"><button class="primary" id="night-add-save">Добавить</button></div>
+    </div>
+  </section>
+
+  <!-- ===================== VIEW: ПОБУДОЧНЫЙ ПРОТОКОЛ ===================== -->
+  <section id="v-morning" class="hidden">
+    <button class="back" data-back="protocols">← Ежедневные протоколы</button>
+    <h1>☀️ Побудочный протокол</h1>
+    <div class="sub">Плавный, без рывков запуск систем мозга после сна. Отмечай по ходу.</div>
+    <div id="morning-list"></div>
+    <div class="note" style="margin-top:14px">Никакого телефона, телевизора и новостей первые 10-15 минут после пробуждения — иначе лавина «срочных» данных обрушится на ещё не разогретый мозг и сожжёт запасённый за ночь ресурс ещё до выхода из дома.</div>
+    <button class="ghost" id="morning-add-open" style="margin-top:14px;width:100%">+ Добавить свой пункт</button>
+    <div id="morning-add-form" class="hidden" style="margin-top:10px">
+      <input type="text" id="morning-add-text" placeholder="Что делать">
+      <input type="text" id="morning-add-dur" placeholder="Сколько времени (необязательно)" style="margin-top:8px">
+      <div class="acts" style="margin-top:10px"><button class="primary" id="morning-add-save">Добавить</button></div>
     </div>
   </section>
 
@@ -1287,7 +1325,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
-    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.9 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка + Ежедневные протоколы</div>
+    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.10 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка + Ежедневные протоколы</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
@@ -1725,7 +1763,7 @@ function download(name, text, type){
 }
 // данные Инструментов (Аптечка/Антисаботаж/Диагностика) хранятся отдельно от дневных записей —
 // без этого списка бэкап сохранял бы только Сегодня/Историю
-var TOOL_KEYS=["apt2_items","apt2_bh","apt2_opens","apt2_results","anti_texts","anti_progress","anti_trophy","diag_stream","diag_anx_stream","diag_phantoms","diag_ulcers","diag_pwhash","diag_choices","diag_tasks","diag_writeoff_policy","diag_writeoffs","homecoming_favorites","homecoming_runs"];
+var TOOL_KEYS=["apt2_items","apt2_bh","apt2_opens","apt2_results","anti_texts","anti_progress","anti_trophy","diag_stream","diag_anx_stream","diag_phantoms","diag_ulcers","diag_pwhash","diag_choices","diag_tasks","diag_writeoff_policy","diag_writeoffs","homecoming_favorites","homecoming_runs","night_custom_items","morning_custom_items"];
 function collectToolsData(){
   var out={};
   TOOL_KEYS.forEach(function(k){
@@ -2001,6 +2039,91 @@ document.getElementById("homecoming-run-done").onclick=function(){
   showTool("home");
 };
 
+/* ---------- ежедневные протоколы: снотворный и побудочный ---------- */
+var NIGHT_BLOCKS=["Перед сном","В постели"];
+var NIGHT_ITEMS=[
+  {block:"Перед сном", text:"Расслабление мышц", dur:"1-2 мин", d:"Лёгкая растяжка или прогрессивная релаксация: напрячь на пару секунд и резко расслабить каждую группу мышц по очереди — убирает остаточное мышечное напряжение накопленное за день."},
+  {block:"Перед сном", text:"Массаж", dur:"1 мин", d:"Погладить и слегка помассировать голову, виски, шею — или стопы. Запускает выработку окситоцина и серотонина, гасит «хвосты» стресса."},
+  {block:"Перед сном", text:"Стимуляция блуждающего нерва", dur:"1 мин", d:"Погладить грудь в районе солнечного сплетения или помассировать мочки ушей — прямое воздействие на блуждающий нерв, включает парасимпатику."},
+  {block:"Перед сном", text:"Выдох «Ха-а-а» или зевок", dur:"10 сек", d:"Физический сигнал телу, что пора спать — тормозит симпатику и ретикулярную формацию, отвечающую за бодрствование."},
+  {block:"Перед сном", text:"Вербальный якорь", dur:"5 сек", d:"Своя короткая фраза о том, что дела на сегодня закончены и пора спать. Например: «День окончен, пора баиньки». Вербализация даёт мозгу чёткую команду вместо смутного ощущения."},
+  {block:"В постели", text:"Сканирование тела", dur:"1-2 мин", d:"Руки вдоль тела, мысленно пройтись сверху вниз — от лба до кончиков пальцев ног, — сознательно расслабляя каждую группу мышц по пути. Если мышца физически не поддаётся, мысленно «отпусти» её. На полную мощность включает инсулу (восприятие тела), тормозит системы выживания и занимает вниманием аналитические отделы мозга — ПФК, ППК, ВВБ."},
+  {block:"В постели", text:"Дыхание 4-7-8", dur:"до сна", d:"Вдох через нос на 4 счёта, задержка на 7, выдох через рот на 8. Повторять, пока не надоест или не уснёшь. Активирует парасимпатику и дожимает остаточную активность систем выживания и анализа."},
+  {block:"В постели", text:"Когнитивный пасьянс", dur:"до сна", d:"Взять любое слово, подбирать образы на каждую его букву по очереди, пока не закончатся — потом следующая буква. Это ровно та работа со случайными образами, которую сеть пассивного режима (DMN) и так делает во сне — ты просто загружаешь её этим заранее."}
+];
+var MORNING_BLOCKS=["Пробуждение"];
+var MORNING_ITEMS=[
+  {block:"Пробуждение", text:"Потягивание", dur:"1-2 мин", d:"Лёжа, несколько раз плавно потянуться, согнуть-разогнуть стопы и кисти, повернуть голову. Мягко запускает моторные программы через мозжечок и базальные ганглии, ровно поднимает тонус симпатики, включает сканирование тела через инсулу."},
+  {block:"Пробуждение", text:"Дыхание", dur:"30 сек", d:"Три цикла: вдох носом на 4 счёта, выдох на 4 счёта. Запускает норадреналиновую систему и ретикулярную формацию (переход в бодрствование), балансирует симпатику с парасимпатикой."},
+  {block:"Пробуждение", text:"Неторопливый подъём", dur:"30 сек", d:"Встать без спешки, ещё раз потянуться. Даёт давлению и вестибулярному аппарату время адаптироваться к смене позы, щадяще разгоняет симпатику без всплеска кортизола."},
+  {block:"Пробуждение", text:"Свет", dur:"15-30 сек", d:"Открыть шторы или включить яркий свет. Подавляет выработку мелатонина и запускает дневной уровень кортизола и серотонина."},
+  {block:"Пробуждение", text:"Вода", dur:"15 сек", d:"Несколько медленных глотков воды комнатной температуры. Запускает метаболизм, переключает парасимпатику в дневной режим."},
+  {block:"Пробуждение", text:"Умывание", dur:"30 сек", d:"Умыться прохладной (не холодной) водой. Мягкая сенсорная загрузка через таламус, повышает тонус симпатики."},
+  {block:"Пробуждение", text:"Установочная фраза", dur:"5 сек", d:"Своя короткая фраза вслух, задающая настрой на день. Например: «Сегодня будет удачный денёк». Сигнализирует ПФК «мы готовы, но без срочной задачи», амигдале — что тревоги нет, а остальным системам мобилизации — что можно работать в спокойном штатном режиме."}
+];
+function makeProtocolRunner(cfg){
+  var CUSTOM_KEY=cfg.customKey;
+  function loadCustom(){ return load(CUSTOM_KEY, []); }
+  function saveCustom(arr){ save(CUSTOM_KEY, arr); }
+  function render(){
+    var box=document.getElementById(cfg.listId);
+    var custom=loadCustom();
+    var html=cfg.blocks.map(function(block){
+      var items=cfg.items.filter(function(it){ return it.block===block; });
+      if(!items.length) return "";
+      return "<div class='diag-cleanup-h'>"+block+"</div>"+items.map(function(it){
+        return "<label class='homecoming-run-item'>"+
+          "<input type='checkbox'>"+
+          "<span><div><b>"+esc(it.text)+"</b> <span style='color:var(--muted)'>· "+esc(it.dur)+"</span></div><div style='color:var(--muted);font-size:12px;margin-top:4px'>"+esc(it.d)+"</div></span></label>";
+      }).join("");
+    }).join("");
+    if(custom.length){
+      html+="<div class='diag-cleanup-h'>Свои пункты</div>"+custom.map(function(c,i){
+        return "<label class='homecoming-run-item'><input type='checkbox'>"+
+          "<span style='flex:1'><b>"+esc(c.text)+"</b>"+(c.dur?" <span style='color:var(--muted)'>· "+esc(c.dur)+"</span>":"")+"</span>"+
+          "<button data-ci='"+i+"' style='background:none;border:none;color:var(--muted);font-size:18px;padding:0 4px' onclick='event.preventDefault()'>×</button></label>";
+      }).join("");
+    }
+    box.innerHTML=html;
+    [].forEach.call(box.querySelectorAll("button[data-ci]"),function(b){
+      b.onclick=function(e){
+        e.preventDefault();
+        var arr=loadCustom();
+        arr.splice(+b.getAttribute("data-ci"),1);
+        saveCustom(arr);
+        render();
+      };
+    });
+  }
+  document.getElementById(cfg.addOpenId).onclick=function(){
+    document.getElementById(cfg.addFormId).classList.toggle("hidden");
+  };
+  document.getElementById(cfg.addSaveId).onclick=function(){
+    var textEl=document.getElementById(cfg.addTextId);
+    var text=textEl.value.trim();
+    if(!text) return;
+    var dur=document.getElementById(cfg.addDurId).value.trim();
+    var arr=loadCustom();
+    arr.push({text:text, dur:dur});
+    saveCustom(arr);
+    textEl.value="";
+    document.getElementById(cfg.addDurId).value="";
+    document.getElementById(cfg.addFormId).classList.add("hidden");
+    render();
+  };
+  return render;
+}
+var renderNight=makeProtocolRunner({
+  listId:"night-list", customKey:"night_custom_items", blocks:NIGHT_BLOCKS, items:NIGHT_ITEMS,
+  addOpenId:"night-add-open", addFormId:"night-add-form", addTextId:"night-add-text", addDurId:"night-add-dur", addSaveId:"night-add-save"
+});
+var renderMorning=makeProtocolRunner({
+  listId:"morning-list", customKey:"morning_custom_items", blocks:MORNING_BLOCKS, items:MORNING_ITEMS,
+  addOpenId:"morning-add-open", addFormId:"morning-add-form", addTextId:"morning-add-text", addDurId:"morning-add-dur", addSaveId:"morning-add-save"
+});
+document.getElementById("t-open-night").onclick=function(){ renderNight(); showTool("night"); };
+document.getElementById("t-open-morning").onclick=function(){ renderMorning(); showTool("morning"); };
+
 function toolTodayISO(){ var d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
 function load(k,def){ try{var v=localStorage.getItem(k); return v?JSON.parse(v):def;}catch(e){return def;} }
 function save(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
@@ -2047,7 +2170,7 @@ function last3AllBad(){
 
 /* ---------- navigation ---------- */
 
-var VIEWS=["home","protocols","homecoming","homecoming-run","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-delete-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-monthly","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
+var VIEWS=["home","protocols","homecoming","homecoming-run","night","morning","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-delete-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-monthly","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
 var currentTrigger="";
 var currentSuggest=null;
 function showTool(v){
@@ -2058,6 +2181,8 @@ function showTool(v){
   if(v==="diag") renderDiagLanding();
   if(v==="homecoming") renderHomecomingBlocks();
   if(v==="homecoming-run") renderHomecomingRun();
+  if(v==="night") renderNight();
+  if(v==="morning") renderMorning();
   if(v==="diag-book-home") renderDiagBookHome();
   if(v==="diag-weights-home") renderDiagWeightsHome();
   if(v==="diag-phantoms") renderDiagPhantomsList();
