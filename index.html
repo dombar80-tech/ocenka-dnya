@@ -1400,7 +1400,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
-    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.11.1 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка + Ежедневные протоколы + Окружение</div>
+    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.11.2 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка + Ежедневные протоколы + Окружение</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
@@ -3542,8 +3542,14 @@ function renderEnvPeople(){
   });
 }
 var envPersonEditIndex=null;
+function envColorFor(v){
+  function hex(c){ c=c.replace("#",""); return [parseInt(c.substr(0,2),16),parseInt(c.substr(2,2),16),parseInt(c.substr(4,2),16)]; }
+  function mix(a,b,t){ var x=hex(a),y=hex(b); return "rgb("+Math.round(x[0]+(y[0]-x[0])*t)+","+Math.round(x[1]+(y[1]-x[1])*t)+","+Math.round(x[2]+(y[2]-x[2])*t)+")"; }
+  var t=Math.max(0,Math.min(10,v))/10;
+  return mix("#4a4d78","#c084fc",t);
+}
 function envPaintPersonSlider(v){
-  var c=diagColorFor(v, false);
+  var c=envColorFor(v);
   document.getElementById("env-person-weight-value").style.color=c;
   var st=document.getElementById("env-person-weight-paint");
   if(!st){ st=document.createElement("style"); st.id="env-person-weight-paint"; document.head.appendChild(st); }
