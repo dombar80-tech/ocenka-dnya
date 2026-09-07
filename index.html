@@ -414,7 +414,82 @@
         <span class="ic">🗓️</span><span class="t">Ежедневные протоколы</span>
         <div class="d">Готовые ритуалы на каждый день — например, выход из рабочего режима дома.</div>
       </button>
+      <button class="tile neutral" id="t-open-env">
+        <span class="ic">🕸️</span><span class="t">Окружение</span>
+        <div class="d">Инвентаризация людей вокруг тебя и их влияния — по мотивам статьи Михаила Муравьёва.</div>
+      </button>
     </div>
+  </section>
+
+  <!-- ===================== VIEW: ОКРУЖЕНИЕ — ЗАДАТЬ ПАРОЛЬ ===================== -->
+  <section id="v-env-setpw" class="hidden">
+    <button class="back" data-back="home">← Инструменты</button>
+    <h1>🔒 Пароль для раздела Окружение</h1>
+    <div class="sub">Придумай пароль (минимум 8 символов) — он будет спрашиваться при входе в этот раздел. Можно поставить тот же, что и у Диагностики, а можно другой — это отдельный, независимый пароль. Это локальная защита от чужого взгляда, а не шифрование: пароль нигде не хранится в открытом виде и его нельзя восстановить — если забудешь, придётся стереть записи и начать заново.</div>
+    <label>Пароль</label>
+    <input type="password" id="env-pw-new" placeholder="минимум 8 символов" autocomplete="new-password">
+    <label>Повтори пароль</label>
+    <input type="password" id="env-pw-new2" placeholder="ещё раз" autocomplete="new-password">
+    <div class="note" id="env-pw-setup-error" style="display:none;margin-top:12px"></div>
+    <div class="acts" style="margin-top:14px"><button class="primary" id="env-pw-setup-save">Сохранить пароль</button></div>
+  </section>
+
+  <!-- ===================== VIEW: ОКРУЖЕНИЕ — ВВОД ПАРОЛЯ ===================== -->
+  <section id="v-env-unlock" class="hidden">
+    <button class="back" data-back="home">← Инструменты</button>
+    <h1>🔒 Окружение</h1>
+    <div class="sub">Введи пароль, чтобы открыть.</div>
+    <input type="password" id="env-pw-enter" placeholder="Пароль" autocomplete="current-password">
+    <div class="note" id="env-pw-enter-error" style="display:none;margin-top:12px">Неверный пароль.</div>
+    <div class="acts" style="margin-top:14px"><button class="primary" id="env-pw-enter-submit">Открыть</button></div>
+    <div class="link-row"><button id="env-pw-forgot">Забыл пароль?</button></div>
+  </section>
+
+  <!-- ===================== VIEW: ОКРУЖЕНИЕ — ХАБ ===================== -->
+  <section id="v-env" class="hidden">
+    <button class="back" data-back="home">← Инструменты</button>
+    <h1>🕸️ Окружение</h1>
+    <div class="sub">Инвентаризация людей, которые влияют на твою самооценку, взгляды, настроение — по мотивам статьи Михаила Муравьёва, autohumanism.com.</div>
+    <div class="tiles">
+      <button class="tile neutral" id="t-open-env-people">
+        <span class="ic">👥</span><span class="t">Список персон</span>
+        <div class="d">Все, с кем регулярно взаимодействуешь, плюс те, за кем просто пристально следишь — с весом влияния каждого.</div>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===================== VIEW: ОКРУЖЕНИЕ — СПИСОК ПЕРСОН ===================== -->
+  <section id="v-env-people" class="hidden">
+    <button class="back" data-back="env">← Окружение</button>
+    <h1>👥 Список персон</h1>
+    <div class="sub">Оцени вес каждого от 0 до 10 — не насколько человек приятный или родной, а насколько объективно он сейчас влияет на твою самооценку, взгляды, поведение, настроение. Проценты считаются автоматически от суммы всех весов.</div>
+    <button class="primary" id="env-person-add" style="width:100%;margin-bottom:14px">+ Добавить человека</button>
+    <div id="env-people-list"></div>
+    <div class="empty hidden" id="env-people-empty">Пока никого не добавил.</div>
+  </section>
+
+  <!-- ===================== VIEW: ОКРУЖЕНИЕ — ФОРМА ПЕРСОНЫ ===================== -->
+  <section id="v-env-person-form" class="hidden">
+    <button class="back" data-back="env-people">← Список персон</button>
+    <h1 id="env-person-form-title">Новый человек</h1>
+    <label>Имя</label>
+    <input type="text" id="env-person-name" placeholder="Как зовёшь его(её) для себя">
+    <label style="margin-top:14px">Вес влияния</label>
+    <div class="diag-val" id="env-person-weight-value">5</div>
+    <div class="diag-slider-row">
+      <button class="diag-nudge" id="env-person-weight-minus">−</button>
+      <div class="diag-slwrap"><input type="range" id="env-person-weight-slider" min="0" max="10" value="5" step="1"></div>
+      <button class="diag-nudge" id="env-person-weight-plus">+</button>
+    </div>
+    <div class="diag-ticks"><span>0</span><span>5</span><span>10</span></div>
+    <label style="margin-top:14px">Тип контакта</label>
+    <div class="seg" id="env-person-type-chips">
+      <button class="chip" data-t="regular">Общаюсь регулярно</button>
+      <button class="chip" data-t="watch">Слежу издалека</button>
+    </div>
+    <div class="note" id="env-person-form-error" style="display:none;margin-top:12px"></div>
+    <div class="acts" style="margin-top:16px"><button class="primary" id="env-person-save">Сохранить</button></div>
+    <div class="link-row hidden" id="env-person-delete-row"><button id="env-person-delete">Удалить эту запись</button></div>
   </section>
 
   <!-- ===================== VIEW: ЕЖЕДНЕВНЫЕ ПРОТОКОЛЫ — ХАБ ===================== -->
@@ -1325,7 +1400,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
-    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.10 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка + Ежедневные протоколы</div>
+    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.11 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка + Ежедневные протоколы + Окружение</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
@@ -1763,7 +1838,7 @@ function download(name, text, type){
 }
 // данные Инструментов (Аптечка/Антисаботаж/Диагностика) хранятся отдельно от дневных записей —
 // без этого списка бэкап сохранял бы только Сегодня/Историю
-var TOOL_KEYS=["apt2_items","apt2_bh","apt2_opens","apt2_results","anti_texts","anti_progress","anti_trophy","diag_stream","diag_anx_stream","diag_phantoms","diag_ulcers","diag_pwhash","diag_choices","diag_tasks","diag_writeoff_policy","diag_writeoffs","homecoming_favorites","homecoming_runs","night_custom_items","morning_custom_items"];
+var TOOL_KEYS=["apt2_items","apt2_bh","apt2_opens","apt2_results","anti_texts","anti_progress","anti_trophy","diag_stream","diag_anx_stream","diag_phantoms","diag_ulcers","diag_pwhash","diag_choices","diag_tasks","diag_writeoff_policy","diag_writeoffs","homecoming_favorites","homecoming_runs","night_custom_items","morning_custom_items","env_pwhash","env_people"];
 function collectToolsData(){
   var out={};
   TOOL_KEYS.forEach(function(k){
@@ -2170,7 +2245,7 @@ function last3AllBad(){
 
 /* ---------- navigation ---------- */
 
-var VIEWS=["home","protocols","homecoming","homecoming-run","night","morning","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-delete-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-monthly","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
+var VIEWS=["home","env-setpw","env-unlock","env","env-people","env-person-form","protocols","homecoming","homecoming-run","night","morning","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-delete-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-monthly","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
 var currentTrigger="";
 var currentSuggest=null;
 function showTool(v){
@@ -2181,6 +2256,7 @@ function showTool(v){
   if(v==="diag") renderDiagLanding();
   if(v==="homecoming") renderHomecomingBlocks();
   if(v==="homecoming-run") renderHomecomingRun();
+  if(v==="env-people") renderEnvPeople();
   if(v==="night") renderNight();
   if(v==="morning") renderMorning();
   if(v==="diag-book-home") renderDiagBookHome();
@@ -3387,6 +3463,154 @@ document.getElementById("diag-pw-forgot").onclick=function(){
   document.getElementById("diag-pw-new2").value="";
   document.getElementById("diag-pw-setup-error").style.display="none";
   showTool("diag-setpw");
+};
+
+/* ---------- окружение: независимый пароль + список персон ---------- */
+var ENV_PWKEY="env_pwhash";
+var envUnlocked=false;
+var ENV_PEOPLE_KEY="env_people";
+function envLoadPeople(){ return load(ENV_PEOPLE_KEY, []); }
+function envSavePeople(arr){ save(ENV_PEOPLE_KEY, arr); }
+function envEnterSection(){
+  if(envUnlocked){ showTool("env"); return; }
+  if(!load(ENV_PWKEY,null)){
+    document.getElementById("env-pw-new").value="";
+    document.getElementById("env-pw-new2").value="";
+    document.getElementById("env-pw-setup-error").style.display="none";
+    showTool("env-setpw");
+  } else {
+    document.getElementById("env-pw-enter").value="";
+    document.getElementById("env-pw-enter-error").style.display="none";
+    showTool("env-unlock");
+  }
+}
+document.getElementById("t-open-env").onclick=function(){ envEnterSection(); };
+document.getElementById("env-pw-setup-save").onclick=function(){
+  var p1=document.getElementById("env-pw-new").value;
+  var p2=document.getElementById("env-pw-new2").value;
+  var errEl=document.getElementById("env-pw-setup-error");
+  if(p1.length<8){ errEl.textContent="Пароль должен быть не короче 8 символов."; errEl.style.display="block"; return; }
+  if(p1!==p2){ errEl.textContent="Пароли не совпадают."; errEl.style.display="block"; return; }
+  errEl.style.display="none";
+  diagHashPassword(p1).then(function(hash){
+    save(ENV_PWKEY, hash);
+    envUnlocked=true;
+    showTool("env");
+  });
+};
+document.getElementById("env-pw-enter-submit").onclick=function(){
+  var p=document.getElementById("env-pw-enter").value;
+  var errEl=document.getElementById("env-pw-enter-error");
+  diagHashPassword(p).then(function(hash){
+    if(hash===load(ENV_PWKEY,null)){
+      errEl.style.display="none";
+      envUnlocked=true;
+      showTool("env");
+    } else {
+      errEl.style.display="block";
+      document.getElementById("env-pw-enter").value="";
+    }
+  });
+};
+document.getElementById("env-pw-forgot").onclick=function(){
+  if(!confirm("Пароль восстановить нельзя. Продолжить — значит стереть ВСЕ записи раздела Окружение и задать пароль заново. Стереть?")) return;
+  localStorage.removeItem(ENV_PEOPLE_KEY);
+  localStorage.removeItem(ENV_PWKEY);
+  envUnlocked=false;
+  document.getElementById("env-pw-new").value="";
+  document.getElementById("env-pw-new2").value="";
+  document.getElementById("env-pw-setup-error").style.display="none";
+  showTool("env-setpw");
+};
+document.getElementById("t-open-env-people").onclick=function(){ renderEnvPeople(); showTool("env-people"); };
+function renderEnvPeople(){
+  var arr=envLoadPeople();
+  var box=document.getElementById("env-people-list");
+  var empty=document.getElementById("env-people-empty");
+  if(!arr.length){ box.innerHTML=""; empty.classList.remove("hidden"); return; }
+  empty.classList.add("hidden");
+  var sum=arr.reduce(function(s,p){ return s+p.weight; },0);
+  var sorted=arr.map(function(p,i){ return {p:p,i:i}; }).sort(function(a,b){ return b.p.weight-a.p.weight; });
+  box.innerHTML=sorted.map(function(o){
+    var pct=sum? Math.round(o.p.weight*1000/sum)/10 : 0;
+    var typeLabel=o.p.type==="watch"? "Слежу издалека" : "Общаюсь регулярно";
+    return "<div class='diag-cleanup-card' data-i='"+o.i+"' style='cursor:pointer'><div><div class='txt'>"+esc(o.p.name)+"</div>"+
+      "<div class='meta'>Вес "+o.p.weight+" · "+pct+"% · "+typeLabel+"</div></div></div>";
+  }).join("");
+  [].forEach.call(box.querySelectorAll("[data-i]"),function(el){
+    el.onclick=function(){ envOpenPersonForm(+el.getAttribute("data-i")); };
+  });
+}
+var envPersonEditIndex=null;
+function envPaintPersonSlider(v){
+  var c=diagColorFor(v, false);
+  document.getElementById("env-person-weight-value").style.color=c;
+  var st=document.getElementById("env-person-weight-paint");
+  if(!st){ st=document.createElement("style"); st.id="env-person-weight-paint"; document.head.appendChild(st); }
+  st.textContent="#env-person-weight-slider::-webkit-slider-thumb{background:"+c+"}#env-person-weight-slider{background:linear-gradient(90deg,var(--line),"+c+" 55%,var(--line))}";
+}
+document.getElementById("env-person-weight-slider").addEventListener("input", function(){
+  document.getElementById("env-person-weight-value").textContent=this.value;
+  envPaintPersonSlider(+this.value);
+});
+document.getElementById("env-person-weight-minus").onclick=function(){
+  var s=document.getElementById("env-person-weight-slider");
+  s.value=Math.max(0, +s.value-1);
+  s.dispatchEvent(new Event("input",{bubbles:true}));
+};
+document.getElementById("env-person-weight-plus").onclick=function(){
+  var s=document.getElementById("env-person-weight-slider");
+  s.value=Math.min(10, +s.value+1);
+  s.dispatchEvent(new Event("input",{bubbles:true}));
+};
+[].forEach.call(document.querySelectorAll("#env-person-type-chips .chip"),function(b){
+  b.onclick=function(){
+    [].forEach.call(document.querySelectorAll("#env-person-type-chips .chip"),function(x){ x.classList.remove("on"); });
+    b.classList.add("on");
+  };
+});
+function envOpenPersonForm(index){
+  envPersonEditIndex=index;
+  var arr=envLoadPeople();
+  var p=(index!==null)? arr[index] : {name:"", weight:5, type:"regular"};
+  document.getElementById("env-person-form-title").textContent=(index!==null)? "Редактировать" : "Новый человек";
+  document.getElementById("env-person-name").value=p.name||"";
+  document.getElementById("env-person-weight-slider").value=p.weight===undefined?5:p.weight;
+  document.getElementById("env-person-weight-value").textContent=p.weight===undefined?5:p.weight;
+  envPaintPersonSlider(p.weight===undefined?5:p.weight);
+  [].forEach.call(document.querySelectorAll("#env-person-type-chips .chip"),function(b){
+    b.classList.toggle("on", b.getAttribute("data-t")===(p.type||"regular"));
+  });
+  document.getElementById("env-person-form-error").style.display="none";
+  document.getElementById("env-person-delete-row").classList.toggle("hidden", index===null);
+  showTool("env-person-form");
+}
+document.getElementById("env-person-add").onclick=function(){ envOpenPersonForm(null); };
+document.getElementById("env-person-save").onclick=function(){
+  var name=document.getElementById("env-person-name").value.trim();
+  var errEl=document.getElementById("env-person-form-error");
+  if(!name){ errEl.textContent="Впиши имя."; errEl.style.display="block"; return; }
+  errEl.style.display="none";
+  var typeBtn=document.querySelector("#env-person-type-chips .chip.on");
+  var entry={
+    name:name,
+    weight:+document.getElementById("env-person-weight-slider").value,
+    type:typeBtn? typeBtn.getAttribute("data-t") : "regular"
+  };
+  var arr=envLoadPeople();
+  if(envPersonEditIndex!==null) arr[envPersonEditIndex]=entry; else arr.push(entry);
+  envSavePeople(arr);
+  showTool("env-people");
+  renderEnvPeople();
+};
+document.getElementById("env-person-delete").onclick=function(){
+  if(envPersonEditIndex===null) return;
+  if(!confirm("Удалить эту запись?")) return;
+  var arr=envLoadPeople();
+  arr.splice(envPersonEditIndex,1);
+  envSavePeople(arr);
+  showTool("env-people");
+  renderEnvPeople();
 };
 
 // ставит курсор в позицию pos; если сделать это одним прыжком ровно на границе переноса
