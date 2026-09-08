@@ -455,6 +455,10 @@
         <span class="ic">👥</span><span class="t">Список персон</span>
         <div class="d">Все, с кем регулярно взаимодействуешь, плюс те, за кем просто пристально следишь — с весом влияния каждого.</div>
       </button>
+      <button class="tile neutral" id="t-open-env-dossier">
+        <span class="ic">🗂️</span><span class="t">Досье</span>
+        <div class="d">Подробные профили тех, кого решил изучить внимательнее.</div>
+      </button>
     </div>
   </section>
 
@@ -490,6 +494,70 @@
     <div class="note" id="env-person-form-error" style="display:none;margin-top:12px"></div>
     <div class="acts" style="margin-top:16px"><button class="primary" id="env-person-save">Сохранить</button></div>
     <div class="link-row hidden" id="env-person-delete-row"><button id="env-person-delete">Удалить эту запись</button></div>
+  </section>
+
+  <!-- ===================== VIEW: ОКРУЖЕНИЕ — ДОСЬЕ: СПИСОК ===================== -->
+  <section id="v-env-dossier-list" class="hidden">
+    <button class="back" data-back="env">← Окружение</button>
+    <h1>🗂️ Досье</h1>
+    <div class="sub">Персоны, которых ты отметил кнопкой «Собрать Досье» в Списке персон.</div>
+    <div id="env-dossier-list-box"></div>
+    <div class="empty hidden" id="env-dossier-list-empty">Пока никого не отметил. Зайди в «Список персон» и нажми «Собрать Досье» на нужном человеке.</div>
+  </section>
+
+  <!-- ===================== VIEW: ОКРУЖЕНИЕ — ДОСЬЕ: МЕНЮ ПЕРСОНЫ ===================== -->
+  <section id="v-env-dossier-person" class="hidden">
+    <button class="back" data-back="env-dossier-list">← Досье</button>
+    <h1 id="env-dossier-person-title">Досье</h1>
+    <div class="sub" id="env-dossier-person-sub"></div>
+    <div class="tiles">
+      <button class="tile neutral" id="t-open-env-dossier-passport">
+        <span class="ic">🪪</span><span class="t">Паспорт</span>
+        <div class="d">Кто это: роль в жизни, откуда знаешь, образование, достижения, интересы, семья.</div>
+      </button>
+      <button class="tile neutral" id="t-open-env-dossier-snapshot">
+        <span class="ic">📝</span><span class="t">Исходный портрет</span>
+        <div class="d">Как ты видишь этого человека сейчас — на старте, чтобы было с чем сравнить позже.</div>
+      </button>
+      <button class="tile neutral" style="opacity:.45;cursor:default">
+        <span class="ic">📓</span><span class="t">История <span style="font-weight:400;font-size:12px;color:var(--muted)">· скоро</span></span>
+        <div class="d">Дневник наблюдений за несколько месяцев.</div>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===================== VIEW: ОКРУЖЕНИЕ — ДОСЬЕ: ПАСПОРТ ===================== -->
+  <section id="v-env-dossier-passport" class="hidden">
+    <button class="back" data-back="env-dossier-person">← Назад</button>
+    <h1>🪪 Паспорт</h1>
+    <div class="sub">Объективные данные о человеке — не оценки, а факты.</div>
+    <label>Полное имя</label>
+    <input type="text" id="env-passport-fullname" placeholder="Если отличается от короткого имени">
+    <label style="margin-top:14px">Роль в жизни</label>
+    <input type="text" id="env-passport-role" placeholder="Например: мама, начальник, лучший друг">
+    <label style="margin-top:14px">Год знакомства</label>
+    <input type="text" id="env-passport-yearmet" placeholder="Например: 2015 или «с детства»">
+    <label style="margin-top:14px">Дата рождения</label>
+    <input type="text" id="env-passport-birthday" placeholder="Например: 12 марта">
+    <label style="margin-top:14px">Образование</label>
+    <input type="text" id="env-passport-education" placeholder="Если знаешь">
+    <label style="margin-top:14px">Профессиональные достижения</label>
+    <textarea id="env-passport-achievements" placeholder="Что знаешь о его(её) карьере и успехах"></textarea>
+    <label style="margin-top:14px">Интересы</label>
+    <textarea id="env-passport-interests" placeholder="Хобби, увлечения, во что вкладывает время"></textarea>
+    <label style="margin-top:14px">Семья</label>
+    <textarea id="env-passport-family" placeholder="Что знаешь о его(её) семье"></textarea>
+    <div class="acts" style="margin-top:16px"><button class="primary" id="env-passport-save">Сохранить</button></div>
+  </section>
+
+  <!-- ===================== VIEW: ОКРУЖЕНИЕ — ДОСЬЕ: ИСХОДНЫЙ ПОРТРЕТ ===================== -->
+  <section id="v-env-dossier-snapshot" class="hidden">
+    <button class="back" data-back="env-dossier-person">← Назад</button>
+    <h1>📝 Исходный портрет</h1>
+    <div class="sub">Опиши в свободной форме (150-250 слов), как ты видишь этого человека сейчас: какой образ он(а) у тебя формирует, какие у вас отношения, как он(а) влияет на тебя и наоборот, что нравится и что раздражает. Это стартовая точка — потом будет с чем сравнить.</div>
+    <textarea id="env-snapshot-text" style="min-height:220px" placeholder="Пиши как есть, своими словами..."></textarea>
+    <div class="note" id="env-snapshot-date" style="margin-top:10px;display:none"></div>
+    <div class="acts" style="margin-top:16px"><button class="primary" id="env-snapshot-save">Сохранить</button></div>
   </section>
 
   <!-- ===================== VIEW: ЕЖЕДНЕВНЫЕ ПРОТОКОЛЫ — ХАБ ===================== -->
@@ -1400,7 +1468,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
-    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.11.2 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка + Ежедневные протоколы + Окружение</div>
+    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.12 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка + Ежедневные протоколы + Окружение</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
@@ -2245,7 +2313,7 @@ function last3AllBad(){
 
 /* ---------- navigation ---------- */
 
-var VIEWS=["home","env-setpw","env-unlock","env","env-people","env-person-form","protocols","homecoming","homecoming-run","night","morning","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-delete-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-monthly","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
+var VIEWS=["home","env-setpw","env-unlock","env","env-people","env-person-form","env-dossier-list","env-dossier-person","env-dossier-passport","env-dossier-snapshot","protocols","homecoming","homecoming-run","night","morning","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-delete-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-monthly","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
 var currentTrigger="";
 var currentSuggest=null;
 function showTool(v){
@@ -2257,6 +2325,7 @@ function showTool(v){
   if(v==="homecoming") renderHomecomingBlocks();
   if(v==="homecoming-run") renderHomecomingRun();
   if(v==="env-people") renderEnvPeople();
+  if(v==="env-dossier-list") renderEnvDossierList();
   if(v==="night") renderNight();
   if(v==="morning") renderMorning();
   if(v==="diag-book-home") renderDiagBookHome();
@@ -3535,12 +3604,105 @@ function renderEnvPeople(){
     var pct=sum? Math.round(o.p.weight*1000/sum)/10 : 0;
     var typeLabel=o.p.type==="watch"? "Слежу издалека" : "Общаюсь регулярно";
     return "<div class='diag-cleanup-card' data-i='"+o.i+"' style='cursor:pointer'><div><div class='txt'>"+esc(o.p.name)+"</div>"+
-      "<div class='meta'>Вес "+o.p.weight+" · "+pct+"% · "+typeLabel+"</div></div></div>";
+      "<div class='meta'>Вес "+o.p.weight+" · "+pct+"% · "+typeLabel+"</div></div>"+
+      "<div class='action'><button class='env-dossier-toggle' data-i='"+o.i+"'>"+(o.p.dossier? "Досье собирается" : "Собрать Досье")+"</button></div></div>";
   }).join("");
-  [].forEach.call(box.querySelectorAll("[data-i]"),function(el){
+  [].forEach.call(box.querySelectorAll(".diag-cleanup-card[data-i]"),function(el){
     el.onclick=function(){ envOpenPersonForm(+el.getAttribute("data-i")); };
   });
+  [].forEach.call(box.querySelectorAll(".env-dossier-toggle"),function(btn){
+    btn.onclick=function(e){
+      e.stopPropagation();
+      var i=+btn.getAttribute("data-i");
+      var a=envLoadPeople();
+      a[i].dossier=!a[i].dossier;
+      envSavePeople(a);
+      renderEnvPeople();
+    };
+  });
 }
+function envDossierPct(weight){
+  var arr=envLoadPeople();
+  var sum=arr.reduce(function(s,p){ return s+p.weight; },0);
+  return sum? Math.round(weight*1000/sum)/10 : 0;
+}
+function renderEnvDossierList(){
+  var arr=envLoadPeople();
+  var box=document.getElementById("env-dossier-list-box");
+  var empty=document.getElementById("env-dossier-list-empty");
+  var chosen=arr.map(function(p,i){ return {p:p,i:i}; }).filter(function(o){ return o.p.dossier; })
+    .sort(function(a,b){ return b.p.weight-a.p.weight; });
+  if(!chosen.length){ box.innerHTML=""; empty.classList.remove("hidden"); return; }
+  empty.classList.add("hidden");
+  box.innerHTML=chosen.map(function(o){
+    var typeLabel=o.p.type==="watch"? "Слежу издалека" : "Общаюсь регулярно";
+    return "<div class='diag-cleanup-card' data-i='"+o.i+"' style='cursor:pointer'><div><div class='txt'>"+esc(o.p.name)+"</div>"+
+      "<div class='meta'>Вес "+o.p.weight+" · "+envDossierPct(o.p.weight)+"% · "+typeLabel+"</div></div></div>";
+  }).join("");
+  [].forEach.call(box.querySelectorAll("[data-i]"),function(el){
+    el.onclick=function(){ envOpenDossierPerson(+el.getAttribute("data-i")); };
+  });
+}
+var envDossierPersonIndex=null;
+document.getElementById("t-open-env-dossier").onclick=function(){ renderEnvDossierList(); showTool("env-dossier-list"); };
+function envOpenDossierPerson(i){
+  envDossierPersonIndex=i;
+  var p=envLoadPeople()[i];
+  document.getElementById("env-dossier-person-title").textContent="🗂️ "+p.name;
+  document.getElementById("env-dossier-person-sub").textContent="Вес "+p.weight+" · "+envDossierPct(p.weight)+"%";
+  showTool("env-dossier-person");
+}
+document.getElementById("t-open-env-dossier-passport").onclick=function(){
+  var p=envLoadPeople()[envDossierPersonIndex];
+  var d=p.passport||{};
+  document.getElementById("env-passport-fullname").value=d.fullname||"";
+  document.getElementById("env-passport-role").value=d.role||"";
+  document.getElementById("env-passport-yearmet").value=d.yearMet||"";
+  document.getElementById("env-passport-birthday").value=d.birthday||"";
+  document.getElementById("env-passport-education").value=d.education||"";
+  document.getElementById("env-passport-achievements").value=d.achievements||"";
+  document.getElementById("env-passport-interests").value=d.interests||"";
+  document.getElementById("env-passport-family").value=d.family||"";
+  showTool("env-dossier-passport");
+};
+document.getElementById("env-passport-save").onclick=function(){
+  var arr=envLoadPeople();
+  arr[envDossierPersonIndex].passport={
+    fullname: document.getElementById("env-passport-fullname").value.trim(),
+    role: document.getElementById("env-passport-role").value.trim(),
+    yearMet: document.getElementById("env-passport-yearmet").value.trim(),
+    birthday: document.getElementById("env-passport-birthday").value.trim(),
+    education: document.getElementById("env-passport-education").value.trim(),
+    achievements: document.getElementById("env-passport-achievements").value.trim(),
+    interests: document.getElementById("env-passport-interests").value.trim(),
+    family: document.getElementById("env-passport-family").value.trim()
+  };
+  envSavePeople(arr);
+  showTool("env-dossier-person");
+};
+document.getElementById("t-open-env-dossier-snapshot").onclick=function(){
+  var p=envLoadPeople()[envDossierPersonIndex];
+  var s=p.snapshot||{text:"",date:""};
+  document.getElementById("env-snapshot-text").value=s.text||"";
+  var dEl=document.getElementById("env-snapshot-date");
+  dEl.textContent = s.date? ("Записано: "+diagFormatDateRu(s.date)) : "";
+  dEl.style.display = s.date? "block" : "none";
+  showTool("env-dossier-snapshot");
+};
+document.getElementById("env-snapshot-save").onclick=function(){
+  var arr=envLoadPeople();
+  var p=arr[envDossierPersonIndex];
+  var text=document.getElementById("env-snapshot-text").value.trim();
+  var prev=p.snapshot||{};
+  var date=prev.date;
+  if(text && !date){ date=diagTodayIso(); }
+  p.snapshot={text:text, date:date||""};
+  envSavePeople(arr);
+  var dEl2=document.getElementById("env-snapshot-date");
+  dEl2.textContent = date? ("Записано: "+diagFormatDateRu(date)) : "";
+  dEl2.style.display = date? "block" : "none";
+  showTool("env-dossier-person");
+};
 var envPersonEditIndex=null;
 function envColorFor(v){
   function hex(c){ c=c.replace("#",""); return [parseInt(c.substr(0,2),16),parseInt(c.substr(2,2),16),parseInt(c.substr(4,2),16)]; }
