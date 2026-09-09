@@ -519,11 +519,49 @@
         <span class="ic">📝</span><span class="t">Исходный портрет</span>
         <div class="d">Как ты видишь этого человека сейчас — на старте, чтобы было с чем сравнить позже.</div>
       </button>
-      <button class="tile neutral" style="opacity:.45;cursor:default">
-        <span class="ic">📓</span><span class="t">История <span style="font-weight:400;font-size:12px;color:var(--muted)">· скоро</span></span>
-        <div class="d">Дневник наблюдений за несколько месяцев.</div>
+      <button class="tile neutral" id="t-open-env-dossier-history">
+        <span class="ic">📓</span><span class="t">История</span>
+        <div class="d">Дневник наблюдений: коротко, без выводов, на несколько месяцев вперёд.</div>
       </button>
     </div>
+  </section>
+
+  <!-- ===================== VIEW: ОКРУЖЕНИЕ — ДОСЬЕ: ИСТОРИЯ (СПИСОК) ===================== -->
+  <section id="v-env-dossier-history" class="hidden">
+    <button class="back" data-back="env-dossier-person">← Назад</button>
+    <h1>📓 История</h1>
+    <div class="sub">Коротко записывай, что заметил в человеке, свою реакцию словами и почему отреагировал именно так. Без выводов — просто дневник, на несколько месяцев вперёд.</div>
+    <div class="acts" style="margin-top:4px;margin-bottom:10px"><button class="primary" id="env-history-add">+ Добавить наблюдение</button></div>
+    <div class="link-row" style="margin:0 0 14px"><button id="env-history-export">⬇️ Создать файл</button></div>
+    <div id="env-history-list"></div>
+    <div class="empty hidden" id="env-history-empty">Пока нет записей.</div>
+  </section>
+
+  <!-- ===================== VIEW: ОКРУЖЕНИЕ — ДОСЬЕ: ИСТОРИЯ (ФОРМА) ===================== -->
+  <section id="v-env-dossier-history-form" class="hidden">
+    <button class="back" data-back="env-dossier-history">← История</button>
+    <h1 id="env-history-form-title">Новое наблюдение</h1>
+    <div class="note" id="env-history-form-date"></div>
+    <label>Категория</label>
+    <button type="button" class="info-btn" id="env-history-categories-info-btn" style="margin-bottom:8px">ℹ️ Что значит каждая категория</button>
+    <div class="seg" id="env-history-category-chips" style="flex-wrap:wrap"></div>
+    <label style="margin-top:14px">Наблюдение</label>
+    <textarea id="env-history-text" placeholder="Что заметил, что произошло"></textarea>
+    <label style="margin-top:14px">Оценка <span style="opacity:.6;font-weight:400">— твоя реакция словами</span></label>
+    <input type="text" id="env-history-assessment" placeholder="Например: вызвало раздражение">
+    <label style="margin-top:14px">Причина <span style="opacity:.6;font-weight:400">— почему отреагировал именно так</span></label>
+    <input type="text" id="env-history-reason" placeholder="Например: не люблю пионерский энтузиазм">
+    <div class="note" id="env-history-form-error" style="display:none;margin-top:12px"></div>
+    <div class="acts" style="margin-top:16px"><button class="primary" id="env-history-save">Сохранить</button></div>
+    <div class="link-row hidden" id="env-history-delete-row"><button id="env-history-delete">Удалить эту запись</button></div>
+  </section>
+
+  <!-- ===================== VIEW: ОКРУЖЕНИЕ — ДОСЬЕ: ИСТОРИЯ — КАТЕГОРИИ (СПРАВКА) ===================== -->
+  <section id="v-env-history-categories-info" class="hidden">
+    <button class="back" data-back="env-dossier-history-form">← Назад</button>
+    <h1>📓 Категории Истории</h1>
+    <div class="sub">По мотивам статьи Михаила Муравьёва, autohumanism.com — своими словами, коротко.</div>
+    <div id="env-history-categories-list"></div>
   </section>
 
   <!-- ===================== VIEW: ОКРУЖЕНИЕ — ДОСЬЕ: ПАСПОРТ ===================== -->
@@ -555,8 +593,8 @@
     <button class="back" data-back="env-dossier-person">← Назад</button>
     <h1>📝 Исходный портрет</h1>
     <div class="sub">Опиши в свободной форме (150-250 слов), как ты видишь этого человека сейчас: какой образ он(а) у тебя формирует, какие у вас отношения, как он(а) влияет на тебя и наоборот, что нравится и что раздражает. Это стартовая точка — потом будет с чем сравнить.</div>
-    <textarea id="env-snapshot-text" style="min-height:220px" placeholder="Пиши как есть, своими словами..."></textarea>
-    <div class="note" id="env-snapshot-date" style="margin-top:10px;display:none"></div>
+    <textarea id="env-snapshot-text" style="flex:1;min-height:140px" placeholder="Пиши как есть, своими словами..."></textarea>
+    <div id="env-snapshot-date" style="margin-top:6px;font-size:12px;color:var(--muted);display:none"></div>
     <div class="acts" style="margin-top:16px"><button class="primary" id="env-snapshot-save">Сохранить</button></div>
   </section>
 
@@ -1468,7 +1506,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
-    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.12 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка + Ежедневные протоколы + Окружение</div>
+    <div class="menu-title" style="margin-top:10px">Energy Live · версия 3.13 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка + Ежедневные протоколы + Окружение</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
@@ -2313,7 +2351,7 @@ function last3AllBad(){
 
 /* ---------- navigation ---------- */
 
-var VIEWS=["home","env-setpw","env-unlock","env","env-people","env-person-form","env-dossier-list","env-dossier-person","env-dossier-passport","env-dossier-snapshot","protocols","homecoming","homecoming-run","night","morning","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-delete-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-monthly","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
+var VIEWS=["home","env-setpw","env-unlock","env","env-people","env-person-form","env-dossier-list","env-dossier-person","env-dossier-passport","env-dossier-snapshot","env-dossier-history","env-dossier-history-form","env-history-categories-info","protocols","homecoming","homecoming-run","night","morning","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-delete-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-monthly","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
 var currentTrigger="";
 var currentSuggest=null;
 function showTool(v){
@@ -2326,6 +2364,7 @@ function showTool(v){
   if(v==="homecoming-run") renderHomecomingRun();
   if(v==="env-people") renderEnvPeople();
   if(v==="env-dossier-list") renderEnvDossierList();
+  if(v==="env-dossier-history") renderEnvHistoryList();
   if(v==="night") renderNight();
   if(v==="morning") renderMorning();
   if(v==="diag-book-home") renderDiagBookHome();
@@ -3702,6 +3741,126 @@ document.getElementById("env-snapshot-save").onclick=function(){
   dEl2.textContent = date? ("Записано: "+diagFormatDateRu(date)) : "";
   dEl2.style.display = date? "block" : "none";
   showTool("env-dossier-person");
+};
+var ENV_HISTORY_CATEGORIES=["Идентификация","Убеждения","Силы","Слабости","Энтузиазм","Негатив","Потребности","Желания","Боли"];
+var ENV_HISTORY_CATEGORY_DESC={
+  "Идентификация":"Как человек видит себя и хочет выглядеть в глазах других — чем гордится, что подчёркивает, а что скрывает или стесняется.",
+  "Убеждения":"Принципы, взгляды, ценности и стереотипы, которые оправдывают для человека его образ жизни — спорить с ними обычно бесполезно и контрпродуктивно.",
+  "Силы":"Сильные стороны, умения, ресурсы и связи, которые делают человека реально полезным — то, за что его стоит признавать и хвалить.",
+  "Слабости":"Что даётся человеку тяжело, изматывает, снижает самооценку — обычно бессмысленно на это давить, тут ему самому нужна помощь.",
+  "Энтузиазм":"Что человека увлекает, воодушевляет, радует, поднимает мотивацию и энергию — поддержка этого укрепляет доверие.",
+  "Негатив":"Что вызывает у человека злость, страх, обиду, защитную или конфликтную реакцию — стоит замечать и по возможности не провоцировать.",
+  "Потребности":"Что человека успокаивает, расслабляет, снимает напряжение — удовлетворение этого повышает доверие и симпатию.",
+  "Желания":"Явные мечты, планы, стремления человека — их достаточно не обесценивать.",
+  "Боли":"Явные проблемы, тревоги и жалобы человека — не стоит специально на них давить."
+};
+function envLoadHistory(){
+  var p=envLoadPeople()[envDossierPersonIndex];
+  return (p && p.history) || [];
+}
+function envSaveHistory(list){
+  var arr=envLoadPeople();
+  arr[envDossierPersonIndex].history=list;
+  envSavePeople(arr);
+}
+document.getElementById("t-open-env-dossier-history").onclick=function(){ renderEnvHistoryList(); showTool("env-dossier-history"); };
+function renderEnvHistoryList(){
+  var list=envLoadHistory();
+  var box=document.getElementById("env-history-list");
+  var empty=document.getElementById("env-history-empty");
+  if(!list.length){ box.innerHTML=""; empty.classList.remove("hidden"); return; }
+  empty.classList.add("hidden");
+  var sorted=list.map(function(e,i){ return {e:e,i:i}; }).sort(function(a,b){
+    if(a.e.date!==b.e.date) return a.e.date<b.e.date? 1 : -1;
+    return b.i-a.i;
+  });
+  box.innerHTML=sorted.map(function(o){
+    return "<div class='diag-cleanup-card' data-i='"+o.i+"' style='cursor:pointer'><div><div class='txt'>"+diagFormatDateRu(o.e.date)+" · "+esc(o.e.category)+"</div><div class='meta'>"+esc(o.e.text)+"</div></div></div>";
+  }).join("");
+  [].forEach.call(box.querySelectorAll("[data-i]"),function(el){
+    el.onclick=function(){ envOpenHistoryForm(+el.getAttribute("data-i")); };
+  });
+}
+var envHistoryEditIndex=null;
+document.getElementById("env-history-add").onclick=function(){ envOpenHistoryForm(null); };
+function envOpenHistoryForm(index){
+  envHistoryEditIndex=index;
+  var list=envLoadHistory();
+  var e=(index!==null)? list[index] : {date:diagTodayIso(), category:"", text:"", assessment:"", reason:""};
+  document.getElementById("env-history-form-title").textContent=(index!==null)? "Наблюдение" : "Новое наблюдение";
+  document.getElementById("env-history-form-date").textContent="Дата: "+diagFormatDateRu(e.date);
+  var box=document.getElementById("env-history-category-chips");
+  box.innerHTML=ENV_HISTORY_CATEGORIES.map(function(c){
+    return "<button class='chip"+(c===e.category?" on":"")+"' data-c='"+c+"'>"+c+"</button>";
+  }).join("");
+  [].forEach.call(box.querySelectorAll(".chip"),function(b){
+    b.onclick=function(){
+      [].forEach.call(box.querySelectorAll(".chip"),function(x){ x.classList.remove("on"); });
+      b.classList.add("on");
+    };
+  });
+  document.getElementById("env-history-text").value=e.text||"";
+  document.getElementById("env-history-assessment").value=e.assessment||"";
+  document.getElementById("env-history-reason").value=e.reason||"";
+  document.getElementById("env-history-form-error").style.display="none";
+  document.getElementById("env-history-delete-row").classList.toggle("hidden", index===null);
+  showTool("env-dossier-history-form");
+}
+document.getElementById("env-history-save").onclick=function(){
+  var catBtn=document.querySelector("#env-history-category-chips .chip.on");
+  var text=document.getElementById("env-history-text").value.trim();
+  var errEl=document.getElementById("env-history-form-error");
+  if(!catBtn){ errEl.textContent="Выбери категорию."; errEl.style.display="block"; return; }
+  if(!text){ errEl.textContent="Впиши, что заметил."; errEl.style.display="block"; return; }
+  errEl.style.display="none";
+  var list=envLoadHistory();
+  var entry={
+    date: (envHistoryEditIndex!==null)? list[envHistoryEditIndex].date : diagTodayIso(),
+    category: catBtn.getAttribute("data-c"),
+    text: text,
+    assessment: document.getElementById("env-history-assessment").value.trim(),
+    reason: document.getElementById("env-history-reason").value.trim()
+  };
+  if(envHistoryEditIndex!==null) list[envHistoryEditIndex]=entry; else list.push(entry);
+  envSaveHistory(list);
+  showTool("env-dossier-history");
+  renderEnvHistoryList();
+};
+document.getElementById("env-history-delete").onclick=function(){
+  if(envHistoryEditIndex===null) return;
+  if(!confirm("Удалить эту запись?")) return;
+  var list=envLoadHistory();
+  list.splice(envHistoryEditIndex,1);
+  envSaveHistory(list);
+  showTool("env-dossier-history");
+  renderEnvHistoryList();
+};
+document.getElementById("env-history-categories-info-btn").onclick=function(){
+  document.getElementById("env-history-categories-list").innerHTML=ENV_HISTORY_CATEGORIES.map(function(c){
+    return "<div class='info-block' style='margin-bottom:10px'><div class='info-h' style='margin:0 0 6px'>"+c+"</div><div class='info-p'>"+ENV_HISTORY_CATEGORY_DESC[c]+"</div></div>";
+  }).join("");
+  showTool("env-history-categories-info");
+};
+function envHistoryDateShort(iso){
+  var p=iso.split("-");
+  return p[2]+"."+p[1]+"."+p[0].slice(2);
+}
+function envHistorySentence(s){
+  s=(s||"").trim();
+  if(!s) return "";
+  return /[.!?…]$/.test(s)? s : s+".";
+}
+document.getElementById("env-history-export").onclick=function(){
+  var p=envLoadPeople()[envDossierPersonIndex];
+  var list=(p.history||[]).slice().sort(function(a,b){ return a.date<b.date? -1 : a.date>b.date? 1 : 0; });
+  var lines=list.map(function(e){
+    return envHistoryDateShort(e.date)+", "+e.category+". "+envHistorySentence(e.text)+
+      (e.assessment? " Оценка: "+envHistorySentence(e.assessment) : "")+
+      (e.reason? " Причина: "+envHistorySentence(e.reason) : "");
+  });
+  var body="История — "+p.name+"\nЭкспортировано: "+diagFormatDateRu(diagTodayIso())+"\n\n"+lines.join("\n\n");
+  var safeName=p.name.replace(/[\\\/:*?"<>|]/g,"_");
+  download("Istoriya - "+safeName+".txt", body, "text/plain;charset=utf-8");
 };
 var envPersonEditIndex=null;
 function envColorFor(v){
