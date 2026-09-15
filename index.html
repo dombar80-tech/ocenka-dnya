@@ -495,7 +495,21 @@
     </div>
     <div class="note" id="env-person-form-error" style="display:none;margin-top:12px"></div>
     <div class="acts" style="margin-top:16px"><button class="primary" id="env-person-save">Сохранить</button></div>
-    <div class="link-row hidden" id="env-person-delete-row"><button id="env-person-delete">Удалить эту запись</button></div>
+    <div class="hidden" id="env-person-delete-row" style="margin-top:auto;padding-top:16px">
+      <div class="acts"><button class="primary" id="env-person-delete">Удалить эту персону</button></div>
+      <div class="sub" style="margin-top:8px">Полностью удалит персону и все данные — Паспорт, Историю, Взаимодействие. Восстановить будет нельзя.</div>
+    </div>
+  </section>
+
+  <!-- ===================== VIEW: ОКРУЖЕНИЕ — УДАЛЕНИЕ ПЕРСОНЫ ===================== -->
+  <section id="v-env-person-delete-confirm" class="hidden">
+    <button class="back" data-back="env-person-form">← Назад</button>
+    <h1 id="env-person-delete-confirm-title">Удалить персону</h1>
+    <div class="note">Это полностью удалит персону и все собранные данные — Паспорт, Исходный портрет, Историю, Взаимодействие. Отменить это действие будет нельзя.</div>
+    <label>Причина</label>
+    <textarea id="env-person-delete-reason" placeholder="Например: стало неактуально, редко вижусь, обиделись..."></textarea>
+    <div class="note" id="env-person-delete-confirm-error" style="display:none;margin-top:12px"></div>
+    <div class="acts" style="margin-top:auto;padding-top:16px"><button class="primary" id="env-person-delete-confirm-btn">Удалить персону навсегда</button></div>
   </section>
 
   <!-- ===================== VIEW: ОКРУЖЕНИЕ — ДОСЬЕ: СПИСОК ===================== -->
@@ -1591,7 +1605,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
-    <div class="menu-title" style="margin-top:10px">Energy Life · версия 3.14.1 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка + Ежедневные протоколы + Окружение</div>
+    <div class="menu-title" style="margin-top:10px">Energy Life · версия 3.15 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка + Ежедневные протоколы + Окружение</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
@@ -2436,7 +2450,7 @@ function last3AllBad(){
 
 /* ---------- navigation ---------- */
 
-var VIEWS=["home","env-setpw","env-unlock","env","env-people","env-person-form","env-dossier-list","env-dossier-person","env-dossier-passport","env-dossier-snapshot","env-dossier-history","env-dossier-history-form","env-history-categories-info","env-dossier-interactions","env-dossier-interaction-form","protocols","homecoming","homecoming-run","night","morning","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-delete-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-monthly","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
+var VIEWS=["home","env-setpw","env-unlock","env","env-people","env-person-form","env-person-delete-confirm","env-dossier-list","env-dossier-person","env-dossier-passport","env-dossier-snapshot","env-dossier-history","env-dossier-history-form","env-history-categories-info","env-dossier-interactions","env-dossier-interaction-form","protocols","homecoming","homecoming-run","night","morning","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-delete-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-monthly","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
 var currentTrigger="";
 var currentSuggest=null;
 function showTool(v){
@@ -3765,7 +3779,25 @@ function renderEnvDossierList(){
       "<div class='meta'>Вес "+o.p.weight+" · "+envDossierPct(o.p.weight)+"% · "+typeLabel+"</div></div></div>";
   }).join("");
   [].forEach.call(box.querySelectorAll("[data-i]"),function(el){
-    el.onclick=function(){ envOpenDossierPerson(+el.getAttribute("data-i")); };
+    var sx=0, sy=0, swiped=false;
+    el.addEventListener("touchstart", function(e){ sx=e.touches[0].clientX; sy=e.touches[0].clientY; swiped=false; }, {passive:true});
+    el.addEventListener("touchmove", function(e){
+      var dx=e.touches[0].clientX-sx, dy=e.touches[0].clientY-sy;
+      if(dx<-40 && Math.abs(dx)>Math.abs(dy)*1.5) swiped=true;
+    }, {passive:true});
+    el.addEventListener("touchend", function(){
+      if(!swiped) return;
+      var i=+el.getAttribute("data-i");
+      var a=envLoadPeople();
+      if(!confirm("Временно закрыть досье на "+a[i].name+"?")) return;
+      a[i].dossier=false;
+      envSavePeople(a);
+      renderEnvDossierList();
+    });
+    el.onclick=function(){
+      if(swiped){ swiped=false; return; }
+      envOpenDossierPerson(+el.getAttribute("data-i"));
+    };
   });
 }
 var envDossierPersonIndex=null;
@@ -3861,11 +3893,17 @@ function renderEnvHistoryList(){
     return b.i-a.i;
   });
   box.innerHTML=sorted.map(function(o){
-    return "<div class='diag-cleanup-card' data-i='"+o.i+"' style='cursor:pointer'><div><div class='txt'>"+diagFormatDateRu(o.e.date)+" · "+esc(o.e.category)+"</div><div class='meta'>"+esc(o.e.text)+"</div></div></div>";
+    return "<div class='diag-cleanup-card' data-i='"+o.i+"' style='cursor:pointer'><div style='font-size:14px;line-height:1.5;font-weight:400'>"+esc(envHistoryLine(o.e))+"</div></div>";
   }).join("");
   [].forEach.call(box.querySelectorAll("[data-i]"),function(el){
     el.onclick=function(){ envOpenHistoryForm(+el.getAttribute("data-i")); };
   });
+}
+function envHistoryLine(e){
+  var line=envHistoryDateShort(e.date)+", "+e.category+". "+envHistorySentence(e.text);
+  if(e.assessment) line+=" Оценка: "+envHistorySentence(e.assessment);
+  if(e.reason) line+=" Причина: "+envHistorySentence(e.reason);
+  return line;
 }
 var envHistoryEditIndex=null;
 document.getElementById("env-history-add").onclick=function(){ envOpenHistoryForm(null); };
@@ -4151,7 +4189,27 @@ document.getElementById("env-person-save").onclick=function(){
 };
 document.getElementById("env-person-delete").onclick=function(){
   if(envPersonEditIndex===null) return;
-  if(!confirm("Удалить эту запись?")) return;
+  var arr=envLoadPeople();
+  var p=arr[envPersonEditIndex];
+  document.getElementById("env-person-delete-confirm-title").textContent="Удалить «"+p.name+"»?";
+  document.getElementById("env-person-delete-reason").value="";
+  document.getElementById("env-person-delete-confirm-error").style.display="none";
+  showTool("env-person-delete-confirm");
+};
+document.getElementById("env-person-delete-reason").addEventListener("input", function(){ this.style.borderColor=""; });
+document.getElementById("env-person-delete-confirm-btn").onclick=function(){
+  var reasonEl=document.getElementById("env-person-delete-reason");
+  var reason=reasonEl.value.trim();
+  var errEl=document.getElementById("env-person-delete-confirm-error");
+  if(!reason){
+    errEl.textContent="Укажи причину — поле подсвечено выше.";
+    errEl.style.display="block";
+    reasonEl.style.borderColor="#ff5c5c";
+    reasonEl.scrollIntoView({behavior:"smooth", block:"center"});
+    reasonEl.focus();
+    return;
+  }
+  errEl.style.display="none";
   var arr=envLoadPeople();
   arr.splice(envPersonEditIndex,1);
   envSavePeople(arr);
