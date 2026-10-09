@@ -1,7 +1,7 @@
 /* Оценка дня — service worker для офлайна */
-var CACHE='ocenka-dnya-v37';
+var CACHE='ocenka-dnya-v38';
 self.addEventListener('install', function(e){
-  e.waitUntil(caches.open(CACHE).then(function(c){ return c.addAll(['./','./index.html']); }));
+  e.waitUntil(caches.open(CACHE).then(function(c){ return c.addAll(['./','./index.html','./prosto.html']); }));
   self.skipWaiting();
 });
 self.addEventListener('activate', function(e){
