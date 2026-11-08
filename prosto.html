@@ -501,7 +501,7 @@
     <div class="acts" style="margin-top:16px"><button class="primary" id="env-person-save">Сохранить</button></div>
     <div class="hidden" id="env-person-delete-row" style="margin-top:auto;padding-top:16px">
       <div class="acts"><button class="primary" id="env-person-delete">Удалить эту персону</button></div>
-      <div class="sub" style="margin-top:8px">Полностью удалит персону и все данные — Паспорт, Историю, Взаимодействие, Профиль. Восстановить будет нельзя.</div>
+      <div class="sub" style="margin-top:8px">Полностью удалит персону и все данные — Паспорт, Историю, Взаимодействие, Профиль, Эксперименты. Восстановить будет нельзя.</div>
     </div>
   </section>
 
@@ -509,7 +509,7 @@
   <section id="v-env-person-delete-confirm" class="hidden">
     <button class="back" data-back="env-person-form">← Назад</button>
     <h1 id="env-person-delete-confirm-title">Удалить персону</h1>
-    <div class="note">Это полностью удалит персону и все собранные данные — Паспорт, Исходный портрет, Историю, Взаимодействие, Профиль. Отменить это действие будет нельзя.</div>
+    <div class="note">Это полностью удалит персону и все собранные данные — Паспорт, Исходный портрет, Историю, Взаимодействие, Профиль, Эксперименты. Отменить это действие будет нельзя.</div>
     <label>Причина</label>
     <textarea id="env-person-delete-reason" placeholder="Например: стало неактуально, редко вижусь, обиделись..."></textarea>
     <div class="note" id="env-person-delete-confirm-error" style="display:none;margin-top:12px"></div>
@@ -551,7 +551,54 @@
         <span class="ic">🧩</span><span class="t">Профиль</span>
         <div class="d">Итог анализа записей: по каждой стороне человека — формула, описание, проявления, реакция, выводы. Собирается с помощью ИИ.</div>
       </button>
+      <button class="tile neutral" id="t-open-env-dossier-experiments">
+        <span class="ic">🧪</span><span class="t">Эксперименты</span>
+        <div class="d">Гипотезы по улучшению общения: что задумал, как провёл, что вышло и какие выводы.</div>
+      </button>
     </div>
+  </section>
+
+  <!-- ===================== VIEW: ОКРУЖЕНИЕ — ДОСЬЕ: ЭКСПЕРИМЕНТЫ (СПИСОК) ===================== -->
+  <section id="v-env-dossier-experiments" class="hidden">
+    <button class="back" data-back="env-dossier-person">← Назад</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <h1 style="margin:0">🧪 Эксперименты</h1>
+      <button class="ghost" id="env-experiment-export" style="flex:0 0 auto;padding:6px 10px;font-size:12px;border-radius:8px">Сохранить файлом</button>
+    </div>
+    <div class="sub">Проектируешь небольшое изменение своего «алгоритма» общения с человеком и проверяешь, что вышло. Начинай с мелочей и менее значимых людей, действуй аккуратно — особенно с домашними. Ошибки на старте нормальны.</div>
+    <div class="acts" style="margin-top:4px;margin-bottom:30px"><button class="primary" id="env-experiment-add">+ Добавить эксперимент</button></div>
+
+    <details class="info-block" style="margin-bottom:14px">
+      <summary style="cursor:pointer;font-weight:600;font-size:13.5px;color:var(--muted)">Нужны идеи для гипотез? Промт для ИИ</summary>
+      <div class="info-p" style="margin-top:10px">Скопируй промт и вставь в ИИ. Если у человека сохранён «Профиль», он уже вставлен в промт; если нет — приложи профиль или выгрузки Истории и Взаимодействия.</div>
+      <textarea id="env-experiment-prompt" readonly style="height:240px;font-size:12.5px;line-height:1.45;margin-top:10px"></textarea>
+      <div class="acts" style="margin-top:10px"><button class="primary" id="env-experiment-copy">Скопировать промт</button></div>
+    </details>
+
+    <div id="env-experiment-list"></div>
+    <div class="empty hidden" id="env-experiment-empty">Пока нет экспериментов.</div>
+  </section>
+
+  <!-- ===================== VIEW: ОКРУЖЕНИЕ — ДОСЬЕ: ЭКСПЕРИМЕНТ (ФОРМА) ===================== -->
+  <section id="v-env-dossier-experiment-form" class="hidden">
+    <button class="back" data-back="env-dossier-experiments">← Эксперименты</button>
+    <h1 id="env-experiment-form-title">Новый эксперимент</h1>
+    <div class="note" id="env-experiment-form-date"></div>
+    <div class="diag-example">
+      <b>Например:</b><br>
+      Гипотеза: Коллега тянет с ответами на запросы — думаю, ей важно, чтобы не торопили. Буду писать заранее, с запасом по срокам, и жду более быстрых ответов и меньше напряжения у обоих. Эксперимент: Неделю отправлял запросы за три дня до срока с пометкой «без спешки». Результаты: Ответили вовремя 4 раза из 5, в переписке спокойнее. Выводы: Работает, оставляю как правило; дальше попробую то же с запросами к начальнику.
+    </div>
+    <label style="margin-top:14px">Гипотеза <span style="opacity:.6;font-weight:400">— как видишь задачу, как будешь решать и что хочешь получить</span></label>
+    <textarea id="env-experiment-hypothesis" placeholder="Что замечаешь, что собираешься изменить и чего ждёшь"></textarea>
+    <label style="margin-top:14px">Эксперимент <span style="opacity:.6;font-weight:400">— как удалось провести на деле</span></label>
+    <textarea id="env-experiment-experiment" placeholder="Заполнишь, когда проведёшь"></textarea>
+    <label style="margin-top:14px">Результаты <span style="opacity:.6;font-weight:400">— что изменилось, чего достиг</span></label>
+    <textarea id="env-experiment-results" placeholder="Как прошло, что изменилось"></textarea>
+    <label style="margin-top:14px">Выводы <span style="opacity:.6;font-weight:400">— успешно ли, что поменять, масштабировать или бросить</span></label>
+    <textarea id="env-experiment-conclusions" placeholder="Твои соображения"></textarea>
+    <div class="note" id="env-experiment-form-error" style="display:none;margin-top:12px"></div>
+    <div class="acts" style="margin-top:16px"><button class="primary" id="env-experiment-save">Сохранить</button></div>
+    <div class="link-row hidden" id="env-experiment-delete-row"><button id="env-experiment-delete">Удалить эту запись</button></div>
   </section>
 
   <!-- ===================== VIEW: ОКРУЖЕНИЕ — ДОСЬЕ: ПРОФИЛЬ ===================== -->
@@ -1734,7 +1781,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
-    <div class="menu-title" style="margin-top:10px">Energy Life · версия 3.17 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка + Ежедневные протоколы + Окружение + Психоинженерные техники</div>
+    <div class="menu-title" style="margin-top:10px">Energy Life · версия 3.18 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка + Ежедневные протоколы + Окружение + Психоинженерные техники</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
@@ -2580,7 +2627,7 @@ function last3AllBad(){
 
 /* ---------- navigation ---------- */
 
-var VIEWS=["home","env-setpw","env-unlock","env","env-people","env-person-form","env-person-delete-confirm","env-dossier-list","env-dossier-person","env-dossier-passport","env-dossier-snapshot","env-dossier-history","env-dossier-history-form","env-history-categories-info","env-dossier-interactions","env-dossier-interaction-form","env-dossier-profile","psy","psy-achieve","protocols","homecoming","homecoming-run","night","morning","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-delete-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-monthly","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
+var VIEWS=["home","env-setpw","env-unlock","env","env-people","env-person-form","env-person-delete-confirm","env-dossier-list","env-dossier-person","env-dossier-passport","env-dossier-snapshot","env-dossier-history","env-dossier-history-form","env-history-categories-info","env-dossier-interactions","env-dossier-interaction-form","env-dossier-profile","env-dossier-experiments","env-dossier-experiment-form","psy","psy-achieve","protocols","homecoming","homecoming-run","night","morning","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-delete-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-monthly","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
 var currentTrigger="";
 var currentSuggest=null;
 function showTool(v){
@@ -2595,6 +2642,7 @@ function showTool(v){
   if(v==="env-dossier-list") renderEnvDossierList();
   if(v==="env-dossier-history") renderEnvHistoryList();
   if(v==="env-dossier-interactions") renderEnvInteractionList();
+  if(v==="env-dossier-experiments") renderEnvExperimentList();
   if(v==="night") renderNight();
   if(v==="morning") renderMorning();
   if(v==="diag-book-home") renderDiagBookHome();
@@ -4251,6 +4299,114 @@ function envExportInteractions(){
   download("Vzaimodeystvie - "+safeName+".txt", body, "text/plain;charset=utf-8");
 }
 document.getElementById("env-interaction-export").onclick=envExportInteractions;
+function envLoadExperiments(){
+  var p=envLoadPeople()[envDossierPersonIndex];
+  return (p && p.experiments) || [];
+}
+function envSaveExperiments(list){
+  var arr=envLoadPeople();
+  arr[envDossierPersonIndex].experiments=list;
+  envSavePeople(arr);
+}
+function envExperimentLine(e){
+  var line=envHistoryDateShort(e.date)+". Гипотеза: "+envHistorySentence(e.hypothesis);
+  if(e.experiment) line+=" Эксперимент: "+envHistorySentence(e.experiment);
+  if(e.results) line+=" Результаты: "+envHistorySentence(e.results);
+  if(e.conclusions) line+=" Выводы: "+envHistorySentence(e.conclusions);
+  return line;
+}
+function envExperimentsPrompt(p){
+  var prof=(p.profileText && p.profileText.text) || "";
+  var done=(p.experiments||[]).slice().sort(function(a,b){ return a.date<b.date? -1 : a.date>b.date? 1 : 0; }).map(envExperimentLine);
+  return "Ты помогаешь мне спроектировать небольшой эксперимент по улучшению общения со значимым для меня человеком по методике Михаила Муравьёва (автогуманизм). Человек: "+p.name+".\n\n"+
+(prof? "Вот его профиль:\n"+prof+"\n\n" : "Профиль человека я приложу (или вставлю) следом — если его ещё нет в чате, сначала попроси его и дождись.\n\n")+
+(done.length? "Эксперименты, которые я уже проводил (не повторяй их, но можешь опереться на выводы):\n"+done.join("\n")+"\n\n" : "")+
+"Задача: найди в профиле типовую ситуацию или транзакцию, где можно улучшить качество общения, снизить энергозатраты и получить лучший результат, и предложи 3 гипотезы для небольших безопасных экспериментов. Если уместно, добавь одну идею, как направить сильные стороны этого человека на его мотивацию, потребности, идентичность или слабые стороны.\n\n"+
+"Каждую гипотезу дай так: «Гипотеза» — как я вижу задачу, каким способом буду её решать и что хочу получить (2–3 предложения); «Как проверить» — конкретное небольшое действие на ближайшие дни и по чему я пойму результат.\n\n"+
+"Правила: начинай с мелочей, не предлагай резких перемен «в лоб», особенно если речь о домашних. Опирайся только на профиль и записи, ничего не выдумывай. Не ставь диагнозов. Пиши нейтрально и уважительно к человеку. Если материала мало, скажи об этом и задай до трёх уточняющих вопросов.";
+}
+document.getElementById("t-open-env-dossier-experiments").onclick=function(){ showTool("env-dossier-experiments"); };
+function renderEnvExperimentList(){
+  var p=envLoadPeople()[envDossierPersonIndex];
+  document.getElementById("env-experiment-prompt").value=envExperimentsPrompt(p);
+  var list=envLoadExperiments();
+  var box=document.getElementById("env-experiment-list");
+  var empty=document.getElementById("env-experiment-empty");
+  if(!list.length){ box.innerHTML=""; empty.classList.remove("hidden"); return; }
+  empty.classList.add("hidden");
+  var sorted=list.map(function(e,i){ return {e:e,i:i}; }).sort(function(a,b){
+    if(a.e.date!==b.e.date) return a.e.date<b.e.date? 1 : -1;
+    return b.i-a.i;
+  });
+  box.innerHTML=sorted.map(function(o){
+    return "<div class='diag-cleanup-card' data-i='"+o.i+"' style='cursor:pointer'><div style='font-size:14px;line-height:1.5;font-weight:400'>"+esc(envExperimentLine(o.e))+"</div></div>";
+  }).join("");
+  [].forEach.call(box.querySelectorAll("[data-i]"),function(el){
+    el.onclick=function(){ envOpenExperimentForm(+el.getAttribute("data-i")); };
+  });
+}
+var envExperimentEditIndex=null;
+document.getElementById("env-experiment-add").onclick=function(){ envOpenExperimentForm(null); };
+function envOpenExperimentForm(index){
+  envExperimentEditIndex=index;
+  var list=envLoadExperiments();
+  var e=(index!==null)? list[index] : {date:diagTodayIso(), hypothesis:"", experiment:"", results:"", conclusions:""};
+  document.getElementById("env-experiment-form-title").textContent=(index!==null)? "Эксперимент" : "Новый эксперимент";
+  document.getElementById("env-experiment-form-date").textContent="Дата: "+diagFormatDateRu(e.date);
+  document.getElementById("env-experiment-hypothesis").value=e.hypothesis||"";
+  document.getElementById("env-experiment-experiment").value=e.experiment||"";
+  document.getElementById("env-experiment-results").value=e.results||"";
+  document.getElementById("env-experiment-conclusions").value=e.conclusions||"";
+  document.getElementById("env-experiment-form-error").style.display="none";
+  document.getElementById("env-experiment-delete-row").classList.toggle("hidden", index===null);
+  showTool("env-dossier-experiment-form");
+}
+document.getElementById("env-experiment-save").onclick=function(){
+  var hyp=document.getElementById("env-experiment-hypothesis").value.trim();
+  var errEl=document.getElementById("env-experiment-form-error");
+  if(!hyp){ errEl.textContent="Впиши гипотезу — остальное можно заполнить позже."; errEl.style.display="block"; return; }
+  errEl.style.display="none";
+  var list=envLoadExperiments();
+  var entry={
+    date: (envExperimentEditIndex!==null)? list[envExperimentEditIndex].date : diagTodayIso(),
+    hypothesis: hyp,
+    experiment: document.getElementById("env-experiment-experiment").value.trim(),
+    results: document.getElementById("env-experiment-results").value.trim(),
+    conclusions: document.getElementById("env-experiment-conclusions").value.trim()
+  };
+  if(envExperimentEditIndex!==null) list[envExperimentEditIndex]=entry; else list.push(entry);
+  envSaveExperiments(list);
+  showTool("env-dossier-experiments");
+};
+document.getElementById("env-experiment-delete").onclick=function(){
+  if(envExperimentEditIndex===null) return;
+  if(!confirm("Удалить эту запись?")) return;
+  var list=envLoadExperiments();
+  list.splice(envExperimentEditIndex,1);
+  envSaveExperiments(list);
+  showTool("env-dossier-experiments");
+};
+document.getElementById("env-experiment-export").onclick=function(){
+  var p=envLoadPeople()[envDossierPersonIndex];
+  var list=(p.experiments||[]).slice().sort(function(a,b){ return a.date<b.date? -1 : a.date>b.date? 1 : 0; });
+  var body="Эксперименты — "+p.name+"\nЭкспортировано: "+diagFormatDateRu(diagTodayIso())+"\n\n"+list.map(envExperimentLine).join("\n\n");
+  var safeName=p.name.replace(/[\\\/:*?"<>|]/g,"_");
+  download("Eksperimenty - "+safeName+".txt", body, "text/plain;charset=utf-8");
+};
+document.getElementById("env-experiment-copy").onclick=function(){
+  var btn=this, ta=document.getElementById("env-experiment-prompt");
+  function done(ok){
+    btn.textContent=ok? "Скопировано ✓" : "Не удалось — выдели текст и скопируй вручную";
+    setTimeout(function(){ btn.textContent="Скопировать промт"; }, 2500);
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(ta.value).then(function(){ done(true); }, function(){
+      ta.focus(); ta.select(); var ok=false; try{ ok=document.execCommand("copy"); }catch(e){} done(ok);
+    });
+  } else {
+    ta.focus(); ta.select(); var ok=false; try{ ok=document.execCommand("copy"); }catch(e){} done(ok);
+  }
+};
 function envProfilePrompt(name){
   return "Ты помогаешь составить профиль значимого для меня человека по методике Михаила Муравьёва (автогуманизм). Человек: "+name+".\n\n"+
 "Я приложу два файла. Если их ещё нет в чате, сначала попроси меня их прикрепить и дождись.\n"+
