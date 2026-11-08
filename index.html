@@ -501,7 +501,7 @@
     <div class="acts" style="margin-top:16px"><button class="primary" id="env-person-save">Сохранить</button></div>
     <div class="hidden" id="env-person-delete-row" style="margin-top:auto;padding-top:16px">
       <div class="acts"><button class="primary" id="env-person-delete">Удалить эту персону</button></div>
-      <div class="sub" style="margin-top:8px">Полностью удалит персону и все данные — Паспорт, Историю, Взаимодействие. Восстановить будет нельзя.</div>
+      <div class="sub" style="margin-top:8px">Полностью удалит персону и все данные — Паспорт, Историю, Взаимодействие, Профиль. Восстановить будет нельзя.</div>
     </div>
   </section>
 
@@ -509,7 +509,7 @@
   <section id="v-env-person-delete-confirm" class="hidden">
     <button class="back" data-back="env-person-form">← Назад</button>
     <h1 id="env-person-delete-confirm-title">Удалить персону</h1>
-    <div class="note">Это полностью удалит персону и все собранные данные — Паспорт, Исходный портрет, Историю, Взаимодействие. Отменить это действие будет нельзя.</div>
+    <div class="note">Это полностью удалит персону и все собранные данные — Паспорт, Исходный портрет, Историю, Взаимодействие, Профиль. Отменить это действие будет нельзя.</div>
     <label>Причина</label>
     <textarea id="env-person-delete-reason" placeholder="Например: стало неактуально, редко вижусь, обиделись..."></textarea>
     <div class="note" id="env-person-delete-confirm-error" style="display:none;margin-top:12px"></div>
@@ -547,7 +547,46 @@
         <span class="ic">🔄</span><span class="t">Взаимодействие</span>
         <div class="d">Протокол обменов: «Поведение» — просто наблюдение, «Транзакция» — обмен с твоим участием и оценкой.</div>
       </button>
+      <button class="tile neutral" id="t-open-env-dossier-profile">
+        <span class="ic">🧩</span><span class="t">Профиль</span>
+        <div class="d">Итог анализа записей: по каждой стороне человека — формула, описание, проявления, реакция, выводы. Собирается с помощью ИИ.</div>
+      </button>
     </div>
+  </section>
+
+  <!-- ===================== VIEW: ОКРУЖЕНИЕ — ДОСЬЕ: ПРОФИЛЬ ===================== -->
+  <section id="v-env-dossier-profile" class="hidden">
+    <button class="back" data-back="env-dossier-person">← Назад</button>
+    <h1>🧩 Профиль</h1>
+    <div class="sub">Профиль — это анализ накопленных записей: по каждой стороне человека (Идентификация, Убеждения, Силы и т.д.) формула, описание, проявления, твоя реакция и выводы. Автор советует начинать после 50–100 записей. Анализ удобно поручить ИИ — ему нужны выгрузки Истории и Взаимодействия.</div>
+    <div class="note" id="env-profile-counts" style="margin-bottom:12px"></div>
+
+    <div class="info-block" style="margin-bottom:12px">
+      <div class="info-h" style="margin-top:0">Как собрать</div>
+      <div class="info-p">
+        1. Сохрани оба файла — кнопки ниже.<br>
+        2. Скопируй промт и вставь его в ИИ.<br>
+        3. Прикрепи оба файла и дождись профиля.<br>
+        4. Готовый профиль вставь в поле в конце экрана.
+      </div>
+    </div>
+
+    <div class="acts" style="margin-top:0;margin-bottom:6px">
+      <button class="ghost" id="env-profile-export-history">Сохранить Историю файлом</button>
+    </div>
+    <div class="acts" style="margin-top:0;margin-bottom:14px">
+      <button class="ghost" id="env-profile-export-interactions">Сохранить Взаимодействие файлом</button>
+    </div>
+
+    <label>Промт для ИИ</label>
+    <textarea id="env-profile-prompt" readonly style="height:300px;font-size:12.5px;line-height:1.45"></textarea>
+    <div class="acts" style="margin-top:10px"><button class="primary" id="env-profile-copy">Скопировать промт</button></div>
+    <div class="sub" style="margin-top:8px">Файлы содержат личные записи — загружай их только в тот ИИ, которому доверяешь.</div>
+
+    <label style="margin-top:22px">Готовый профиль</label>
+    <textarea id="env-profile-result" style="min-height:220px" placeholder="Сюда вставь профиль, который составил ИИ"></textarea>
+    <div id="env-profile-result-date" style="margin-top:6px;font-size:12px;color:var(--muted);display:none"></div>
+    <div class="acts" style="margin-top:12px"><button class="primary" id="env-profile-save">Сохранить профиль</button></div>
   </section>
 
   <!-- ===================== VIEW: ОКРУЖЕНИЕ — ДОСЬЕ: ВЗАИМОДЕЙСТВИЕ (СПИСОК) ===================== -->
@@ -1695,7 +1734,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
-    <div class="menu-title" style="margin-top:10px">Energy Life · версия 3.16 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка + Ежедневные протоколы + Окружение + Психоинженерные техники</div>
+    <div class="menu-title" style="margin-top:10px">Energy Life · версия 3.17 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка + Ежедневные протоколы + Окружение + Психоинженерные техники</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
@@ -2542,7 +2581,7 @@ function last3AllBad(){
 
 /* ---------- navigation ---------- */
 
-var VIEWS=["home","env-setpw","env-unlock","env","env-people","env-person-form","env-person-delete-confirm","env-dossier-list","env-dossier-person","env-dossier-passport","env-dossier-snapshot","env-dossier-history","env-dossier-history-form","env-history-categories-info","env-dossier-interactions","env-dossier-interaction-form","psy","psy-achieve","protocols","homecoming","homecoming-run","night","morning","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-delete-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-monthly","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
+var VIEWS=["home","env-setpw","env-unlock","env","env-people","env-person-form","env-person-delete-confirm","env-dossier-list","env-dossier-person","env-dossier-passport","env-dossier-snapshot","env-dossier-history","env-dossier-history-form","env-history-categories-info","env-dossier-interactions","env-dossier-interaction-form","env-dossier-profile","psy","psy-achieve","protocols","homecoming","homecoming-run","night","morning","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-delete-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-monthly","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
 var currentTrigger="";
 var currentSuggest=null;
 function showTool(v){
@@ -4066,7 +4105,7 @@ function envHistorySentence(s){
   if(!s) return "";
   return /[.!?…]$/.test(s)? s : s+".";
 }
-document.getElementById("env-history-export").onclick=function(){
+function envExportHistory(){
   var p=envLoadPeople()[envDossierPersonIndex];
   var list=(p.history||[]).slice().sort(function(a,b){ return a.date<b.date? -1 : a.date>b.date? 1 : 0; });
   var lines=list.map(function(e){
@@ -4077,7 +4116,8 @@ document.getElementById("env-history-export").onclick=function(){
   var body="История — "+p.name+"\nЭкспортировано: "+diagFormatDateRu(diagTodayIso())+"\n\n"+lines.join("\n\n");
   var safeName=p.name.replace(/[\\\/:*?"<>|]/g,"_");
   download("Istoriya - "+safeName+".txt", body, "text/plain;charset=utf-8");
-};
+}
+document.getElementById("env-history-export").onclick=envExportHistory;
 document.getElementById("t-open-env-dossier-interactions").onclick=function(){ renderEnvInteractionList(); showTool("env-dossier-interactions"); };
 function envLoadInteractions(){
   var p=envLoadPeople()[envDossierPersonIndex];
@@ -4203,13 +4243,66 @@ document.getElementById("env-interaction-delete").onclick=function(){
   showTool("env-dossier-interactions");
   renderEnvInteractionList();
 };
-document.getElementById("env-interaction-export").onclick=function(){
+function envExportInteractions(){
   var p=envLoadPeople()[envDossierPersonIndex];
   var list=(p.interactions||[]).slice().sort(function(a,b){ return a.date<b.date? -1 : a.date>b.date? 1 : 0; });
   var lines=list.map(function(e){ return envInteractionLine(e); });
   var body="Взаимодействие — "+p.name+"\nЭкспортировано: "+diagFormatDateRu(diagTodayIso())+"\n\n"+lines.join("\n\n");
   var safeName=p.name.replace(/[\\\/:*?"<>|]/g,"_");
   download("Vzaimodeystvie - "+safeName+".txt", body, "text/plain;charset=utf-8");
+}
+document.getElementById("env-interaction-export").onclick=envExportInteractions;
+function envProfilePrompt(name){
+  return "Ты помогаешь составить профиль значимого для меня человека по методике Михаила Муравьёва (автогуманизм). Человек: "+name+".\n\n"+
+"Я приложу два файла. Если их ещё нет в чате, сначала попроси меня их прикрепить и дождись.\n"+
+"1. «История» — журнал наблюдений. Строка: «ДД.ММ.ГГ, Категория. Наблюдение. Оценка: моя реакция. Причина: почему я так отреагировал». Категории: Идентификация, Убеждения, Силы, Слабости, Энтузиазм, Негатив, Потребности, Желания, Боли.\n"+
+"2. «Взаимодействие» — протокол записей двух типов. «Поведение»: наблюдение за действием человека без моего участия. «Транзакция»: обмен с моим участием — Качество, Результат, Энергия (шкала от −10 до +10), затем Реакция человека, моё Ощущение и моя Версия причины.\n\n"+
+"Когда получишь файлы:\n"+
+"1. Назови, сколько записей в каждом. Если всего меньше 50, предупреди, что профиль предварительный, но продолжай.\n"+
+"2. Сгруппируй наблюдения по 9 категориям. Для каждой, где есть материал (от 3 записей), составь фактор из пяти полей. Формула — одна ёмкая фраза об этой стороне человека. Описание — полное, с нюансами. Проявления — короткий список показательных примеров из записей, с датами. Реакция — моё восприятие этой стороны и его причины (по полям «Оценка» и «Причина»). Выводы — как мне взаимодействовать с этой стороной продуктивно и выгодно для нас обоих; опирайся и на транзакции: где Качество, Результат и Энергия были высокими, а где низкими.\n"+
+"3. Где материала мало, напиши «недостаточно данных» и что стоит понаблюдать.\n\n"+
+"Правила: опирайся только на записи и ничего не выдумывай. Отделяй факты от моих интерпретаций. Не ставь диагнозов и клинических ярлыков. Пиши нейтрально и уважительно. В конце задай до трёх уточняющих вопросов, ответы на которые сделают профиль точнее.";
+}
+document.getElementById("t-open-env-dossier-profile").onclick=function(){
+  var p=envLoadPeople()[envDossierPersonIndex];
+  var h=(p.history||[]).length, x=(p.interactions||[]).length;
+  document.getElementById("env-profile-counts").textContent="Сейчас записей: История — "+h+", Взаимодействие — "+x+" (всего "+(h+x)+"). Автор советует от 50–100.";
+  document.getElementById("env-profile-prompt").value=envProfilePrompt(p.name);
+  var r=p.profileText||{text:"",date:""};
+  document.getElementById("env-profile-result").value=r.text||"";
+  var dEl=document.getElementById("env-profile-result-date");
+  dEl.textContent=r.date? ("Обновлено: "+diagFormatDateRu(r.date)) : "";
+  dEl.style.display=r.date? "block" : "none";
+  document.getElementById("env-profile-copy").textContent="Скопировать промт";
+  showTool("env-dossier-profile");
+};
+document.getElementById("env-profile-export-history").onclick=envExportHistory;
+document.getElementById("env-profile-export-interactions").onclick=envExportInteractions;
+document.getElementById("env-profile-copy").onclick=function(){
+  var btn=this, ta=document.getElementById("env-profile-prompt");
+  function done(ok){
+    btn.textContent=ok? "Скопировано ✓" : "Не удалось — выдели текст и скопируй вручную";
+    setTimeout(function(){ btn.textContent="Скопировать промт"; }, 2500);
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(ta.value).then(function(){ done(true); }, function(){
+      ta.focus(); ta.select(); var ok=false; try{ ok=document.execCommand("copy"); }catch(e){} done(ok);
+    });
+  } else {
+    ta.focus(); ta.select(); var ok=false; try{ ok=document.execCommand("copy"); }catch(e){} done(ok);
+  }
+};
+document.getElementById("env-profile-save").onclick=function(){
+  var arr=envLoadPeople();
+  var text=document.getElementById("env-profile-result").value.trim();
+  var date=text? diagTodayIso() : "";
+  arr[envDossierPersonIndex].profileText={text:text, date:date};
+  envSavePeople(arr);
+  var dEl=document.getElementById("env-profile-result-date");
+  dEl.textContent=date? ("Обновлено: "+diagFormatDateRu(date)) : "";
+  dEl.style.display=date? "block" : "none";
+  var btn=this; btn.textContent="Сохранено ✓";
+  setTimeout(function(){ btn.textContent="Сохранить профиль"; }, 2000);
 };
 var envPersonEditIndex=null;
 function envColorFor(v){
