@@ -297,6 +297,8 @@
   .wj-head .cap{color:var(--muted);font-size:12.5px;margin-bottom:4px}
   .wj-head h1{margin:0}
   .wj-ta{min-height:250px;line-height:1.6;resize:none;font-size:16px;font-family:inherit}
+  .wj-ta::placeholder{color:var(--muted);opacity:.4;-webkit-text-fill-color:var(--muted)}
+  #wj-ta::-webkit-input-placeholder,#ww-ta::-webkit-input-placeholder{opacity:.4}
   .wj-mini{display:flex;gap:8px;margin:8px 0 12px}
   .wj-mini button{flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:9px 6px;font-size:13px;font-weight:600}
   .tile[disabled]{opacity:.5;cursor:default}
@@ -1926,7 +1928,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
-    <div class="menu-title" style="margin-top:10px">Energy Life · версия 3.20 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка + Ежедневные протоколы + Окружение + Психоинженерные техники</div>
+    <div class="menu-title" style="margin-top:10px">Energy Life · версия 3.20.1 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка + Ежедневные протоколы + Окружение + Психоинженерные техники</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
