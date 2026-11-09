@@ -290,6 +290,28 @@
   h1 .diag-ic-svg{width:22px;height:22px;vertical-align:-3px;margin-right:6px}
   .diag-example{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:10px;font-size:12.5px;color:var(--muted);line-height:1.6}
   .diag-example b{color:var(--text)}
+  .wj-hints{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:0 0 12px;font-size:13px;color:var(--muted);line-height:1.5}
+  .wj-hints .r{padding:3px 8px}
+  .wj-hints .why{margin-top:8px;font-size:12.5px}
+  .wj-head{text-align:center;margin:4px 0 14px}
+  .wj-head .cap{color:var(--muted);font-size:12.5px;margin-bottom:4px}
+  .wj-head h1{margin:0}
+  .wj-ta{min-height:250px;line-height:1.6;resize:none;font-size:16px;font-family:inherit}
+  .wj-mini{display:flex;gap:8px;margin:8px 0 12px}
+  .wj-mini button{flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:9px 6px;font-size:13px;font-weight:600}
+  .tile[disabled]{opacity:.5;cursor:default}
+  .ww-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0 14px}
+  .ww-nav .mid{text-align:center;flex:1}
+  .ww-nav .mid .cap{color:var(--muted);font-size:12.5px;margin-bottom:4px}
+  .ww-nav .mid h1{margin:0;font-size:22px}
+  .ww-arrow{flex:0 0 auto;width:44px;height:44px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--text);font-size:20px;font-weight:700;padding:0}
+  .ww-arrow:disabled{opacity:.3}
+  button.ghost:disabled{opacity:.4}
+  .ww-count{color:var(--muted);font-size:12.5px;margin:6px 2px 0}
+  .ww-text{white-space:pre-wrap}
+  .wj-day{color:var(--accent);font-size:14px;font-weight:700;margin:22px 0 4px}
+  .wj-day:first-child{margin-top:6px}
+  .wj-card{padding:0;margin:0;font-size:15.5px;line-height:1.65}
   /* зеркальный слой подсветки поверх textarea: моноширинный шрифт обязателен, иначе курсив
      занимает другую ширину символа, чем прямое начертание в невидимой textarea, и курсор «уезжает» */
   .diag-input-wrap{position:relative;flex:1;min-height:140px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;overflow:hidden}
@@ -797,7 +819,130 @@
         <span class="ic">🎯</span><span class="t">Перекалибровка датчика достижений</span>
         <div class="d">Учимся засчитывать свои успехи: факт, критерий, оценка себе — вслух и по много раз в день.</div>
       </button>
+      <button class="tile neutral" id="t-open-psy-wonder">
+        <span class="ic">🌟</span><span class="t">Замечательный журнал</span>
+        <div class="d">Записи о хорошем в трёх ритмах: каждый день, раз в неделю и по итогам года.</div>
+      </button>
     </div>
+  </section>
+
+  <!-- ===================== VIEW: ЗАМЕЧАТЕЛЬНЫЙ ЖУРНАЛ — ХАБ ===================== -->
+  <section id="v-psy-wonder-hub" class="hidden">
+    <button class="back" data-back="psy">← Техники</button>
+    <h1>🌟 Замечательный журнал</h1>
+    <div class="sub">Три уровня записей о хорошем: каждый день, раз в неделю и по итогам года — по мотивам статьи Михаила Муравьёва «Настройка фильтра событий».</div>
+    <div class="tiles">
+      <button class="tile neutral" id="t-open-wonder-daily">
+        <span class="ic">🗓️</span><span class="t">Ежедневные</span>
+        <div class="d">Каждый вечер — положительные события дня и оценка их значимости от 1 до 10.</div>
+      </button>
+      <button class="tile neutral" id="t-open-wonder-week">
+        <span class="ic">📝</span><span class="t">Недельные</span>
+        <div class="d">Раз в неделю — подробно об одном-двух запомнившихся событиях.</div>
+      </button>
+      <button class="tile neutral" id="t-open-wonder-year" disabled>
+        <span class="ic">📚</span><span class="t">За год</span>
+        <div class="d">Автобиографическая глава по итогам года. Откроется ближе к концу года.</div>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===================== VIEW: ЗАМЕЧАТЕЛЬНЫЙ ЖУРНАЛ — НЕДЕЛЬНЫЙ ДАЙДЖЕСТ ===================== -->
+  <section id="v-psy-wonder-week" class="hidden">
+    <button class="back" data-back="psy-wonder-hub">← Журнал</button>
+    <div class="ww-nav">
+      <button class="ww-arrow" id="ww-prev" aria-label="Предыдущая неделя">‹</button>
+      <div class="mid">
+        <div class="cap">🌟 Замечательный журнал · недельные</div>
+        <h1 id="ww-range">—</h1>
+        <div class="sub" id="ww-rel" style="margin-bottom:0">—</div>
+      </div>
+      <button class="ww-arrow" id="ww-next" aria-label="Следующая неделя">›</button>
+    </div>
+    <div class="note hidden" id="ww-flash" style="background:#1f3a2e;border-color:#2f6b4f;color:#c8f0d8"></div>
+    <div class="note hidden" id="ww-ro">Эта неделя уже закрыта для правки — её можно только читать.</div>
+
+    <label style="margin-top:0"><b>Опиши одно-два запомнившихся события недели — примерно на 100 слов.</b><br><span style="opacity:.7;font-weight:400">Пиши себе, а не дневнику. Без анализа — просто присвой хорошее.</span></label>
+    <textarea id="ww-ta" class="wj-ta" rows="10" autocomplete="off" placeholder="Что произошло, что понравилось, как я себя проявил…"></textarea>
+    <div class="ww-count" id="ww-count"></div>
+    <div class="wj-mini">
+      <button type="button" id="ww-btn-q">ℹ️ Вопросы-подсказки</button>
+      <button type="button" id="ww-btn-ev">📋 События недели</button>
+    </div>
+    <div class="wj-hints hidden" id="ww-q">
+      <div class="r">• Что фактически произошло?</div>
+      <div class="r">• Что мне понравилось?</div>
+      <div class="r">• Как я проявился, какова моя роль?</div>
+      <div class="r">• Какие эмоции я испытал?</div>
+      <div class="r">• Какие ресурсы я получил?</div>
+      <div class="r">• Что привело к событию?</div>
+      <div class="r">• Как это можно повторить?</div>
+    </div>
+    <div class="wj-hints hidden" id="ww-ev"></div>
+
+    <div class="note" id="ww-error" style="display:none;margin-top:4px"></div>
+    <button class="btn primary" id="ww-save" style="margin-top:6px">Сохранить неделю</button>
+
+    <button class="info-btn" id="ww-all-btn" style="margin-top:14px">📖 Все недели</button>
+  </section>
+
+  <!-- ===================== VIEW: ЗАМЕЧАТЕЛЬНЫЙ ЖУРНАЛ — ВСЕ НЕДЕЛИ ===================== -->
+  <section id="v-psy-wonder-week-all" class="hidden">
+    <button class="back" data-back="psy-wonder-week">← Недельные</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <h1 style="margin:0">📖 Все недели</h1>
+      <button class="ghost" id="ww-export" style="flex:0 0 auto;padding:6px 10px;font-size:12px;border-radius:8px">Сохранить файлом</button>
+    </div>
+    <div class="sub">Все сохранённые недельные дайджесты, свежие сверху.</div>
+    <div id="ww-all"></div>
+  </section>
+
+  <!-- ===================== VIEW: ТЕХНИКА — ЗАМЕЧАТЕЛЬНЫЙ ЖУРНАЛ ===================== -->
+  <section id="v-psy-wonder" class="hidden">
+    <button class="back" data-back="psy-wonder-hub">← Журнал</button>
+    <div class="wj-head">
+      <div class="cap">🌟 Замечательный журнал · ежедневные</div>
+      <h1 id="wj-date">—</h1>
+      <div class="sub" id="wj-dow" style="margin-bottom:0">—</div>
+    </div>
+    <div class="note hidden" id="wj-catch"></div>
+    <div class="note hidden" id="wj-flash" style="background:#1f3a2e;border-color:#2f6b4f;color:#c8f0d8"></div>
+
+    <label style="margin-top:0"><b>Запиши положительное событие и в конце поставь оценку цифрой 1–10.</b><br><span style="opacity:.7;font-weight:400">Каждое событие — с новой строки. Например: «Вкусный завтрак 3»</span></label>
+    <textarea id="wj-ta" class="wj-ta" rows="10" autocomplete="off" autocapitalize="sentences" placeholder="Вкусный завтрак 3&#10;Прогулка 4&#10;Позвонила подруга 6"></textarea>
+    <div class="wj-mini">
+      <button type="button" id="wj-btn-hints">ℹ️ Как оценивать</button>
+      <button type="button" id="wj-btn-about">ℹ️ О технике</button>
+    </div>
+    <div class="wj-hints hidden" id="wj-hints">
+      <div class="r">1–2: приятная мелочь (вкусный кофе, хорошая погода)</div>
+      <div class="r">3–4: заметно порадовало</div>
+      <div class="r">5–6: хороший, запоминающийся момент</div>
+      <div class="r">7–8: большая радость или значимый успех</div>
+      <div class="r">9–10: событие из тех, что вспоминаешь годами</div>
+      <div class="why">Оцени, насколько это значимо для тебя, а не для других.</div>
+    </div>
+    <div class="info-block hidden" id="wj-about" style="margin-bottom:12px">
+      <div class="info-p">По мотивам статьи Михаила Муравьёва «Настройка фильтра событий». Внутренний фильтр обесценивает или не замечает хорошее; журнал копит факты, которые трудно опровергнуть. Событие не обязано быть большим или заслуженным. Даже в тяжёлый день найди хотя бы одно — пусть на 1 балл.</div>
+    </div>
+
+    <div class="note" id="wj-error" style="display:none;margin-top:4px"></div>
+    <button class="btn primary" id="wj-save" style="margin-top:6px">Сохранить день</button>
+    <div class="link-row hidden" id="wj-skip-row"><button id="wj-skip">Нет событий, пропустить</button></div>
+    <div class="link-row hidden" id="wj-clear-row"><button id="wj-clear">Очистить день</button></div>
+
+    <button class="info-btn" id="wj-all-btn" style="margin-top:14px">📖 Все дни</button>
+  </section>
+
+  <!-- ===================== VIEW: ЗАМЕЧАТЕЛЬНЫЙ ЖУРНАЛ — ВСЕ ДНИ ===================== -->
+  <section id="v-psy-wonder-all" class="hidden">
+    <button class="back" data-back="psy-wonder">← Ежедневные</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <h1 style="margin:0">📖 Все дни</h1>
+      <button class="ghost" id="wj-export" style="flex:0 0 auto;padding:6px 10px;font-size:12px;border-radius:8px">Сохранить файлом</button>
+    </div>
+    <div class="sub" id="wj-all-sub">Все сохранённые дни, свежие сверху.</div>
+    <div id="wj-all"></div>
   </section>
 
   <!-- ===================== VIEW: ТЕХНИКА — ПЕРЕКАЛИБРОВКА ДАТЧИКА ДОСТИЖЕНИЙ ===================== -->
@@ -1781,7 +1926,7 @@
     <button id="exp-json"><span class="mt">💾 Сделать бэкап (JSON)</span><span class="md">Сохранить копию всех данных в файл. Делай раз в 1–2 недели и держи файл в «Файлах»/iCloud — это страховка, если браузер очистит память.</span></button>
     <button id="imp-json"><span class="mt">↩️ Восстановить из бэкапа</span><span class="md">Загрузить данные из ранее сохранённого JSON-бэкапа — если данные пропали или переносишь трекер на другое устройство.</span></button>
     <button id="exp-csv"><span class="mt">⬇️ Экспорт в CSV (Excel)</span><span class="md">Выгрузить таблицу для Excel / Google Таблиц — посмотреть или построить свои графики. Это НЕ бэкап: обратно не загружается.</span></button>
-    <div class="menu-title" style="margin-top:10px">Energy Life · версия 3.19 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка + Ежедневные протоколы + Окружение + Психоинженерные техники</div>
+    <div class="menu-title" style="margin-top:10px">Energy Life · версия 3.20 · Аптечка + Антисаботаж + Диагностика + Списание + Выборы + Задачи в работе + Ежемесячная приборка + Ежедневные протоколы + Окружение + Психоинженерные техники</div>
   </div>
 </div>
 <input id="imp-file" type="file" accept="application/json,.json" class="hidden">
@@ -2219,7 +2364,7 @@ function download(name, text, type){
 }
 // данные Инструментов (Аптечка/Антисаботаж/Диагностика) хранятся отдельно от дневных записей —
 // без этого списка бэкап сохранял бы только Сегодня/Историю
-var TOOL_KEYS=["apt2_items","apt2_bh","apt2_opens","apt2_results","anti_texts","anti_progress","anti_trophy","diag_stream","diag_anx_stream","diag_phantoms","diag_ulcers","diag_pwhash","diag_choices","diag_tasks","diag_writeoff_policy","diag_writeoffs","homecoming_favorites","homecoming_runs","night_custom_items","morning_custom_items","env_pwhash","env_people"];
+var TOOL_KEYS=["apt2_items","apt2_bh","apt2_opens","apt2_results","anti_texts","anti_progress","anti_trophy","diag_stream","diag_anx_stream","diag_phantoms","diag_ulcers","diag_pwhash","diag_choices","diag_tasks","diag_writeoff_policy","diag_writeoffs","homecoming_favorites","homecoming_runs","night_custom_items","morning_custom_items","env_pwhash","env_people","wonder_journal","wonder_skipped","wonder_weeks"];
 function collectToolsData(){
   var out={};
   TOOL_KEYS.forEach(function(k){
@@ -2488,6 +2633,9 @@ function renderHomecomingRun(){
 document.getElementById("t-open-protocols").onclick=function(){ showTool("protocols"); };
 document.getElementById("t-open-psy").onclick=function(){ showTool("psy"); };
 document.getElementById("t-open-psy-achieve").onclick=function(){ showTool("psy-achieve"); };
+document.getElementById("t-open-psy-wonder").onclick=function(){ showTool("psy-wonder-hub"); };
+document.getElementById("t-open-wonder-daily").onclick=function(){ showTool("psy-wonder"); };
+document.getElementById("t-open-wonder-week").onclick=function(){ showTool("psy-wonder-week"); };
 document.getElementById("t-open-homecoming").onclick=function(){ renderHomecomingBlocks(); showTool("homecoming"); };
 document.getElementById("homecoming-run-btn").onclick=function(){ renderHomecomingRun(); showTool("homecoming-run"); };
 document.getElementById("homecoming-run-done").onclick=function(){
@@ -2628,7 +2776,7 @@ function last3AllBad(){
 
 /* ---------- navigation ---------- */
 
-var VIEWS=["home","env-setpw","env-unlock","env","env-people","env-person-form","env-person-delete-confirm","env-dossier-list","env-dossier-person","env-dossier-passport","env-dossier-snapshot","env-dossier-history","env-dossier-history-form","env-history-categories-info","env-dossier-interactions","env-dossier-interaction-form","env-dossier-profile","env-dossier-experiments","env-dossier-experiment-form","psy","psy-achieve","protocols","homecoming","homecoming-run","night","morning","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-delete-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-monthly","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
+var VIEWS=["home","env-setpw","env-unlock","env","env-people","env-person-form","env-person-delete-confirm","env-dossier-list","env-dossier-person","env-dossier-passport","env-dossier-snapshot","env-dossier-history","env-dossier-history-form","env-history-categories-info","env-dossier-interactions","env-dossier-interaction-form","env-dossier-profile","env-dossier-experiments","env-dossier-experiment-form","psy","psy-achieve","psy-wonder-hub","psy-wonder","psy-wonder-all","psy-wonder-week","psy-wonder-week-all","protocols","homecoming","homecoming-run","night","morning","apt","exhaust","burnout","trigger","suggest","rate","list","info","anti","anti-tpl","anti-progress","anti-trophy","anti-article","diag","diag-complaints","diag-setpw","diag-unlock","diag-book-home","diag-weights-home","diag-rate-mode","diag-categorize","diag-table","diag-phantoms","diag-phantom-form","diag-phantom-types-info","diag-ulcers","diag-ulcer-form","diag-ulcer-types-info","diag-choices","diag-choice-form","diag-choice-types-info","diag-tasks","diag-task-form","diag-task-delete-form","diag-task-convert","diag-task-categorize","diag-cleanup","diag-monthly","diag-writeoff-policy","diag-writeoff-form","diag-writeoff-verdicts-info","diag-pause-form"];
 var currentTrigger="";
 var currentSuggest=null;
 function showTool(v){
@@ -2644,6 +2792,10 @@ function showTool(v){
   if(v==="env-dossier-history") renderEnvHistoryList();
   if(v==="env-dossier-interactions") renderEnvInteractionList();
   if(v==="env-dossier-experiments") renderEnvExperimentList();
+  if(v==="psy-wonder") wjOpen();
+  if(v==="psy-wonder-week") wwOpen();
+  if(v==="psy-wonder-all") wjRenderAll();
+  if(v==="psy-wonder-week-all") wwRenderAll();
   if(v==="night") renderNight();
   if(v==="morning") renderMorning();
   if(v==="diag-book-home") renderDiagBookHome();
@@ -3601,6 +3753,317 @@ function diagFormatDateRu(iso){
   var p=iso.split("-");
   return p[2]+"."+p[1]+"."+p[0];
 }
+
+/* ===== Замечательный журнал: одно поле на день, «событие (оценка)» на каждой строке ===== */
+var WJ_KEY="wonder_journal", WJ_SKIP_KEY="wonder_skipped", WJ_DRAFT_KEY="wonder_draft";
+var wjDate=null, wjClearArmed=false;
+function wjLoad(){
+  try{ var a=JSON.parse(localStorage.getItem(WJ_KEY)||"[]"); return Array.isArray(a)? a : []; }
+  catch(e){ return []; }
+}
+function wjSave(a){ localStorage.setItem(WJ_KEY,JSON.stringify(a)); }
+function wjSkipLoad(){
+  try{ var a=JSON.parse(localStorage.getItem(WJ_SKIP_KEY)||"[]"); return Array.isArray(a)? a : []; }
+  catch(e){ return []; }
+}
+function wjDraftLoad(){
+  try{ var o=JSON.parse(localStorage.getItem(WJ_DRAFT_KEY)||"{}"); return (o&&typeof o==="object"&&!Array.isArray(o))? o : {}; }
+  catch(e){ return {}; }
+}
+function wjDraftSet(date,text){
+  var o=wjDraftLoad();
+  if(text && text.replace(/\s+/g,"")) o[date]=text; else delete o[date];
+  try{ localStorage.setItem(WJ_DRAFT_KEY,JSON.stringify(o)); }catch(e){}
+}
+function wjShift(iso,n){
+  var d=parseISO(iso); d.setDate(d.getDate()+n);
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+/* Какой день показывать: самый старый незаполненный из двух прошлых (по порядку), иначе сегодня.
+   Спрашиваем только про дни после первой записи/пропуска — новичка не гоняем за «вчера». */
+function wjPickDay(){
+  var today=diagTodayIso(), list=wjLoad(), sk=wjSkipLoad();
+  var all=list.map(function(e){ return e.date; }).concat(sk);
+  if(!all.length) return today;
+  var first=all.reduce(function(a,b){ return a<b? a : b; });
+  var done={}; all.forEach(function(d){ done[d]=1; });
+  var cands=[wjShift(today,-2), wjShift(today,-1)];
+  for(var i=0;i<cands.length;i++){ if(cands[i]>first && !done[cands[i]]) return cands[i]; }
+  return today;
+}
+/* Цифра в конце текущей строки после пробела сама берётся в скобки; стёртая «)» снимает оценку */
+function wjAutoParen(inp,ev){
+  var v=inp.value, pos=inp.selectionStart, t=(ev&&ev.inputType)||"";
+  var ls=pos>0? v.lastIndexOf("\n",pos-1)+1 : 0;
+  var le=v.indexOf("\n",pos); if(le<0) le=v.length;
+  if(pos!==le) return;
+  var line=v.slice(ls,le), m, nl=null;
+  if(t.indexOf("delete")===0){
+    m=line.match(/^(.*\S) \((\d{1,2})$/);
+    if(m) nl=m[1]+" ";
+  } else {
+    m=line.match(/^(.*\S) \((\d{1,2})\)(\d)$/);
+    if(m){ nl=(m[2]==="1" && m[3]==="0")? m[1]+" (10)" : m[1]+" ("+m[2]+")"; }
+    else {
+      m=line.match(/^(.*\S)\s+(\d{1,2})$/);
+      if(m){ var n=+m[2]; if(n>=1 && n<=10) nl=m[1]+" ("+n+")"; }
+    }
+  }
+  if(nl!==null && nl!==line){
+    inp.value=v.slice(0,ls)+nl+v.slice(le);
+    var c=ls+nl.length;
+    try{ inp.setSelectionRange(c,c); }catch(e){}
+  }
+}
+function wjParseLine(s){
+  s=String(s).replace(/^\s+|\s+$/g,"");
+  var m=s.match(/^(.*?)\s*(?:\((\d{1,2})\)|\s(\d{1,2}))$/);
+  if(!m) return null;
+  var n=+(m[2]||m[3]), text=m[1].replace(/^\s+|\s+$/g,"");
+  if(n<1 || n>10 || !text) return null;
+  return {text:text, value:n};
+}
+function wjFlash(msg){
+  var f=document.getElementById("wj-flash");
+  if(!msg){ f.classList.add("hidden"); return; }
+  f.textContent=msg; f.classList.remove("hidden");
+}
+function wjShowError(msg){
+  var e=document.getElementById("wj-error");
+  if(!msg){ e.style.display="none"; return; }
+  e.textContent=msg; e.style.display="block";
+}
+function wjDayLines(date){
+  return wjLoad().filter(function(e){ return e.date===date; }).map(function(e){ return e.text+" ("+e.value+")"; });
+}
+function wjOpen(){
+  wjClearArmed=false;
+  wjFlash(""); wjShowError("");
+  wjLoadDay();
+}
+function wjLoadDay(){
+  wjDate=wjPickDay();
+  var today=diagTodayIso(), d=parseISO(wjDate);
+  document.getElementById("wj-date").textContent=prettyDate(d);
+  var rel=(wjDate===today)? "сегодня" : (wjDate===wjShift(today,-1)? "вчера" : "позавчера");
+  document.getElementById("wj-dow").textContent=capFirst(DOW[d.getDay()])+" · "+rel;
+  var catchEl=document.getElementById("wj-catch");
+  var isToday=(wjDate===today);
+  if(isToday){ catchEl.classList.add("hidden"); }
+  else {
+    catchEl.classList.remove("hidden");
+    catchEl.innerHTML="⏳ Заполни за <b>"+rel+"</b> — "+prettyDate(d)+". Потом откроется сегодняшний день. Пока не нажмёшь «Сохранить день», можно править.";
+  }
+  var draft=wjDraftLoad();
+  document.getElementById("wj-ta").value=(draft[wjDate]!==undefined)? draft[wjDate] : wjDayLines(wjDate).join("\n");
+  document.getElementById("wj-skip-row").classList.toggle("hidden", isToday);
+  var hasSaved=isToday && wjLoad().some(function(e){ return e.date===today; });
+  document.getElementById("wj-clear-row").classList.toggle("hidden", !hasSaved);
+  document.getElementById("wj-clear").textContent="Очистить день";
+  wjRenderAll();
+}
+function wjSaveDay(){
+  var ta=document.getElementById("wj-ta");
+  var rows=ta.value.split("\n"), parsed=[], bad=[];
+  rows.forEach(function(r,i){
+    if(!r.replace(/\s+/g,"")) return;
+    var p=wjParseLine(r);
+    if(p) parsed.push(p); else bad.push(i+1);
+  });
+  if(bad.length){ wjShowError("Нет оценки 1–10 в строках: "+bad.join(", ")+". Допиши цифру в конце строки."); return; }
+  if(!parsed.length){ wjShowError("Напиши хотя бы одно событие и поставь оценку."); return; }
+  var date=wjDate, today=diagTodayIso(), wasCatch=(date!==today);
+  var list=wjLoad().filter(function(e){ return e.date!==date; });
+  parsed.forEach(function(p){ list.push({date:date, text:p.text, value:p.value}); });
+  wjSave(list);
+  var sk=wjSkipLoad().filter(function(d){ return d!==date; });
+  localStorage.setItem(WJ_SKIP_KEY,JSON.stringify(sk));
+  wjDraftSet(date,"");
+  wjShowError(""); wjClearArmed=false;
+  var label=wasCatch? prettyDate(parseISO(date)) : "сегодня";
+  wjLoadDay();
+  wjFlash("✓ Сохранено за "+label+(wjDate===today? (wasCatch? ". Теперь сегодняшний день." : ". Можно дописывать и сохранять снова.") : ". Дальше заполни следующий день."));
+}
+function wjSkipDay(){
+  var sk=wjSkipLoad(); if(sk.indexOf(wjDate)<0) sk.push(wjDate);
+  localStorage.setItem(WJ_SKIP_KEY,JSON.stringify(sk));
+  wjDraftSet(wjDate,"");
+  var label=prettyDate(parseISO(wjDate));
+  wjShowError(""); wjLoadDay();
+  wjFlash("Пропущено: "+label+".");
+}
+function wjClearDay(){
+  var btn=document.getElementById("wj-clear");
+  if(!wjClearArmed){ wjClearArmed=true; btn.textContent="Точно очистить день?"; return; }
+  var today=diagTodayIso();
+  wjSave(wjLoad().filter(function(e){ return e.date!==today; }));
+  wjDraftSet(today,"");
+  wjClearArmed=false; wjShowError(""); wjLoadDay();
+  wjFlash("День очищен.");
+}
+function wjRenderAll(){
+  var list=wjLoad(), days={}, order=[];
+  list.forEach(function(e){ if(!days[e.date]){ days[e.date]=[]; order.push(e.date); } days[e.date].push(e); });
+  order.sort(function(a,b){ return a<b? 1 : -1; });
+  document.getElementById("wj-all-btn").textContent="📖 Все дни ("+order.length+")";
+  var box=document.getElementById("wj-all");
+  document.getElementById("wj-export").disabled=!order.length;
+  if(!order.length){ box.innerHTML="<div class='empty'>Пока нет сохранённых дней.</div>"; return; }
+  box.innerHTML=order.map(function(d){
+    var dt=parseISO(d);
+    return "<div class='wj-day'>"+prettyDate(dt)+" · "+DOWS[dt.getDay()]+"</div>"+
+      days[d].map(function(e){ return "<div class='wj-card'>"+esc(e.text)+" ("+e.value+")</div>"; }).join("");
+  }).join("");
+}
+(function(){
+  var ta=document.getElementById("wj-ta");
+  ta.addEventListener("input",function(ev){
+    wjAutoParen(ta,ev); wjShowError(""); wjFlash(""); wjClearArmed=false;
+    document.getElementById("wj-clear").textContent="Очистить день";
+    if(wjDate) wjDraftSet(wjDate,ta.value);
+  });
+  document.getElementById("wj-save").onclick=wjSaveDay;
+  document.getElementById("wj-skip").onclick=wjSkipDay;
+  document.getElementById("wj-clear").onclick=wjClearDay;
+  document.getElementById("wj-btn-hints").onclick=function(){ document.getElementById("wj-hints").classList.toggle("hidden"); };
+  document.getElementById("wj-btn-about").onclick=function(){ document.getElementById("wj-about").classList.toggle("hidden"); };
+  document.getElementById("wj-all-btn").onclick=function(){ showTool("psy-wonder-all"); };
+})();
+
+/* ===== Замечательный журнал: недельный дайджест ===== */
+var WW_KEY="wonder_weeks", WW_DRAFT_KEY="wonder_week_draft";
+var wwWeek=null;
+function wwLoad(){
+  try{ var a=JSON.parse(localStorage.getItem(WW_KEY)||"[]"); return Array.isArray(a)? a : []; }
+  catch(e){ return []; }
+}
+function wwDraftLoad(){
+  try{ var o=JSON.parse(localStorage.getItem(WW_DRAFT_KEY)||"{}"); return (o&&typeof o==="object"&&!Array.isArray(o))? o : {}; }
+  catch(e){ return {}; }
+}
+function wwDraftSet(week,text){
+  var o=wwDraftLoad();
+  if(text && text.replace(/\s+/g,"")) o[week]=text; else delete o[week];
+  try{ localStorage.setItem(WW_DRAFT_KEY,JSON.stringify(o)); }catch(e){}
+}
+function wwMonday(iso){ var d=parseISO(iso); return wjShift(iso, -((d.getDay()+6)%7)); }
+function wwRange(mon){
+  var a=parseISO(mon), b=parseISO(wjShift(mon,6));
+  if(a.getFullYear()!==b.getFullYear()) return prettyDate(a)+" – "+prettyDate(b);
+  if(a.getMonth()!==b.getMonth()) return a.getDate()+" "+MON[a.getMonth()]+" – "+b.getDate()+" "+MON[b.getMonth()]+" "+b.getFullYear();
+  return a.getDate()+"–"+b.getDate()+" "+MON[b.getMonth()]+" "+b.getFullYear();
+}
+function wwWords(s){ var m=String(s).match(/\S+/g); return m? m.length : 0; }
+function wwEarliest(){
+  var cur=wwMonday(diagTodayIso()), e=wjShift(cur,-7);
+  wjLoad().forEach(function(x){ var m=wwMonday(x.date); if(m<e) e=m; });
+  wwLoad().forEach(function(w){ if(w.week<e) e=w.week; });
+  return e;
+}
+function wwFlash(msg){
+  var f=document.getElementById("ww-flash");
+  if(!msg){ f.classList.add("hidden"); return; }
+  f.textContent=msg; f.classList.remove("hidden");
+}
+function wwShowError(msg){
+  var e=document.getElementById("ww-error");
+  if(!msg){ e.style.display="none"; return; }
+  e.textContent=msg; e.style.display="block";
+}
+function wwOpen(){
+  wwWeek=wwMonday(diagTodayIso());
+  wwFlash(""); wwShowError("");
+  wwLoadWeek();
+}
+function wwUpdateCount(){
+  var n=wwWords(document.getElementById("ww-ta").value);
+  document.getElementById("ww-count").textContent= n>=100? "Слов: "+n+" ✓" : "Слов: "+n+" · ориентир — около 100";
+}
+function wwLoadWeek(){
+  var cur=wwMonday(diagTodayIso()), prev=wjShift(cur,-7);
+  var editable=(wwWeek>=prev);
+  document.getElementById("ww-range").textContent=wwRange(wwWeek);
+  document.getElementById("ww-rel").textContent= wwWeek===cur? "Эта неделя" : (wwWeek===prev? "Прошлая неделя" : "Неделя в прошлом");
+  document.getElementById("ww-prev").disabled=(wwWeek<=wwEarliest());
+  document.getElementById("ww-next").disabled=(wwWeek>=cur);
+  var saved=wwLoad().filter(function(w){ return w.week===wwWeek; })[0];
+  var draft=wwDraftLoad();
+  var ta=document.getElementById("ww-ta");
+  ta.value=(draft[wwWeek]!==undefined)? draft[wwWeek] : (saved? saved.text : "");
+  ta.readOnly=!editable;
+  document.getElementById("ww-ro").classList.toggle("hidden", editable);
+  document.getElementById("ww-save").classList.toggle("hidden", !editable);
+  // события недели: ежедневные записи, самые значимые сверху
+  var dates={}; for(var i=0;i<7;i++) dates[wjShift(wwWeek,i)]=1;
+  var ev=wjLoad().filter(function(e){ return dates[e.date]; }).sort(function(a,b){
+    if(b.value!==a.value) return b.value-a.value;
+    return a.date<b.date? -1 : 1;
+  });
+  document.getElementById("ww-ev").innerHTML= ev.length? ev.map(function(e){
+    var dt=parseISO(e.date);
+    return "<div class='r'>"+DOWS[dt.getDay()]+" "+dt.getDate()+" — "+esc(e.text)+" ("+e.value+")</div>";
+  }).join("") : "<div class='r'>Ежедневных записей за эту неделю нет.</div>";
+  wwUpdateCount(); wwRenderAll();
+}
+function wwSaveWeek(){
+  var ta=document.getElementById("ww-ta"), text=ta.value.replace(/\s+$/,"").replace(/^\s+/,"");
+  if(!wwWords(text)){ wwShowError("Напиши хотя бы пару предложений."); return; }
+  var list=wwLoad().filter(function(w){ return w.week!==wwWeek; });
+  list.push({week:wwWeek, text:text});
+  localStorage.setItem(WW_KEY,JSON.stringify(list));
+  wwDraftSet(wwWeek,"");
+  wwShowError("");
+  wwLoadWeek();
+  wwFlash("✓ Неделя сохранена. Можно дописывать и сохранять снова.");
+}
+function wwRenderAll(){
+  var list=wwLoad().slice().sort(function(a,b){ return a.week<b.week? 1 : -1; });
+  document.getElementById("ww-all-btn").textContent="📖 Все недели ("+list.length+")";
+  var box=document.getElementById("ww-all");
+  document.getElementById("ww-export").disabled=!list.length;
+  if(!list.length){ box.innerHTML="<div class='empty'>Пока нет сохранённых недель.</div>"; return; }
+  box.innerHTML=list.map(function(w){
+    return "<div class='wj-day'>"+wwRange(w.week)+"</div><div class='wj-card ww-text'>"+esc(w.text)+"</div>";
+  }).join("");
+}
+(function(){
+  var ta=document.getElementById("ww-ta");
+  ta.addEventListener("input",function(){
+    wwShowError(""); wwFlash(""); wwUpdateCount();
+    if(wwWeek) wwDraftSet(wwWeek,ta.value);
+  });
+  document.getElementById("ww-save").onclick=wwSaveWeek;
+  document.getElementById("ww-prev").onclick=function(){ wwWeek=wjShift(wwWeek,-7); wwFlash(""); wwShowError(""); wwLoadWeek(); };
+  document.getElementById("ww-next").onclick=function(){ wwWeek=wjShift(wwWeek,7); wwFlash(""); wwShowError(""); wwLoadWeek(); };
+  document.getElementById("ww-btn-q").onclick=function(){ document.getElementById("ww-q").classList.toggle("hidden"); };
+  document.getElementById("ww-btn-ev").onclick=function(){ document.getElementById("ww-ev").classList.toggle("hidden"); };
+  document.getElementById("ww-all-btn").onclick=function(){ showTool("psy-wonder-week-all"); };
+})();
+
+
+/* Выгрузка журнала в текстовый файл (для анализа в ИИ или чтения в редакторе) */
+function wjExportDays(){
+  var list=wjLoad(), days={}, order=[];
+  list.forEach(function(e){ if(!days[e.date]){ days[e.date]=[]; order.push(e.date); } days[e.date].push(e); });
+  if(!order.length) return;
+  order.sort();
+  var body="Замечательный журнал — ежедневные записи\nВыгружено: "+diagFormatDateRu(diagTodayIso())+
+    "\nФормат: «событие (оценка)». Оценка — личная значимость события для автора по шкале 1–10.\n\n"+
+    order.map(function(d){
+      var dt=parseISO(d);
+      return diagFormatDateRu(d)+" ("+DOWS[dt.getDay()]+")\n"+days[d].map(function(e){ return e.text+" ("+e.value+")"; }).join("\n");
+    }).join("\n\n");
+  download("Zamechatelny zhurnal - dni - "+diagTodayIso()+".txt", body, "text/plain;charset=utf-8");
+}
+function wwExportWeeks(){
+  var list=wwLoad().slice().sort(function(a,b){ return a.week<b.week? -1 : 1; });
+  if(!list.length) return;
+  var body="Замечательный журнал — недельные дайджесты\nВыгружено: "+diagFormatDateRu(diagTodayIso())+"\n\n"+
+    list.map(function(w){ return "Неделя "+wwRange(w.week)+"\n"+w.text; }).join("\n\n");
+  download("Zamechatelny zhurnal - nedeli - "+diagTodayIso()+".txt", body, "text/plain;charset=utf-8");
+}
+document.getElementById("wj-export").onclick=wjExportDays;
+document.getElementById("ww-export").onclick=wwExportWeeks;
 function diagTodayIso(){
   var d=new Date();
   return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
